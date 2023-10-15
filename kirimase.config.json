@@ -1,0 +1,10 @@
+{
+	"hasSrc": true,
+	"packages": ["shadcn-ui", "drizzle", "next-auth"],
+	"preferredPackageManager": "bun",
+	"rootPath": "src/",
+	"driver": "pg",
+	"provider": "supabase",
+	"orm": "drizzle",
+	"auth": "next-auth"
+}

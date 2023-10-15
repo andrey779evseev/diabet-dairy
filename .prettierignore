@@ -1,0 +1,8 @@
+.next
+.vscode
+node_modules
+.env
+bun.lockb
+bunfig.toml
+README.md
+public
