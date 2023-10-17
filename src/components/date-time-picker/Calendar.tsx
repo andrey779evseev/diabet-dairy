@@ -40,11 +40,11 @@ function Calendar(props: CalendarProps<DateValue>) {
 	} = useCalendar(props, state)
 	const { buttonProps: prevButtonProps } = useButton(
 		_prevButtonProps,
-		prevButtonRef
+		prevButtonRef,
 	)
 	const { buttonProps: nextButtonProps } = useButton(
 		_nextButtonProps,
-		nextButtonRef
+		nextButtonRef,
 	)
 
 	return (
@@ -55,7 +55,7 @@ function Calendar(props: CalendarProps<DateValue>) {
 					ref={prevButtonRef}
 					variant={'outline'}
 					className={cn(
-						'absolute left-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100'
+						'absolute left-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
 					)}
 				>
 					<ChevronLeftIcon className='h-4 w-4' />
@@ -66,7 +66,7 @@ function Calendar(props: CalendarProps<DateValue>) {
 					ref={nextButtonRef}
 					variant={'outline'}
 					className={cn(
-						'absolute right-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100'
+						'absolute right-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
 					)}
 				>
 					<ChevronRightIcon className='h-4 w-4' />
@@ -115,7 +115,7 @@ function CalendarGrid({ state, ...props }: CalendarGridProps) {
 									<CalendarCell key={i} state={state} date={date} />
 								) : (
 									<td key={i} />
-								)
+								),
 							)}
 					</tr>
 				))}
@@ -150,7 +150,7 @@ function CalendarCell({ state, date }: CalendarCellProps) {
 			{...cellProps}
 			className={cn(
 				cellProps.className,
-				'relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md'
+				'relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md',
 			)}
 		>
 			<Button
@@ -166,7 +166,7 @@ function CalendarCell({ state, date }: CalendarCellProps) {
 						? 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground'
 						: '',
 					isOutsideVisibleRange ? 'text-muted-foreground opacity-50' : '',
-					isDisabled ? 'text-muted-foreground opacity-50' : ''
+					isDisabled ? 'text-muted-foreground opacity-50' : '',
 				)}
 			>
 				{formattedDate}

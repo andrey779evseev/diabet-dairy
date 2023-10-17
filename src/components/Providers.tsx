@@ -5,15 +5,13 @@ import isBetween from 'dayjs/plugin/isBetween'
 import { SessionProvider } from 'next-auth/react'
 import { memo, PropsWithChildren } from 'react'
 import { ThemeProvider } from 'next-themes'
-import 'dayjs/locale/en-gb'
 
 dayjs.extend(isBetween)
-dayjs.locale('en-gb')
 
 function Providers(props: PropsWithChildren) {
 	const { children } = props
 	return (
-		<SessionProvider>
+		<SessionProvider refetchWhenOffline={false}>
 			<ThemeProvider
 				attribute='class'
 				defaultTheme='dark'

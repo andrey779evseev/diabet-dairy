@@ -3,7 +3,11 @@
 import { IDBPDatabase, openDB } from 'idb'
 import { useCallback, useEffect, useState } from 'react'
 import { ToastAction } from '@/components/ui/Toast'
-import { createRecords, deleteRecords } from '@/lib/api/record/mutations'
+import {
+	createRecords,
+	deleteRecords,
+	updateRecord,
+} from '@/lib/api/record/mutations'
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { toast } from '@/hooks/useToast'
 import { Record, RecordId } from '@/types/Record'
@@ -22,6 +26,9 @@ export default function DataSynchronizer() {
 						keyPath: 'id',
 					})
 					db.createObjectStore('addRecords', {
+						keyPath: 'id',
+					})
+					db.createObjectStore('updateRecords', {
 						keyPath: 'id',
 					})
 				},
@@ -87,20 +94,56 @@ export default function DataSynchronizer() {
 			})
 	}, [])
 
+	const clearUpdateRecords = async () => {
+		await iDB!.clear('updateRecords').catch((error) => {
+			console.error(error)
+		})
+	}
+
+	const updateRecords = useCallback(async (records: Record[]) => {
+		await Promise.allSettled(records.map((x) => updateRecord(x)))
+			.then(async () => {
+				await clearUpdateRecords()
+			})
+			.catch((error: string) => {
+				toast({
+					title: 'Error while updating records',
+					description:
+						'When updating an offline updated records on server, error happens: ' +
+						error,
+					variant: 'destructive',
+					action: (
+						<ToastAction
+							altText='Try again'
+							onClick={() => updateRecords(records)}
+						>
+							Try again
+						</ToastAction>
+					),
+				})
+			})
+	}, [])
+
 	useEffect(() => {
 		if (isOnline && initialized) {
 			;(async () => {
 				const deleteRecords = await iDB!.getAll('deleteRecords')
 				const addRecords = await iDB!.getAll('addRecords')
+				const updateRecords = await iDB!.getAll('updateRecords')
 				const recordsToSave = addRecords.filter(
-					(x) => !deleteRecords.some((y) => x.id === y.id)
+					(x) => !deleteRecords.some((y) => x.id === y.id),
 				)
 				const recordsToDelete = deleteRecords.filter(
-					(x) => !addRecords.some((y) => x.id === y.id)
+					(x) => !addRecords.some((y) => x.id === y.id),
+				)
+				const recordsToUpdate = deleteRecords.filter(
+					(x) => !deleteRecords.some((y) => x.id === y.id),
 				)
 				if (recordsToSave.length !== 0) await saveRecords(recordsToSave)
 				else await clearAddRecords()
 				if (recordsToDelete.length !== 0) await removeRecords(recordsToDelete)
+				else await clearDeleteRecords()
+				if (recordsToUpdate.length !== 0) await removeRecords(recordsToDelete)
 				else await clearDeleteRecords()
 			})()
 		}

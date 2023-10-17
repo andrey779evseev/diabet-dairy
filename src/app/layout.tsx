@@ -1,15 +1,9 @@
-import '@/styles/globals.css'
-import * as dayjs from 'dayjs'
-import isBetween from 'dayjs/plugin/isBetween'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import IndexedDBWrapper from '@/components/IndexedDBWrapper'
 import Providers from '@/components/Providers'
 import { Toaster } from '@/components/ui/Toaster'
-import 'dayjs/locale/en-gb'
-import IndexedDBWrapper from '@/components/IndexedDBWrapper'
-
-dayjs.extend(isBetween)
-dayjs.locale('en-gb')
+import '@/styles/globals.css'
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
 

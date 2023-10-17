@@ -9,7 +9,7 @@ export const getRecords = async () => {
 export const getRecordsByUserId = async (
 	userId: string,
 	offset: number,
-	limit: number
+	limit: number,
 ) => {
 	return await db.query.records.findMany({
 		where: eq(records.userId, userId),

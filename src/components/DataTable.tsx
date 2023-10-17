@@ -1,5 +1,6 @@
 'use client'
 
+import { LocalesAtom } from '@/state/atoms'
 import {
 	ColumnDef,
 	ColumnFiltersState,
@@ -9,6 +10,7 @@ import {
 	useReactTable,
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
+import { useAtomValue } from 'jotai/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ScrollArea } from '@/components/ui/ScrollArea'
 import {
@@ -48,12 +50,13 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 	})
 	const isMounted = useMounted()
 	const bottomAnchor = useRef(null)
+	const locales = useAtomValue(LocalesAtom)
 
 	const bottomAnchorCallback = useCallback(
 		async (entries: IntersectionObserverEntry[]) => {
 			if (fetchNext && entries[0].isIntersecting) await fetchNext()
 		},
-		[fetchNext]
+		[fetchNext],
 	)
 
 	useEffect(() => {
@@ -93,14 +96,25 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 				}
 			>
 				<SelectTrigger className='w-full !ring-0 !ring-transparent'>
-					<SelectValue placeholder='Select a type' />
+					<SelectValue placeholder={locales?.filters.type.placeholder} />
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
-						<SelectItem value='all'>All</SelectItem>
-						<SelectItem value='glucose'>Glucose</SelectItem>
-						<SelectItem value='insulin'>Insulin</SelectItem>
-						<SelectItem value='food'>Food</SelectItem>
+						<SelectItem value='all'>
+							{locales?.filters.type.options.all}
+						</SelectItem>
+						<SelectItem value='glucose'>
+							{locales?.filters.type.options.glucose}
+						</SelectItem>
+						<SelectItem value='insulin'>
+							{locales?.filters.type.options.insulin}
+						</SelectItem>
+						<SelectItem value='food'>
+							{locales?.filters.type.options.food}
+						</SelectItem>
+						<SelectItem value='activity'>
+							{locales?.filters.type.options.activity}
+						</SelectItem>
 					</SelectGroup>
 				</SelectContent>
 			</Select>
@@ -142,7 +156,7 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 												>
 													{flexRender(
 														cell.column.columnDef.cell,
-														cell.getContext()
+														cell.getContext(),
 													)}
 												</TableCell>
 											))}
@@ -152,7 +166,7 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 							) : (
 								<TableRow>
 									<TableCell className='w-screen text-center'>
-										No results.
+										{locales?.table.noResults}
 									</TableCell>
 								</TableRow>
 							)

@@ -1,6 +1,8 @@
 'use client'
 
+import { LocaleAtom, LocalesAtom } from '@/state/atoms'
 import dayjs from 'dayjs'
+import { useAtomValue } from 'jotai/react'
 import { CalendarIcon } from 'lucide-react'
 import { memo } from 'react'
 import { DateRange } from 'react-day-picker'
@@ -20,6 +22,8 @@ type PropsType = {
 
 function DateFilter(props: PropsType) {
 	const { date, setDate } = props
+	const locales = useAtomValue(LocalesAtom)
+	const locale = useAtomValue(LocaleAtom)
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
@@ -28,21 +32,21 @@ function DateFilter(props: PropsType) {
 					variant='outline'
 					className={cn(
 						'mb-2 w-full justify-start text-left font-normal',
-						!date && 'text-muted-foreground'
+						!date && 'text-muted-foreground',
 					)}
 				>
 					<CalendarIcon className='mr-2 h-4 w-4' />
 					{date?.from ? (
 						date.to ? (
 							<>
-								{dayjs(date.from).format('MMMM DD, YYYY')} -{' '}
-								{dayjs(date.to).format('MMMM DD, YYYY')}
+								{dayjs(date.from).locale(locale).format('MMMM DD, YYYY')} -{' '}
+								{dayjs(date.to).locale(locale).format('MMMM DD, YYYY')}
 							</>
 						) : (
-							dayjs(date.from).format('MMMM DD, YYYY')
+							dayjs(date.from).locale(locale).format('MMMM DD, YYYY')
 						)
 					) : (
-						<span>Pick a date</span>
+						<span>{locales?.filters.date.placeholder}</span>
 					)}
 				</Button>
 			</PopoverTrigger>

@@ -5,13 +5,14 @@ import {
 	selectRecordSchema,
 } from '@/lib/db/schema/record'
 
-const RecordTypeEnum = z.enum(['food', 'insulin', 'glucose'])
+const RecordTypeEnum = z.enum(['food', 'insulin', 'glucose', 'activity'])
 const RecordRelativeToFoodEnum = z.enum(['before', 'after', 'none'])
 
 const GlucoseSchema = z.object({
 	type: z.literal(RecordTypeEnum.enum.glucose),
 	glucose: z.number().nonnegative(),
 	relativeToFood: RecordRelativeToFoodEnum,
+	description: z.string().max(200).optional(),
 })
 
 const FoodSchema = z.object({
@@ -29,14 +30,21 @@ const InsulinSchema = z.object({
 		})
 		.refine(
 			(dose) => !!dose.actrapid || !!dose.protofan,
-			'Either actrapid or protofan should be filled in.'
+			'Either actrapid or protofan should be filled in.',
 		),
+	description: z.string().max(200).optional(),
+})
+
+const ActivitySchema = z.object({
+	type: z.literal(RecordTypeEnum.enum.activity),
+	description: z.string().min(5).max(200),
 })
 
 export const RecordDataSchema = z.discriminatedUnion('type', [
 	FoodSchema,
 	GlucoseSchema,
 	InsulinSchema,
+	ActivitySchema,
 ])
 
 export const RecordSchema = z.object({

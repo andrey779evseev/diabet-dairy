@@ -1,9 +1,10 @@
-module.exports = {
+// eslint-disable-next-line import/no-anonymous-default-export
+export default {
 	plugins: [
-		import('@ianvs/prettier-plugin-sort-imports'),
-		import('prettier-plugin-tailwindcss'),
+		'@ianvs/prettier-plugin-sort-imports',
+		'prettier-plugin-tailwindcss',
 	],
-	trailingComma: 'es5',
+	trailingComma: 'all',
 	tabWidth: 2,
 	semi: false,
 	singleQuote: true,
@@ -17,6 +18,7 @@ module.exports = {
 		'@/hooks/*',
 		'@/styles/*',
 		'@/types/*',
+		'@/localization/*',
 		'^[./]',
 	],
 	// importOrderBuiltinModulesToTop: true,

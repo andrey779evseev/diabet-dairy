@@ -55,7 +55,7 @@ const DateTimePicker = React.forwardRef<
 					ref={ref}
 					className={cn(
 						groupProps.className,
-						'flex items-center rounded-md ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2'
+						'flex items-center rounded-md ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
 					)}
 				>
 					<DateField {...fieldProps} />

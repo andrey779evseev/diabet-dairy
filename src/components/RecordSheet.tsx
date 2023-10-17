@@ -1,12 +1,14 @@
 'use client'
 
+import { LocalesAtom } from '@/state/atoms'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getLocalTimeZone, parseAbsolute } from '@internationalized/date'
 import { v4 } from 'uuid'
 import z from 'zod'
+import { useAtomValue } from 'jotai/react'
 import { Loader2, Plus } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FieldError, useForm } from 'react-hook-form'
 import { DateTimePicker } from '@/components/date-time-picker/DateTimePicker'
 import { iDB } from '@/components/IndexedDBWrapper'
@@ -37,7 +39,7 @@ import {
 	SheetTrigger,
 } from '@/components/ui/Sheet'
 import { Textarea } from '@/components/ui/Textarea'
-import { createRecord } from '@/lib/api/record/mutations'
+import { createRecord, updateRecord } from '@/lib/api/record/mutations'
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { toast } from '@/hooks/useToast'
 import { Record, RecordDataSchema } from '@/types/Record'
@@ -46,19 +48,36 @@ const FormSchema = z.intersection(
 	RecordDataSchema,
 	z.object({
 		time: z.date(),
-	})
+	}),
 )
 
 type PropsType = {
 	addRecord: (record: Record) => void
+	record?: Record
+	updateRecord: (record: Record) => void
+	cancelEdit: () => void
 }
 
-export default function AddRecord(props: PropsType) {
-	const { addRecord } = props
+export default function RecordSheet(props: PropsType) {
+	const {
+		addRecord,
+		record,
+		updateRecord: updateRecordInTable,
+		cancelEdit,
+	} = props
 	const { data: session } = useSession()
 	const [isOpen, setIsOpen] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const { isOnline } = useNetworkStatus()
+	const locales = useAtomValue(LocalesAtom)
+	const editRecord = useMemo(() => {
+		if (!record) return undefined
+		const { id: _id, userId: _userId, data, ...rest } = record
+		return {
+			...rest,
+			...data,
+		}
+	}, [record])
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -66,66 +85,119 @@ export default function AddRecord(props: PropsType) {
 			type: 'glucose',
 			relativeToFood: 'none',
 		},
+		values: editRecord,
 	})
 
 	const type = form.watch('type')
 
+	useEffect(() => {
+		if (record !== undefined) setIsOpen(true)
+	}, [record])
+
 	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
 		setIsLoading(true)
 		const { time, ...rest } = values
-		const record = {
-			id: v4(),
+		const newRecord = {
+			id: record?.id ?? v4(),
 			time: time,
-			userId: session!.user.id,
+			userId: record?.userId ?? session!.user.id,
 			data: rest,
 		}
-		if (isOnline) {
-			await createRecord(record)
-				.then(() => {
-					addRecord(record)
-					setIsOpen(false)
-					form.reset()
-				})
-				.catch((error: string) => {
-					toast({
-						title: 'Error while creating record',
-						description: error,
-						variant: 'destructive',
+		if (editRecord !== undefined) {
+			if (isOnline) {
+				await updateRecord(newRecord)
+					.then(() => {
+						updateRecordInTable(newRecord)
+						setIsOpen(false)
+						form.reset()
 					})
-				})
-				.finally(() => {
-					setIsLoading(false)
-				})
+					.catch((error: string) => {
+						toast({
+							title: locales?.toast.update.online.error.title,
+							description: error,
+							variant: 'destructive',
+						})
+					})
+					.finally(() => {
+						setIsLoading(false)
+					})
+			} else {
+				await iDB!
+					.add('updateRecords', newRecord)
+					.then(() => {
+						updateRecordInTable(newRecord)
+						setIsOpen(false)
+						form.reset()
+						toast({
+							title: locales?.toast.update.online.info.title,
+							description: locales?.toast.update.online.info.description,
+							variant: 'default',
+						})
+					})
+					.catch((error: string) => {
+						toast({
+							title: locales?.toast.update.online.error.title,
+							description: error,
+							variant: 'destructive',
+						})
+					})
+					.finally(() => {
+						setIsLoading(false)
+					})
+			}
 		} else {
-			await iDB!
-				.add('addRecords', record)
-				.then(() => {
-					addRecord(record)
-					setIsOpen(false)
-					form.reset()
-					toast({
-						title: 'Info about record',
-						description:
-							'Because site is currently in offline mode, record was added only locally, it will be saved on the servers when internet connection will be established.',
-						variant: 'default',
+			if (isOnline) {
+				await createRecord(newRecord)
+					.then(() => {
+						addRecord(newRecord)
+						setIsOpen(false)
+						form.reset()
 					})
-				})
-				.catch((error: string) => {
-					toast({
-						title: 'Error while creating record',
-						description: error,
-						variant: 'destructive',
+					.catch((error: string) => {
+						toast({
+							title: locales?.toast.create.online.error.title,
+							description: error,
+							variant: 'destructive',
+						})
 					})
-				})
-				.finally(() => {
-					setIsLoading(false)
-				})
+					.finally(() => {
+						setIsLoading(false)
+					})
+			} else {
+				await iDB!
+					.add('addRecords', newRecord)
+					.then(() => {
+						addRecord(newRecord)
+						setIsOpen(false)
+						form.reset()
+						toast({
+							title: locales?.toast.create.online.info.title,
+							description: locales?.toast.create.online.info.description,
+							variant: 'default',
+						})
+					})
+					.catch((error: string) => {
+						toast({
+							title: locales?.toast.create.online.error.title,
+							description: error,
+							variant: 'destructive',
+						})
+					})
+					.finally(() => {
+						setIsLoading(false)
+					})
+			}
 		}
+	}
+
+	const onOpenChange = (value: boolean) => {
+		setIsOpen(value)
+		if (!value) cancelEdit()
 	}
 
 	return (
 		<>
-			<Sheet open={isOpen} onOpenChange={setIsOpen}>
+			<Sheet open={isOpen} onOpenChange={onOpenChange}>
 				<SheetTrigger asChild>
 					<Button
 						size='icon'
@@ -137,11 +209,8 @@ export default function AddRecord(props: PropsType) {
 				</SheetTrigger>
 				<SheetContent side='bottom'>
 					<SheetHeader>
-						<SheetTitle>Create record</SheetTitle>
-						<SheetDescription>
-							Create a comprehensive record form to track insulin intake, food
-							consumption, and glucose levels for effective health monitoring.
-						</SheetDescription>
+						<SheetTitle>{locales?.sheet.title}</SheetTitle>
+						<SheetDescription>{locales?.sheet.description}</SheetDescription>
 					</SheetHeader>
 					<Form {...form}>
 						<form
@@ -153,21 +222,32 @@ export default function AddRecord(props: PropsType) {
 								name='type'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Type</FormLabel>
+										<FormLabel>{locales?.sheet.form.type.label}</FormLabel>
 										<Select
 											defaultValue={field.value}
 											onValueChange={field.onChange}
 										>
 											<FormControl>
 												<SelectTrigger className='w-full'>
-													<SelectValue placeholder='Select a type' />
+													<SelectValue
+														placeholder={locales?.sheet.form.type.placeholder}
+													/>
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
 												<SelectGroup>
-													<SelectItem value='glucose'>Glucose</SelectItem>
-													<SelectItem value='insulin'>Insulin</SelectItem>
-													<SelectItem value='food'>Food</SelectItem>
+													<SelectItem value='glucose'>
+														{locales?.sheet.form.type.options.glucose}
+													</SelectItem>
+													<SelectItem value='insulin'>
+														{locales?.sheet.form.type.options.insulin}
+													</SelectItem>
+													<SelectItem value='food'>
+														{locales?.sheet.form.type.options.food}
+													</SelectItem>
+													<SelectItem value='activity'>
+														{locales?.sheet.form.type.options.activity}
+													</SelectItem>
 												</SelectGroup>
 											</SelectContent>
 										</Select>
@@ -180,7 +260,9 @@ export default function AddRecord(props: PropsType) {
 								name='time'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel htmlFor='time'>Time</FormLabel>
+										<FormLabel htmlFor='time'>
+											{locales?.sheet.form.time.label}
+										</FormLabel>
 										<FormControl>
 											<DateTimePicker
 												granularity='minute'
@@ -188,13 +270,13 @@ export default function AddRecord(props: PropsType) {
 													!!field.value
 														? parseAbsolute(
 																field.value.toISOString(),
-																getLocalTimeZone()
+																getLocalTimeZone(),
 														  )
 														: null
 												}
 												onChange={(date) => {
 													field.onChange(
-														!!date ? date.toDate(getLocalTimeZone()) : null
+														!!date ? date.toDate(getLocalTimeZone()) : null,
 													)
 												}}
 												hideTimeZone
@@ -210,21 +292,36 @@ export default function AddRecord(props: PropsType) {
 									name='relativeToFood'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Relative to food</FormLabel>
+											<FormLabel>
+												{locales?.sheet.form.relativeToFood.label}
+											</FormLabel>
 											<Select
 												value={field.value}
 												onValueChange={field.onChange}
 											>
 												<FormControl>
 													<SelectTrigger className='w-full'>
-														<SelectValue placeholder='Choose a time' />
+														<SelectValue
+															placeholder={
+																locales?.sheet.form.relativeToFood.placeholder
+															}
+														/>
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
 													<SelectGroup>
-														<SelectItem value='before'>Before food</SelectItem>
-														<SelectItem value='after'>After food</SelectItem>
-														<SelectItem value='none'>None</SelectItem>
+														<SelectItem value='before'>
+															{
+																locales?.sheet.form.relativeToFood.options
+																	.before
+															}
+														</SelectItem>
+														<SelectItem value='after'>
+															{locales?.sheet.form.relativeToFood.options.after}
+														</SelectItem>
+														<SelectItem value='none'>
+															{locales?.sheet.form.relativeToFood.options.none}
+														</SelectItem>
 													</SelectGroup>
 												</SelectContent>
 											</Select>
@@ -239,33 +336,17 @@ export default function AddRecord(props: PropsType) {
 									name='glucose'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Glucose</FormLabel>
+											<FormLabel>{locales?.sheet.form.glucose.label}</FormLabel>
 											<FormControl>
 												<Input
-													placeholder='Enter glucose index'
+													placeholder={
+														locales?.sheet.form.relativeToFood.placeholder
+													}
 													type='number'
 													{...field}
 													onChange={(e) =>
 														field.onChange(parseFloat(e.target.value))
 													}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							) : null}
-							{type === 'food' ? (
-								<FormField
-									control={form.control}
-									name='description'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Description</FormLabel>
-											<FormControl>
-												<Textarea
-													placeholder='Enter description food in details'
-													{...field}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -280,11 +361,15 @@ export default function AddRecord(props: PropsType) {
 										name='dose.actrapid'
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Actrapid</FormLabel>
+												<FormLabel>
+													{locales?.sheet.form.actrapid.label}
+												</FormLabel>
 												<FormControl>
 													<Input
 														type='number'
-														placeholder='Enter actrapid dose'
+														placeholder={
+															locales?.sheet.form.actrapid.placeholder
+														}
 														{...field}
 														onChange={(e) =>
 															field.onChange(parseInt(e.target.value))
@@ -312,10 +397,14 @@ export default function AddRecord(props: PropsType) {
 										name='dose.protofan'
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Protofan</FormLabel>
+												<FormLabel>
+													{locales?.sheet.form.protofan.label}
+												</FormLabel>
 												<FormControl>
 													<Input
-														placeholder='Enter protofan dose'
+														placeholder={
+															locales?.sheet.form.protofan.placeholder
+														}
 														type='number'
 														{...field}
 														onChange={(e) =>
@@ -341,8 +430,34 @@ export default function AddRecord(props: PropsType) {
 									/>
 								</>
 							) : null}
+							<FormField
+								control={form.control}
+								name='description'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>
+											{locales?.sheet.form.description.label}
+										</FormLabel>
+										<FormControl>
+											<Textarea
+												placeholder={
+													locales?.sheet.form.description.placeholder
+												}
+												{...field}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 							<Button type='submit' className='w-full'>
-								{isLoading ? <Loader2 className='animate-spin' /> : 'Create'}
+								{isLoading ? (
+									<Loader2 className='animate-spin' />
+								) : record !== undefined ? (
+									locales?.sheet.form.actions.update
+								) : (
+									locales?.sheet.form.actions.create
+								)}
 							</Button>
 						</form>
 					</Form>

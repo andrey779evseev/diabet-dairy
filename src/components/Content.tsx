@@ -1,14 +1,16 @@
 'use client'
 
+import { LocalesAtom } from '@/state/atoms'
 import dayjs from 'dayjs'
 import { ColumnDef } from '@tanstack/react-table'
-import { Loader2, Trash } from 'lucide-react'
+import { useAtomValue } from 'jotai/react'
+import { Loader2, MoreHorizontal, Pencil, Trash } from 'lucide-react'
 import { memo, useCallback, useMemo, useState } from 'react'
 import { DateRange } from 'react-day-picker'
-import AddRecord from '@/components/AddRecord'
 import { DataTable } from '@/components/DataTable'
 import DateFilter from '@/components/DateFilter'
 import { iDB } from '@/components/IndexedDBWrapper'
+import RecordSheet from '@/components/RecordSheet'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -20,6 +22,13 @@ import {
 	AlertDialogTitle,
 } from '@/components/ui/AlertDialog'
 import { Button } from '@/components/ui/Button'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenu'
 import { deleteRecord } from '@/lib/api/record/mutations'
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { toast } from '@/hooks/useToast'
@@ -45,6 +54,8 @@ function Content(props: PropsType) {
 	const [combinedRecords, setCombinedRecords] = useState(recordsBase)
 	const [deletingRecordId, setDeletingRecordId] = useState<string | null>(null)
 	const [isOpenDeleteAlert, setIsOpenDeleteAlert] = useState(false)
+	const [editRecord, setEditRecord] = useState<Record | undefined>(undefined)
+	const locales = useAtomValue(LocalesAtom)
 
 	const records = useMemo(() => {
 		return combinedRecords.filter(
@@ -58,7 +69,7 @@ function Content(props: PropsType) {
 						dayjs(x.time).isSame(date.to, 'day')) ||
 					(date.from !== undefined &&
 						date.to !== undefined &&
-						dayjs(x.time).isBetween(date.from, date.to, 'day', '[]')))
+						dayjs(x.time).isBetween(date.from, date.to, 'day', '[]'))),
 		)
 	}, [combinedRecords, date])
 
@@ -71,8 +82,8 @@ function Content(props: PropsType) {
 		(id: RecordId) => {
 			if (deletingRecordId !== null) {
 				toast({
-					title: 'Delete error',
-					description: "You can't delete two records at the same time.",
+					title: locales?.toast.delete.online.error.title,
+					description: locales?.toast.delete.online.error.description,
 					variant: 'destructive',
 				})
 				return
@@ -80,7 +91,15 @@ function Content(props: PropsType) {
 			setIsOpenDeleteAlert(true)
 			setDeletingRecordId(id)
 		},
-		[deletingRecordId]
+		[deletingRecordId, locales],
+	)
+
+	const prepareForEditRecord = useCallback(
+		(id: RecordId) => {
+			const record = records.find((x) => x.id === id)!
+			setEditRecord(record)
+		},
+		[records, setEditRecord],
 	)
 
 	const cancelRemoveRecord = () => {
@@ -93,12 +112,12 @@ function Content(props: PropsType) {
 			await deleteRecord(deletingRecordId!)
 				.then(() => {
 					setCombinedRecords((prev) =>
-						prev.filter((x) => x.id !== deletingRecordId)
+						prev.filter((x) => x.id !== deletingRecordId),
 					)
 				})
 				.catch((error: string) => {
 					toast({
-						title: 'Delete error',
+						title: locales?.toast.delete.online.error.title,
 						description: error,
 						variant: 'destructive',
 					})
@@ -113,18 +132,17 @@ function Content(props: PropsType) {
 				})
 				.then(() => {
 					setCombinedRecords((prev) =>
-						prev.filter((x) => x.id !== deletingRecordId)
+						prev.filter((x) => x.id !== deletingRecordId),
 					)
 					toast({
-						title: 'Info about record',
-						description:
-							'Because site is currently in offline mode, record was deleted only locally, it will be deleted from servers on internet connection.',
+						title: locales?.toast.delete.online.info.title,
+						description: locales?.toast.delete.online.info.description,
 						variant: 'default',
 					})
 				})
 				.catch((error: string) => {
 					toast({
-						title: 'Delete error',
+						title: locales?.toast.delete.online.error.title,
 						description: error,
 						variant: 'destructive',
 					})
@@ -133,7 +151,7 @@ function Content(props: PropsType) {
 					setDeletingRecordId(null)
 				})
 		}
-	}, [setCombinedRecords, deletingRecordId, isOnline])
+	}, [setCombinedRecords, deletingRecordId, isOnline, locales])
 
 	const columns: ColumnDef<Record>[] = useMemo(
 		() => [
@@ -152,7 +170,6 @@ function Content(props: PropsType) {
 						</div>
 					)
 				},
-				header: 'Time',
 			},
 			{
 				id: 'data',
@@ -162,11 +179,13 @@ function Content(props: PropsType) {
 					return (
 						<div className='flex w-full flex-col gap-1'>
 							<span className='text-base'>
-								{data.type.charAt(0).toUpperCase() + data.type.slice(1)}
+								{locales?.table.data.type[data.type]}
 								{(data.type === 'glucose' || data.type === 'insulin') &&
 								data.relativeToFood !== undefined &&
 								data.relativeToFood !== 'none'
-									? ` ${data.relativeToFood} Food`
+									? ` ${locales?.table.data.relativeToFood[
+											data.relativeToFood
+									  ]} ${locales?.table.data.type.food}`
 									: null}
 							</span>
 							<span className='text-sm text-zinc-400'>
@@ -174,18 +193,20 @@ function Content(props: PropsType) {
 									? data.description
 									: null}
 								{data.type === 'glucose' && data.glucose !== undefined
-									? `${data.glucose} mmol/L`
+									? `${data.glucose} ${locales?.table.data.insulin.units}`
 									: null}
 								{data.type === 'insulin'
 									? `${
 											data.dose.actrapid !== undefined
-												? `Actrapid: ${data.dose.actrapid}`
+												? `${locales?.table.data.insulin.actrapid}: ${data.dose.actrapid}`
 												: ''
 									  }${
 											data.dose.protofan !== undefined
 												? `${
 														data.dose.actrapid !== undefined ? ', ' : ''
-												  }Protofan: ${data.dose.protofan}`
+												  }${locales?.table.data.insulin.protofan}: ${
+														data.dose.protofan
+												  }`
 												: ''
 									  }`
 									: null}
@@ -205,27 +226,58 @@ function Content(props: PropsType) {
 				cell: ({ row }) => {
 					const id = row.original.id
 					return (
-						<Button
-							variant='ghost'
-							size='icon'
-							onClick={() => prepareForRemoveRecord(id)}
-						>
-							{deletingRecordId === id && !isOpenDeleteAlert ? (
-								<Loader2 className='animate-spin' />
-							) : (
-								<Trash />
-							)}
-						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant='ghost' size='icon'>
+									<MoreHorizontal />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className='w-56' align='end'>
+								<DropdownMenuItem
+									onClick={() => prepareForEditRecord(id)}
+									className='flex items-center gap-2'
+								>
+									<Pencil className='h-4 w-4' />
+									<span>{locales?.table.actions.edit}</span>
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem
+									onClick={() => prepareForRemoveRecord(id)}
+									className='flex items-center gap-2'
+								>
+									{deletingRecordId === id && !isOpenDeleteAlert ? (
+										<Loader2 className='h-4 w-4 animate-spin' />
+									) : (
+										<Trash className='h-4 w-4' />
+									)}
+									<span>{locales?.table.actions.delete}</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					)
 				},
 			},
 		],
-		[prepareForRemoveRecord, isOpenDeleteAlert, deletingRecordId]
+		[
+			prepareForRemoveRecord,
+			prepareForEditRecord,
+			isOpenDeleteAlert,
+			deletingRecordId,
+			locales,
+		],
 	)
 
 	const addRecord = (record: Record) => {
 		setCombinedRecords((prev) =>
-			[record, ...prev].toSorted((a, b) => b.time.getTime() - a.time.getTime())
+			[record, ...prev].toSorted((a, b) => b.time.getTime() - a.time.getTime()),
+		)
+	}
+
+	const updateRecord = (record: Record) => {
+		setCombinedRecords((prev) =>
+			[record, ...prev.filter((x) => x.id !== record.id)].toSorted(
+				(a, b) => b.time.getTime() - a.time.getTime(),
+			),
 		)
 	}
 
@@ -240,22 +292,26 @@ function Content(props: PropsType) {
 					showObserver={combinedRecords.length < recordsCount}
 				/>
 			</div>
-			<AddRecord addRecord={addRecord} />
+			<RecordSheet
+				addRecord={addRecord}
+				record={editRecord}
+				updateRecord={updateRecord}
+				cancelEdit={() => setEditRecord(undefined)}
+			/>
 			<AlertDialog open={isOpenDeleteAlert} onOpenChange={setIsOpenDeleteAlert}>
 				<AlertDialogContent className='w-[90%]'>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+						<AlertDialogTitle>{locales?.alerts.delete.title}</AlertDialogTitle>
 						<AlertDialogDescription>
-							This action cannot be undone. This will permanently delete your
-							record and remove this data from our servers.
+							{locales?.alerts.delete.description}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel onClick={() => cancelRemoveRecord()}>
-							Cancel
+							{locales?.alerts.delete.actions.cancel}
 						</AlertDialogCancel>
 						<AlertDialogAction onClick={() => removeRecord()}>
-							Continue
+							{locales?.alerts.delete.actions.continue}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

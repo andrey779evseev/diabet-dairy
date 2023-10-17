@@ -50,3 +50,14 @@ export async function deleteRecords(ids: RecordId[]) {
 		return message
 	}
 }
+
+export async function updateRecord(record: NewRecord) {
+	try {
+		const { id, ...newRecord } = insertRecordSchema.parse(record)
+		await db.update(records).set(newRecord).where(eq(records.id, id!))
+	} catch (err) {
+		const message = (err as Error).message ?? 'Error, please try again'
+		console.error(message)
+		return message
+	}
+}

@@ -1,0 +1,164 @@
+{
+	"toast": {
+		"delete": {
+			"online": {
+				"error": {
+					"title": "Delete error",
+					"description": "You can't delete two records at the same time."
+				},
+				"info": {
+					"title": "Info about record",
+					"description": "Because site is currently in offline mode, record was deleted only locally, it will be deleted from servers on internet connection."
+				}
+			},
+			"offline": {
+				"error": {
+					"title": "Error while deleting records",
+					"description": "When deleting an offline deleted records from server, error happens: "
+				}
+			}
+		},
+		"update": {
+			"online": {
+				"error": {
+					"title": "Error while updating record"
+				},
+				"info": {
+					"title": "Info about record",
+					"description": "Because site is currently in offline mode, record was updated only locally, it will be updated on the servers when internet connection will be established."
+				}
+			},
+			"offline": {
+				"error": {
+					"title": "Error while updating records",
+					"description": "When updating an offline updated records on server, error happens: "
+				}
+			}
+		},
+		"create": {
+			"online": {
+				"error": {
+					"title": "Error while creating record"
+				},
+				"info": {
+					"title": "Info about record",
+					"description": "Because site is currently in offline mode, record was added only locally, it will be saved on the servers when internet connection will be established."
+				}
+			},
+			"offline": {
+				"error": {
+					"title": "Error while saving records",
+					"description": "When saving a records from offline mode to server, error happens: "
+				}
+			}
+		}
+	},
+	"table": {
+		"data": {
+			"type": {
+				"glucose": "Glucose",
+				"insulin": "Insulin",
+				"food": "Food",
+				"activity": "Activity"
+			},
+			"relativeToFood": {
+				"after": "after",
+				"before": "before"
+			},
+			"insulin": {
+				"units": "mmol/L",
+				"actrapid": "Actrapid",
+				"protofan": "Protofan"
+			}
+		},
+		"noResults": "No results.",
+		"actions": {
+			"edit": "Edit",
+			"delete": "Delete"
+		}
+	},
+	"filters": {
+		"date": {
+			"placeholder": "Pick a date"
+		},
+		"type": {
+			"placeholder": "Select a type",
+			"options": {
+				"all": "All",
+				"glucose": "Glucose",
+				"insulin": "Insulin",
+				"food": "Food",
+				"activity": "Activity"
+			}
+		}
+	},
+	"sheet": {
+		"title": "Create record",
+		"description": "Create a comprehensive record form to track insulin intake, food consumption, and glucose levels for effective health monitoring.",
+		"form": {
+			"type": {
+				"label": "Type",
+				"options": {
+					"glucose": "Glucose",
+					"insulin": "Insulin",
+					"food": "Food",
+					"activity": "Activity"
+				},
+				"placeholder": "Select a type"
+			},
+			"time": {
+				"label": "Time"
+			},
+			"relativeToFood": {
+				"label": "Relative to food",
+				"options": {
+					"before": "Before food",
+					"after": "After food",
+					"none": "None"
+				},
+				"placeholder": "Choose a time relative to food"
+			},
+			"glucose": {
+				"label": "Glucose",
+				"placeholder": "Enter glucose index"
+			},
+			"actrapid": {
+				"label": "Actrapid",
+				"placeholder": "Enter actrapid dose"
+			},
+			"protofan": {
+				"label": "Protofan",
+				"placeholder": "Enter protofan dose"
+			},
+			"description": {
+				"label": "Description",
+				"placeholder": "Enter description"
+			},
+			"actions": {
+				"update": "Update",
+				"create": "Create"
+			}
+		}
+	},
+	"alerts": {
+		"delete": {
+			"title": "Are you absolutely sure?",
+			"description": "This action cannot be undone. This will permanently delete your record and remove this data from our servers.",
+			"actions": {
+				"cancel": "Cancel",
+				"continue": "Continue"
+			}
+		}
+	},
+	"header": {
+		"dropdown": {
+			"languages": {
+				"label": "Language",
+				"english": "English",
+				"russian": "Russian"
+			},
+			"support": "Support",
+			"logout": "Log out"
+		}
+	}
+}
