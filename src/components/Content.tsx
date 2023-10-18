@@ -188,29 +188,26 @@ function Content(props: PropsType) {
 									  ]} ${locales?.table.data.type.food}`
 									: null}
 							</span>
-							<span className='text-sm text-zinc-400'>
-								{data.type === 'food' && data.description !== undefined
-									? data.description
-									: null}
-								{data.type === 'glucose' && data.glucose !== undefined
-									? `${data.glucose} ${locales?.table.data.insulin.units}`
-									: null}
-								{data.type === 'insulin'
-									? `${
-											data.dose.actrapid !== undefined
-												? `${locales?.table.data.insulin.actrapid}: ${data.dose.actrapid}`
-												: ''
-									  }${
-											data.dose.protofan !== undefined
-												? `${
-														data.dose.actrapid !== undefined ? ', ' : ''
-												  }${locales?.table.data.insulin.protofan}: ${
-														data.dose.protofan
-												  }`
-												: ''
-									  }`
-									: null}
-							</span>
+
+							{data.type === 'glucose' && data.glucose !== undefined ? (
+								<span className='text-sm text-zinc-400'>{`${data.glucose} ${locales?.table.data.insulin.units}`}</span>
+							) : null}
+							{data.type === 'insulin' ? (
+								<span className='text-sm text-zinc-400'>
+									{data.dose.actrapid !== undefined
+										? `${locales?.table.data.insulin.actrapid}: ${data.dose.actrapid}`
+										: ''}
+									{data.dose.protofan !== undefined
+										? `${data.dose.actrapid !== undefined ? ', ' : ''}${locales
+												?.table.data.insulin.protofan}: ${data.dose.protofan}`
+										: ''}
+								</span>
+							) : null}
+							{data.description !== undefined ? (
+								<span className='text-sm text-zinc-400'>
+									{data.description}
+								</span>
+							) : null}
 						</div>
 					)
 				},
