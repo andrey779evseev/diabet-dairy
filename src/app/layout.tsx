@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'] })
 const APP_NAME = 'Diabet Dairy'
 const APP_DEFAULT_TITLE = 'Diabet Dairy'
 const APP_TITLE_TEMPLATE = '%s | Diabet dairy'
-const APP_DESCRIPTION = 'Dairy for diebetics'
+const APP_DESCRIPTION = 'Your All-in-One Diabetes Management Solution. Take control of your health with our user-friendly platform for tracking insulin, glucose levels, food intake, and activity. Empower your diabetes management journey today.'
 
 export const metadata: Metadata = {
 	applicationName: APP_NAME,
@@ -38,14 +38,18 @@ export const metadata: Metadata = {
 			template: APP_TITLE_TEMPLATE,
 		},
 		description: APP_DESCRIPTION,
+    url: 'https://diabet-dairy.vercel.app',
+    images: '/assets/og.png'
 	},
 	twitter: {
-		card: 'summary',
+		card: 'summary_large_image',
 		title: {
 			default: APP_DEFAULT_TITLE,
 			template: APP_TITLE_TEMPLATE,
 		},
 		description: APP_DESCRIPTION,
+    site: 'https://diabet-dairy.vercel.app',
+    images: '/assets/og.png'
 	},
 }
 
