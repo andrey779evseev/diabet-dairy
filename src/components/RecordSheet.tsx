@@ -280,6 +280,7 @@ export default function RecordSheet(props: PropsType) {
 													)
 												}}
 												hideTimeZone
+                        hourCycle={24}
 											/>
 										</FormControl>
 										<FormMessage />
