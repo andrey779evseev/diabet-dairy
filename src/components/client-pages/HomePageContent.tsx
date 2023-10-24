@@ -1,9 +1,8 @@
 'use client'
 
-import { LocalesAtom } from '@/state/atoms'
+import { useLocales } from '@/state/atoms'
 import dayjs from 'dayjs'
 import { ColumnDef } from '@tanstack/react-table'
-import { useAtomValue } from 'jotai/react'
 import { Loader2, MoreHorizontal, Pencil, Trash } from 'lucide-react'
 import { memo, useCallback, useMemo, useState } from 'react'
 import { DateRange } from 'react-day-picker'
@@ -40,7 +39,7 @@ type PropsType = {
 	fetchRecords: (offset: number, limit?: number) => Promise<Record[]>
 }
 
-function Content(props: PropsType) {
+function HomePageContent(props: PropsType) {
 	const { records: recordsBase, fetchRecords, recordsCount } = props
 	const [date, setDate] = useState<DateRange | undefined>(() => {
 		const now = new Date()
@@ -55,7 +54,7 @@ function Content(props: PropsType) {
 	const [deletingRecordId, setDeletingRecordId] = useState<string | null>(null)
 	const [isOpenDeleteAlert, setIsOpenDeleteAlert] = useState(false)
 	const [editRecord, setEditRecord] = useState<Record | undefined>(undefined)
-	const locales = useAtomValue(LocalesAtom)
+	const locales = useLocales()
 
 	const records = useMemo(() => {
 		return combinedRecords.filter(
@@ -190,7 +189,7 @@ function Content(props: PropsType) {
 							</span>
 
 							{data.type === 'glucose' && data.glucose !== undefined ? (
-								<span className='text-sm text-zinc-400'>{`${data.glucose} ${locales?.table.data.insulin.units}`}</span>
+								<span className='text-sm text-zinc-400'>{`${data.glucose} ${locales?.units.glucose}`}</span>
 							) : null}
 							{data.type === 'insulin' ? (
 								<span className='text-sm text-zinc-400'>
@@ -281,7 +280,7 @@ function Content(props: PropsType) {
 	return (
 		<>
 			<DateFilter date={date} setDate={setDate} />
-			<div className='h-[calc(100vh-160px)]'>
+			<div className='mt-2 h-[calc(100vh-160px)]'>
 				<DataTable
 					columns={columns}
 					data={records}
@@ -317,4 +316,4 @@ function Content(props: PropsType) {
 	)
 }
 
-export default memo(Content)
+export default memo(HomePageContent)

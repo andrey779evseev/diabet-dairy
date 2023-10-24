@@ -66,7 +66,6 @@
 				"before": "до еды"
 			},
 			"insulin": {
-				"units": "ммол/Л",
 				"actrapid": "Актрапид",
 				"protofan": "Протофан"
 			}
@@ -79,7 +78,18 @@
 	},
 	"filters": {
 		"date": {
-			"placeholder": "Выбирите дату"
+			"placeholder": "Выбирите дату",
+			"select": {
+				"placeholder": "Выбирите даты",
+				"options": {
+					"today": "Сегодня",
+					"yesterday": "Вчера",
+					"last3Days": "Последние 3 дня",
+					"lastWeek": "Последняя неделя",
+					"last2Weeks": "Последние две недели",
+					"lastMonth": "Последний месяц"
+				}
+			}
 		},
 		"type": {
 			"placeholder": "Выбирите тип",
@@ -157,8 +167,15 @@
 				"english": "Английский",
 				"russian": "Русский"
 			},
+			"graphs": "Графики",
 			"support": "Поддержка",
 			"logout": "Выйти"
 		}
+	},
+	"units": {
+		"glucose": "ммол/Л"
+	},
+	"graphs": {
+		"title": "Graphs"
 	}
 }

@@ -1,11 +1,10 @@
 'use client'
 
-import { LocalesAtom } from '@/state/atoms'
+import { useLocales } from '@/state/atoms'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getLocalTimeZone, parseAbsolute } from '@internationalized/date'
 import { v4 } from 'uuid'
 import z from 'zod'
-import { useAtomValue } from 'jotai/react'
 import { Loader2, Plus } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useEffect, useMemo, useState } from 'react'
@@ -69,7 +68,7 @@ export default function RecordSheet(props: PropsType) {
 	const [isOpen, setIsOpen] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const { isOnline } = useNetworkStatus()
-	const locales = useAtomValue(LocalesAtom)
+	const locales = useLocales()
 	const editRecord = useMemo(() => {
 		if (!record) return undefined
 		const { id: _id, userId: _userId, data, ...rest } = record
@@ -280,7 +279,7 @@ export default function RecordSheet(props: PropsType) {
 													)
 												}}
 												hideTimeZone
-                        hourCycle={24}
+												hourCycle={24}
 											/>
 										</FormControl>
 										<FormMessage />

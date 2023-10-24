@@ -1,6 +1,4 @@
-import Content from '@/components/Content'
-import Header from '@/components/Header'
-import LocaleProvider from '@/components/LocaleProvider'
+import HomePageContent from '@/components/client-pages/HomePageContent'
 import {
 	getRecordsByUserId,
 	getRecordsCountByUserId,
@@ -20,15 +18,10 @@ export default async function Home() {
 	const recordsCount = await getRecordsCountByUserId(user.id)
 
 	return (
-		<LocaleProvider>
-			<main className='p-2'>
-				<Header />
-				<Content
-					records={records}
-					fetchRecords={fetchRecords}
-					recordsCount={recordsCount}
-				/>
-			</main>
-		</LocaleProvider>
+		<HomePageContent
+			records={records}
+			fetchRecords={fetchRecords}
+			recordsCount={recordsCount}
+		/>
 	)
 }

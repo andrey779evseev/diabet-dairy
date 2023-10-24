@@ -66,7 +66,6 @@
 				"before": "before"
 			},
 			"insulin": {
-				"units": "mmol/L",
 				"actrapid": "Actrapid",
 				"protofan": "Protofan"
 			}
@@ -79,7 +78,18 @@
 	},
 	"filters": {
 		"date": {
-			"placeholder": "Pick a date"
+			"placeholder": "Pick a date",
+			"select": {
+				"placeholder": "Choose dates",
+				"options": {
+					"today": "Today",
+					"yesterday": "Yesterday",
+					"last3Days": "Last 3 days",
+					"lastWeek": "Last week",
+					"last2Weeks": "Last two weeks",
+					"lastMonth": "Last month"
+				}
+			}
 		},
 		"type": {
 			"placeholder": "Select a type",
@@ -157,8 +167,15 @@
 				"english": "English",
 				"russian": "Russian"
 			},
+			"graphs": "Graphs",
 			"support": "Support",
 			"logout": "Log out"
 		}
+	},
+	"units": {
+		"glucose": "mmol/L"
+	},
+	"graphs": {
+		"title": "Graphs"
 	}
 }

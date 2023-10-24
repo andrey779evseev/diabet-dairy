@@ -1,11 +1,11 @@
 'use client'
 
-import { LocaleAtom, LocalesAtom } from '@/state/atoms'
+import { LocalesAtom, useLocale } from '@/state/atoms'
 import { I18nProvider } from '@react-aria/i18n'
 import { getLocales } from '@/localization/locales'
 import 'dayjs/locale/en'
 import 'dayjs/locale/ru'
-import { Provider, useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { memo, PropsWithChildren, useEffect } from 'react'
 
 type PropsType = PropsWithChildren
@@ -13,7 +13,7 @@ type PropsType = PropsWithChildren
 function LocaleProvider(props: PropsType) {
 	const { children } = props
 	const setLocales = useSetAtom(LocalesAtom)
-	const locale = useAtomValue(LocaleAtom)
+	const locale = useLocale()
 
 	useEffect(() => {
 		;(async () => {
@@ -22,11 +22,7 @@ function LocaleProvider(props: PropsType) {
 		})()
 	}, [locale, setLocales])
 
-	return (
-		<Provider>
-			<I18nProvider locale={locale}>{children}</I18nProvider>
-		</Provider>
-	)
+	return <I18nProvider locale={locale}>{children}</I18nProvider>
 }
 
 export default memo(LocaleProvider)

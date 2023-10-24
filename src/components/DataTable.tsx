@@ -1,6 +1,6 @@
 'use client'
 
-import { LocalesAtom } from '@/state/atoms'
+import { useLocales } from '@/state/atoms'
 import {
 	ColumnDef,
 	ColumnFiltersState,
@@ -10,7 +10,6 @@ import {
 	useReactTable,
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { useAtomValue } from 'jotai/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ScrollArea } from '@/components/ui/ScrollArea'
 import {
@@ -50,7 +49,7 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 	})
 	const isMounted = useMounted()
 	const bottomAnchor = useRef(null)
-	const locales = useAtomValue(LocalesAtom)
+	const locales = useLocales()
 
 	const bottomAnchorCallback = useCallback(
 		async (entries: IntersectionObserverEntry[]) => {

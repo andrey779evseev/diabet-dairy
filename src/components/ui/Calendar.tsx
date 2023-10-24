@@ -1,8 +1,7 @@
 'use client'
 
-import { LocaleAtom } from '@/state/atoms'
+import { useLocale } from '@/state/atoms'
 import { enUS, ru } from 'date-fns/locale'
-import { useAtomValue } from 'jotai'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import * as React from 'react'
 import { DayPicker } from 'react-day-picker'
@@ -17,7 +16,7 @@ function Calendar({
 	showOutsideDays = true,
 	...props
 }: CalendarProps) {
-	const locale = useAtomValue(LocaleAtom)
+	const locale = useLocale()
 	return (
 		<DayPicker
 			locale={locale === 'ru' ? ru : enUS}

@@ -4,13 +4,15 @@ import { Toaster } from '@/components/ui/Toaster'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Header from '@/components/Header'
 
 const inter = Inter({ subsets: ['latin'] })
 
 const APP_NAME = 'Diabet Dairy'
 const APP_DEFAULT_TITLE = 'Diabet Dairy'
 const APP_TITLE_TEMPLATE = '%s | Diabet dairy'
-const APP_DESCRIPTION = 'Your All-in-One Diabetes Management Solution. Take control of your health with our user-friendly platform for tracking insulin, glucose levels, food intake, and activity. Empower your diabetes management journey today.'
+const APP_DESCRIPTION =
+	'Your All-in-One Diabetes Management Solution. Take control of your health with our user-friendly platform for tracking insulin, glucose levels, food intake, and activity. Empower your diabetes management journey today.'
 
 export const metadata: Metadata = {
 	applicationName: APP_NAME,
@@ -38,8 +40,8 @@ export const metadata: Metadata = {
 			template: APP_TITLE_TEMPLATE,
 		},
 		description: APP_DESCRIPTION,
-    url: 'https://diabet-dairy.vercel.app',
-    images: '/assets/og.png'
+		url: 'https://diabet-dairy.vercel.app',
+		images: '/assets/og.png',
 	},
 	twitter: {
 		card: 'summary_large_image',
@@ -48,8 +50,8 @@ export const metadata: Metadata = {
 			template: APP_TITLE_TEMPLATE,
 		},
 		description: APP_DESCRIPTION,
-    site: 'https://diabet-dairy.vercel.app',
-    images: '/assets/og.png'
+		site: 'https://diabet-dairy.vercel.app',
+		images: '/assets/og.png',
 	},
 }
 
@@ -62,7 +64,10 @@ export default async function RootLayout({
 		<html lang='en' suppressHydrationWarning={true}>
 			<body className={inter.className}>
 				<Providers>
-					{children}
+					<main className='p-2'>
+						<Header />
+						{children}
+					</main>
 					<Toaster />
 				</Providers>
 				<IndexedDBWrapper />

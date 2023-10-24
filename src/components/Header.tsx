@@ -2,7 +2,16 @@
 
 import { LocaleAtom, LocalesAtom } from '@/state/atoms'
 import { useAtom } from 'jotai'
-import { LifeBuoy, LogOut, Menu, Moon, Sun, Wifi, WifiOff } from 'lucide-react'
+import {
+	AreaChart,
+	LifeBuoy,
+	LogOut,
+	Menu,
+	Moon,
+	Sun,
+	Wifi,
+	WifiOff,
+} from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
@@ -80,7 +89,10 @@ export default function Header() {
 						</DropdownMenuCheckboxItem>
 					</DropdownMenuRadioGroup>
 					<DropdownMenuSeparator />
-					<DropdownMenuSeparator />
+					<DropdownMenuItem onSelect={() => router.push('/graphs')}>
+						<AreaChart className='mr-2 h-4 w-4' />
+						<span>{locales?.header.dropdown.graphs}</span>
+					</DropdownMenuItem>
 					<DropdownMenuItem>
 						<LifeBuoy className='mr-2 h-4 w-4' />
 						<span>{locales?.header.dropdown.support}</span>
