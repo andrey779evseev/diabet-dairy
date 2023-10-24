@@ -5,6 +5,7 @@ import '@/styles/globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
+import { getUserAuth } from '@/lib/auth'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -60,12 +61,13 @@ export default async function RootLayout({
 }: {
 	children: React.ReactNode
 }) {
+	const session = await getUserAuth()
 	return (
 		<html lang='en' suppressHydrationWarning={true}>
 			<body className={inter.className}>
 				<Providers>
 					<main className='p-2'>
-						<Header />
+						{!!session ? <Header /> : null}
 						{children}
 					</main>
 					<Toaster />
