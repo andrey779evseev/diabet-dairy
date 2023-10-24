@@ -86,33 +86,47 @@ function GraphsPageContent(props: PropsType) {
 				<CardHeader>
 					<CardTitle>Graphs</CardTitle>
 				</CardHeader>
-				<CardContent className='h-[550px] w-full overflow-x-auto p-2'>
-					<BarChart data={data} height={550} width={data.length * 30}>
-						<Tooltip
-							content={<CustomMultipleValueTooltip />}
-							cursor={{ fill: '#ffffff', fillOpacity: '0.5' }}
-						/>
-						<YAxis
-							stroke='#888888'
-							fontSize={12}
-							tickMargin={16}
-							tickLine={false}
-							axisLine={false}
-							tickFormatter={(value) =>
-								`${value} ${type === 'glucose' ? locales?.units.glucose : ''}`
-							}
-							width={type === 'glucose' ? 80 : 30}
-						/>
-						{type === 'glucose' ? (
-							<Bar dataKey='glucose' fill='#E11D48' radius={[4, 4, 0, 0]} />
-						) : (
-							<>
-								<Bar dataKey='actrapid' fill='#2464EB' radius={[4, 4, 0, 0]} />
-								<Bar dataKey='protofan' fill='#17A44A' radius={[4, 4, 0, 0]} />
-							</>
-						)}
-					</BarChart>
-				</CardContent>
+				{data.length === 0 ? (
+					<CardContent className='flex h-full w-full items-center justify-center font-semibold'>
+            {locales?.graphs.noResults}
+          </CardContent>
+				) : (
+					<CardContent className='h-[550px] w-full overflow-x-auto overflow-y-hidden p-2'>
+						<BarChart data={data} height={550} width={data.length * 30}>
+							<Tooltip
+								content={<CustomMultipleValueTooltip />}
+								cursor={{ fill: '#ffffff', fillOpacity: '0.5' }}
+							/>
+							<YAxis
+								stroke='#888888'
+								fontSize={12}
+								tickMargin={16}
+								tickLine={false}
+								axisLine={false}
+								tickFormatter={(value) =>
+									`${value} ${type === 'glucose' ? locales?.units.glucose : ''}`
+								}
+								width={type === 'glucose' ? 80 : 30}
+							/>
+							{type === 'glucose' ? (
+								<Bar dataKey='glucose' fill='#E11D48' radius={[4, 4, 0, 0]} />
+							) : (
+								<>
+									<Bar
+										dataKey='actrapid'
+										fill='#2464EB'
+										radius={[4, 4, 0, 0]}
+									/>
+									<Bar
+										dataKey='protofan'
+										fill='#17A44A'
+										radius={[4, 4, 0, 0]}
+									/>
+								</>
+							)}
+						</BarChart>
+					</CardContent>
+				)}
 			</Card>
 		</div>
 	)

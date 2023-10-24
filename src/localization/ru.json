@@ -167,6 +167,7 @@
 				"english": "Английский",
 				"russian": "Русский"
 			},
+      "home": "Главная",
 			"graphs": "Графики",
 			"support": "Поддержка",
 			"logout": "Выйти"
@@ -176,6 +177,7 @@
 		"glucose": "ммол/Л"
 	},
 	"graphs": {
-		"title": "Graphs"
+		"title": "Graphs",
+    "noResults": "Данные по данным фильтрам отсутствуют"
 	}
 }

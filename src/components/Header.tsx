@@ -4,6 +4,7 @@ import { LocaleAtom, LocalesAtom } from '@/state/atoms'
 import { useAtom } from 'jotai'
 import {
 	AreaChart,
+	Home,
 	LifeBuoy,
 	LogOut,
 	Menu,
@@ -89,6 +90,10 @@ export default function Header() {
 						</DropdownMenuCheckboxItem>
 					</DropdownMenuRadioGroup>
 					<DropdownMenuSeparator />
+					<DropdownMenuItem onSelect={() => router.push('/')}>
+						<Home className='mr-2 h-4 w-4' />
+						<span>{locales?.header.dropdown.home}</span>
+					</DropdownMenuItem>
 					<DropdownMenuItem onSelect={() => router.push('/graphs')}>
 						<AreaChart className='mr-2 h-4 w-4' />
 						<span>{locales?.header.dropdown.graphs}</span>
