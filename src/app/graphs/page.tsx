@@ -1,8 +1,7 @@
-import dayjs from 'dayjs'
-import { DateRange } from 'react-day-picker'
-import dynamic from 'next/dynamic'
 import { getRecordForStatistic } from '@/lib/api/record/queries'
 import { getUserAuth } from '@/lib/auth'
+import dynamic from 'next/dynamic'
+import { DateRange } from 'react-day-picker'
 
 const GraphsPageContent = dynamic(
 	() => import('@/components/client-pages/GraphsPageContent'),
@@ -20,8 +19,8 @@ export default async function GraphsPage() {
 	const now = new Date()
 	now.setHours(0, 0, 0, 0)
 	const records = await getRecordForStatistic({
-		from: dayjs(now).add(-30, 'day').toDate(),
-		to: now,
+		from: now,
+		to: undefined,
 	})
 	return <GraphsPageContent records={records} fetchRecords={fetchRecords} />
 }
