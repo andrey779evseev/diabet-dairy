@@ -339,14 +339,12 @@ export default function RecordSheet(props: PropsType) {
 											<FormLabel>{locales?.sheet.form.glucose.label}</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={
-														locales?.sheet.form.relativeToFood.placeholder
-													}
-													type='number'
+													placeholder={locales?.sheet.form.glucose.placeholder}
 													{...field}
-													onChange={(e) =>
-														field.onChange(parseFloat(e.target.value))
-													}
+													onChange={(e) => {
+                            const value = e.target.value
+														field.onChange(value.endsWith('.') ? value : parseFloat(e.target.value))
+													}}
 												/>
 											</FormControl>
 											<FormMessage />
