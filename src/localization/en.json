@@ -103,7 +103,10 @@
 		}
 	},
 	"sheet": {
-		"title": "Create record",
+		"title": {
+      "create": "Create record",
+      "update": "Update record"
+    },
 		"description": "Create a comprehensive record form to track insulin intake, food consumption, and glucose levels for effective health monitoring.",
 		"form": {
 			"type": {

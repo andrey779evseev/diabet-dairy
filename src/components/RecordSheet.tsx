@@ -89,10 +89,9 @@ export default function RecordSheet(props: PropsType) {
 
 	const type = form.watch('type')
 
-  useEffect(() => {
-    if(isOpen)
-      form.setValue('time', new Date())
-  }, [isOpen, form])
+	useEffect(() => {
+		if (isOpen && editRecord === undefined) form.setValue('time', new Date())
+	}, [isOpen, form, editRecord])
 
 	useEffect(() => {
 		if (record !== undefined) setIsOpen(true)
@@ -113,7 +112,11 @@ export default function RecordSheet(props: PropsType) {
 					.then(() => {
 						updateRecordInTable(newRecord)
 						setIsOpen(false)
-						form.reset()
+						form.reset({
+              time: new Date(),
+              type: 'glucose',
+              relativeToFood: 'none',
+            })
 					})
 					.catch((error: string) => {
 						toast({
@@ -131,7 +134,11 @@ export default function RecordSheet(props: PropsType) {
 					.then(() => {
 						updateRecordInTable(newRecord)
 						setIsOpen(false)
-						form.reset()
+						form.reset({
+              time: new Date(),
+              type: 'glucose',
+              relativeToFood: 'none',
+            })
 						toast({
 							title: locales?.toast.update.online.info.title,
 							description: locales?.toast.update.online.info.description,
@@ -155,7 +162,11 @@ export default function RecordSheet(props: PropsType) {
 					.then(() => {
 						addRecord(newRecord)
 						setIsOpen(false)
-						form.reset()
+						form.reset({
+              time: new Date(),
+              type: 'glucose',
+              relativeToFood: 'none',
+            })
 					})
 					.catch((error: string) => {
 						toast({
@@ -173,7 +184,11 @@ export default function RecordSheet(props: PropsType) {
 					.then(() => {
 						addRecord(newRecord)
 						setIsOpen(false)
-						form.reset()
+						form.reset({
+              time: new Date(),
+              type: 'glucose',
+              relativeToFood: 'none',
+            })
 						toast({
 							title: locales?.toast.create.online.info.title,
 							description: locales?.toast.create.online.info.description,
@@ -195,11 +210,16 @@ export default function RecordSheet(props: PropsType) {
 	}
 
 	const onOpenChange = (value: boolean) => {
+		console.log('onopenchange', !value && editRecord !== undefined)
 		setIsOpen(value)
+		form.reset({
+			time: new Date(),
+			type: 'glucose',
+			relativeToFood: 'none',
+		})
 		if (!value && editRecord !== undefined) {
-      cancelEdit()
-      form.reset()
-    }
+			cancelEdit()
+		}
 	}
 
 	return (
@@ -216,7 +236,11 @@ export default function RecordSheet(props: PropsType) {
 				</SheetTrigger>
 				<SheetContent side='bottom'>
 					<SheetHeader>
-						<SheetTitle>{locales?.sheet.title}</SheetTitle>
+						<SheetTitle>
+							{editRecord !== undefined
+								? locales?.sheet.title.update
+								: locales?.sheet.title.create}
+						</SheetTitle>
 						<SheetDescription>{locales?.sheet.description}</SheetDescription>
 					</SheetHeader>
 					<Form {...form}>
@@ -350,8 +374,12 @@ export default function RecordSheet(props: PropsType) {
 													placeholder={locales?.sheet.form.glucose.placeholder}
 													{...field}
 													onChange={(e) => {
-                            const value = e.target.value
-														field.onChange(value.endsWith('.') ? value : parseFloat(e.target.value))
+														const value = e.target.value
+														field.onChange(
+															value.endsWith('.')
+																? value
+																: parseFloat(e.target.value),
+														)
 													}}
 												/>
 											</FormControl>
