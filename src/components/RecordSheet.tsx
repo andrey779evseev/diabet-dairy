@@ -196,7 +196,10 @@ export default function RecordSheet(props: PropsType) {
 
 	const onOpenChange = (value: boolean) => {
 		setIsOpen(value)
-		if (!value) cancelEdit()
+		if (!value && editRecord !== undefined) {
+      cancelEdit()
+      form.reset()
+    }
 	}
 
 	return (
