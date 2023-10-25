@@ -89,6 +89,11 @@ export default function RecordSheet(props: PropsType) {
 
 	const type = form.watch('type')
 
+  useEffect(() => {
+    if(isOpen)
+      form.setValue('time', new Date())
+  }, [isOpen, form])
+
 	useEffect(() => {
 		if (record !== undefined) setIsOpen(true)
 	}, [record])

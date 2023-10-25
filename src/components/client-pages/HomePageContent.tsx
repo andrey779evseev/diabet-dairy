@@ -275,6 +275,7 @@ function HomePageContent(props: PropsType) {
 				(a, b) => b.time.getTime() - a.time.getTime(),
 			),
 		)
+    setEditRecord(undefined)
 	}
 
 	return (
