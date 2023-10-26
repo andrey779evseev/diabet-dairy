@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { getLocalTimeZone, parseAbsolute } from '@internationalized/date'
 import { v4 } from 'uuid'
 import z from 'zod'
-import { Loader2, Plus } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useEffect, useMemo, useState } from 'react'
 import { FieldError, useForm } from 'react-hook-form'
@@ -35,7 +35,6 @@ import {
 	SheetDescription,
 	SheetHeader,
 	SheetTitle,
-	SheetTrigger,
 } from '@/components/ui/Sheet'
 import { Textarea } from '@/components/ui/Textarea'
 import { createRecord, updateRecord } from '@/lib/api/record/mutations'
@@ -55,6 +54,8 @@ type PropsType = {
 	record?: Record
 	updateRecord: (record: Record) => void
 	cancelEdit: () => void
+	isOpen: boolean
+	setIsOpen: (value: boolean) => void
 }
 
 export default function RecordSheet(props: PropsType) {
@@ -63,9 +64,10 @@ export default function RecordSheet(props: PropsType) {
 		record,
 		updateRecord: updateRecordInTable,
 		cancelEdit,
+		isOpen,
+		setIsOpen,
 	} = props
 	const { data: session } = useSession()
-	const [isOpen, setIsOpen] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const { isOnline } = useNetworkStatus()
 	const locales = useLocales()
@@ -95,7 +97,7 @@ export default function RecordSheet(props: PropsType) {
 
 	useEffect(() => {
 		if (record !== undefined) setIsOpen(true)
-	}, [record])
+	}, [record, setIsOpen])
 
 	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
 		setIsLoading(true)
@@ -113,10 +115,10 @@ export default function RecordSheet(props: PropsType) {
 						updateRecordInTable(newRecord)
 						setIsOpen(false)
 						form.reset({
-              time: new Date(),
-              type: 'glucose',
-              relativeToFood: 'none',
-            })
+							time: new Date(),
+							type: 'glucose',
+							relativeToFood: 'none',
+						})
 					})
 					.catch((error: string) => {
 						toast({
@@ -135,10 +137,10 @@ export default function RecordSheet(props: PropsType) {
 						updateRecordInTable(newRecord)
 						setIsOpen(false)
 						form.reset({
-              time: new Date(),
-              type: 'glucose',
-              relativeToFood: 'none',
-            })
+							time: new Date(),
+							type: 'glucose',
+							relativeToFood: 'none',
+						})
 						toast({
 							title: locales?.toast.update.online.info.title,
 							description: locales?.toast.update.online.info.description,
@@ -163,10 +165,10 @@ export default function RecordSheet(props: PropsType) {
 						addRecord(newRecord)
 						setIsOpen(false)
 						form.reset({
-              time: new Date(),
-              type: 'glucose',
-              relativeToFood: 'none',
-            })
+							time: new Date(),
+							type: 'glucose',
+							relativeToFood: 'none',
+						})
 					})
 					.catch((error: string) => {
 						toast({
@@ -185,10 +187,10 @@ export default function RecordSheet(props: PropsType) {
 						addRecord(newRecord)
 						setIsOpen(false)
 						form.reset({
-              time: new Date(),
-              type: 'glucose',
-              relativeToFood: 'none',
-            })
+							time: new Date(),
+							type: 'glucose',
+							relativeToFood: 'none',
+						})
 						toast({
 							title: locales?.toast.create.online.info.title,
 							description: locales?.toast.create.online.info.description,
@@ -210,7 +212,6 @@ export default function RecordSheet(props: PropsType) {
 	}
 
 	const onOpenChange = (value: boolean) => {
-		console.log('onopenchange', !value && editRecord !== undefined)
 		setIsOpen(value)
 		form.reset({
 			time: new Date(),
@@ -225,15 +226,6 @@ export default function RecordSheet(props: PropsType) {
 	return (
 		<>
 			<Sheet open={isOpen} onOpenChange={onOpenChange}>
-				<SheetTrigger asChild>
-					<Button
-						size='icon'
-						variant='default'
-						className='fixed bottom-5 right-5 rounded-full'
-					>
-						<Plus />
-					</Button>
-				</SheetTrigger>
 				<SheetContent side='bottom'>
 					<SheetHeader>
 						<SheetTitle>

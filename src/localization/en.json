@@ -104,9 +104,9 @@
 	},
 	"sheet": {
 		"title": {
-      "create": "Create record",
-      "update": "Update record"
-    },
+			"create": "Create record",
+			"update": "Update record"
+		},
 		"description": "Create a comprehensive record form to track insulin intake, food consumption, and glucose levels for effective health monitoring.",
 		"form": {
 			"type": {
@@ -170,7 +170,7 @@
 				"english": "English",
 				"russian": "Russian"
 			},
-      "home": "Home",
+			"home": "Home",
 			"graphs": "Graphs",
 			"support": "Support",
 			"logout": "Log out"
@@ -181,6 +181,6 @@
 	},
 	"graphs": {
 		"title": "Graphs",
-    "noResults": "There is no data for this filters"
+		"noResults": "There is no data for this filters"
 	}
 }

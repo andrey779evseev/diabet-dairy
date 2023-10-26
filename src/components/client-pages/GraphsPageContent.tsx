@@ -88,8 +88,8 @@ function GraphsPageContent(props: PropsType) {
 				</CardHeader>
 				{data.length === 0 ? (
 					<CardContent className='flex h-full w-full items-center justify-center font-semibold'>
-            {locales?.graphs.noResults}
-          </CardContent>
+						{locales?.graphs.noResults}
+					</CardContent>
 				) : (
 					<CardContent className='h-[550px] w-full overflow-x-auto overflow-y-hidden p-2'>
 						<BarChart data={data} height={550} width={data.length * 30}>

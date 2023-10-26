@@ -47,7 +47,6 @@ export const RecordDataSchema = z.discriminatedUnion('type', [
 	ActivitySchema,
 ])
 
-
 export const RecordSchema = z.object({
 	id: z.string().max(50),
 	time: z.date(),

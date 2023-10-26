@@ -3,12 +3,22 @@
 import { useLocales } from '@/state/atoms'
 import dayjs from 'dayjs'
 import { ColumnDef } from '@tanstack/react-table'
-import { Loader2, MoreHorizontal, Pencil, Trash } from 'lucide-react'
+import {
+	FileUp,
+	Loader2,
+	MoreHorizontal,
+	Pencil,
+	Plus,
+	RotateCcw,
+	Trash,
+} from 'lucide-react'
 import { memo, useCallback, useMemo, useState } from 'react'
 import { DateRange } from 'react-day-picker'
+import { useRouter } from 'next/navigation'
 import { DataTable } from '@/components/DataTable'
 import DateFilter from '@/components/DateFilter'
 import { iDB } from '@/components/IndexedDBWrapper'
+import MultiActionButton from '@/components/MultiActionButton'
 import RecordSheet from '@/components/RecordSheet'
 import {
 	AlertDialog,
@@ -54,7 +64,9 @@ function HomePageContent(props: PropsType) {
 	const [deletingRecordId, setDeletingRecordId] = useState<string | null>(null)
 	const [isOpenDeleteAlert, setIsOpenDeleteAlert] = useState(false)
 	const [editRecord, setEditRecord] = useState<Record | undefined>(undefined)
+	const [isOpenRecordSheet, setIsOpenRecordSheet] = useState(false)
 	const locales = useLocales()
+	const router = useRouter()
 
 	const records = useMemo(() => {
 		return combinedRecords.filter(
@@ -275,8 +287,23 @@ function HomePageContent(props: PropsType) {
 				(a, b) => b.time.getTime() - a.time.getTime(),
 			),
 		)
-    setEditRecord(undefined)
+		setEditRecord(undefined)
 	}
+
+	const actions = [
+		{
+			icon: Plus,
+			action: () => setIsOpenRecordSheet(true),
+		},
+		{
+			icon: FileUp,
+			action: () => {},
+		},
+		{
+			icon: RotateCcw,
+			action: () => router.refresh(),
+		},
+	]
 
 	return (
 		<>
@@ -294,7 +321,12 @@ function HomePageContent(props: PropsType) {
 				record={editRecord}
 				updateRecord={updateRecord}
 				cancelEdit={() => setEditRecord(undefined)}
+				isOpen={isOpenRecordSheet}
+				setIsOpen={setIsOpenRecordSheet}
 			/>
+			<div className='fixed bottom-5 right-5 h-fit w-fit'>
+				<MultiActionButton actions={actions} />
+			</div>
 			<AlertDialog open={isOpenDeleteAlert} onOpenChange={setIsOpenDeleteAlert}>
 				<AlertDialogContent className='w-[90%]'>
 					<AlertDialogHeader>
