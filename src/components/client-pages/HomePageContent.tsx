@@ -109,6 +109,7 @@ function HomePageContent(props: PropsType) {
 		(id: RecordId) => {
 			const record = records.find((x) => x.id === id)!
 			setEditRecord(record)
+			setIsOpenRecordSheet(true)
 		},
 		[records, setEditRecord],
 	)
@@ -316,14 +317,16 @@ function HomePageContent(props: PropsType) {
 					showObserver={combinedRecords.length < recordsCount}
 				/>
 			</div>
-			<RecordSheet
-				addRecord={addRecord}
-				record={editRecord}
-				updateRecord={updateRecord}
-				cancelEdit={() => setEditRecord(undefined)}
-				isOpen={isOpenRecordSheet}
-				setIsOpen={setIsOpenRecordSheet}
-			/>
+			{isOpenRecordSheet ? (
+				<RecordSheet
+					addRecord={addRecord}
+					record={editRecord}
+					updateRecord={updateRecord}
+					cancelEdit={() => setEditRecord(undefined)}
+					isOpen={isOpenRecordSheet}
+					setIsOpen={setIsOpenRecordSheet}
+				/>
+			) : null}
 			<div className='fixed bottom-5 right-5 h-fit w-fit'>
 				<MultiActionButton actions={actions} />
 			</div>

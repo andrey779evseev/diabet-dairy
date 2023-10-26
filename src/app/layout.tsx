@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 		template: APP_TITLE_TEMPLATE,
 	},
 	description: APP_DESCRIPTION,
+	viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 	manifest: '/manifest.json',
 	themeColor: '#09090B',
 	appleWebApp: {

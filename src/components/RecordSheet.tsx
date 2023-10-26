@@ -7,7 +7,7 @@ import { v4 } from 'uuid'
 import z from 'zod'
 import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FieldError, useForm } from 'react-hook-form'
 import { DateTimePicker } from '@/components/date-time-picker/DateTimePicker'
 import { iDB } from '@/components/IndexedDBWrapper'
@@ -91,14 +91,6 @@ export default function RecordSheet(props: PropsType) {
 
 	const type = form.watch('type')
 
-	useEffect(() => {
-		if (isOpen && editRecord === undefined) form.setValue('time', new Date())
-	}, [isOpen, form, editRecord])
-
-	useEffect(() => {
-		if (record !== undefined) setIsOpen(true)
-	}, [record, setIsOpen])
-
 	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
 		setIsLoading(true)
 		const { time, ...rest } = values
@@ -114,11 +106,6 @@ export default function RecordSheet(props: PropsType) {
 					.then(() => {
 						updateRecordInTable(newRecord)
 						setIsOpen(false)
-						form.reset({
-							time: new Date(),
-							type: 'glucose',
-							relativeToFood: 'none',
-						})
 					})
 					.catch((error: string) => {
 						toast({
@@ -136,11 +123,6 @@ export default function RecordSheet(props: PropsType) {
 					.then(() => {
 						updateRecordInTable(newRecord)
 						setIsOpen(false)
-						form.reset({
-							time: new Date(),
-							type: 'glucose',
-							relativeToFood: 'none',
-						})
 						toast({
 							title: locales?.toast.update.online.info.title,
 							description: locales?.toast.update.online.info.description,
@@ -164,11 +146,6 @@ export default function RecordSheet(props: PropsType) {
 					.then(() => {
 						addRecord(newRecord)
 						setIsOpen(false)
-						form.reset({
-							time: new Date(),
-							type: 'glucose',
-							relativeToFood: 'none',
-						})
 					})
 					.catch((error: string) => {
 						toast({
@@ -186,11 +163,6 @@ export default function RecordSheet(props: PropsType) {
 					.then(() => {
 						addRecord(newRecord)
 						setIsOpen(false)
-						form.reset({
-							time: new Date(),
-							type: 'glucose',
-							relativeToFood: 'none',
-						})
 						toast({
 							title: locales?.toast.create.online.info.title,
 							description: locales?.toast.create.online.info.description,
@@ -213,11 +185,6 @@ export default function RecordSheet(props: PropsType) {
 
 	const onOpenChange = (value: boolean) => {
 		setIsOpen(value)
-		form.reset({
-			time: new Date(),
-			type: 'glucose',
-			relativeToFood: 'none',
-		})
 		if (!value && editRecord !== undefined) {
 			cancelEdit()
 		}
