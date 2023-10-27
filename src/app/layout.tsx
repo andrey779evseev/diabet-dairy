@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 		template: APP_TITLE_TEMPLATE,
 	},
 	description: APP_DESCRIPTION,
-	metadataBase: env.VERCEL_URL ?? 'http://localhost:3000',
+	metadataBase: new URL(env.VERCEL_URL ?? 'http://localhost:3000'),
 	manifest: '/manifest.json',
 	appleWebApp: {
 		capable: true,
