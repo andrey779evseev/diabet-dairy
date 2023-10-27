@@ -2,10 +2,11 @@ import IndexedDBWrapper from '@/components/IndexedDBWrapper'
 import Providers from '@/components/Providers'
 import { Toaster } from '@/components/ui/Toaster'
 import '@/styles/globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import { getUserAuth } from '@/lib/auth'
+import { env } from '@/lib/env.mjs'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,6 +16,13 @@ const APP_TITLE_TEMPLATE = '%s | Diabet dairy'
 const APP_DESCRIPTION =
 	'Your All-in-One Diabetes Management Solution. Take control of your health with our user-friendly platform for tracking insulin, glucose levels, food intake, and activity. Empower your diabetes management journey today.'
 
+export const viewport: Viewport = {
+	width: 'device-width',
+	initialScale: 1,
+	maximumScale: 1,
+	themeColor: '#09090B',
+}
+
 export const metadata: Metadata = {
 	applicationName: APP_NAME,
 	title: {
@@ -22,9 +30,8 @@ export const metadata: Metadata = {
 		template: APP_TITLE_TEMPLATE,
 	},
 	description: APP_DESCRIPTION,
-	viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+	metadataBase: env.VERCEL_URL ?? 'http://localhost:3000',
 	manifest: '/manifest.json',
-	themeColor: '#09090B',
 	appleWebApp: {
 		capable: true,
 		statusBarStyle: 'default',

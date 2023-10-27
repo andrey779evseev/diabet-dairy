@@ -67,7 +67,7 @@ module.exports = {
 				},
 				'slide-in-blurred-right': {
 					from: {
-						transform: 'translateX(100px) scaleX(2.5) scaleY(0.2)',
+						transform: 'translateX(200px) scaleX(2.5) scaleY(0.2)',
 						transformOrigin: '0% 50%',
 						filter: 'blur(40px)',
 						opacity: 0,
@@ -87,7 +87,7 @@ module.exports = {
 						opacity: 1,
 					},
 					to: {
-						transform: 'translateX(100px) scaleX(2.5) scaleY(0.2)',
+						transform: 'translateX(200px) scaleX(2.5) scaleY(0.2)',
 						transformOrigin: '0% 50%',
 						filter: 'blur(40px)',
 						opacity: 0,
@@ -123,7 +123,7 @@ module.exports = {
 				},
 				'slide-in-blurred-bottom': {
 					from: {
-						transform: 'translateY(200px) scaleY(2.5) scaleX(0.2)',
+						transform: 'translateY(300px) scaleY(2.5) scaleX(0.2)',
 						transformOrigin: '50% 100%',
 						filter: 'blur(40px)',
 						opacity: 0,
@@ -143,7 +143,7 @@ module.exports = {
 						opacity: 1,
 					},
 					to: {
-						transform: 'translateY(200px) scaleY(2.5) scaleX(0.2)',
+						transform: 'translateY(300px) scaleY(2.5) scaleX(0.2)',
 						transformOrigin: '50% 100%',
 						filter: 'blur(40px)',
 						opacity: 0,

@@ -1,14 +1,24 @@
 'use client'
 
+import { nanoid } from 'nanoid'
 import { ChevronUp, LucideIcon } from 'lucide-react'
-import { memo, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
-import { useMounted } from '@/hooks/useMounted'
+import { cn } from '@/lib/utils'
 
 const styles = [
-	'absolute bottom-[170%] right-0 h-10 w-10 rounded-full data-[state=closed]:animate-slide-out-blurred-bottom data-[state=open]:animate-slide-in-blurred-bottom',
-	'absolute bottom-0 right-[170%] h-10 w-10 rounded-full data-[state=closed]:animate-slide-out-blurred-right data-[state=open]:animate-slide-in-blurred-right',
-	'absolute bottom-[120%] right-[120%] h-10 w-10 rounded-full data-[state=closed]:animate-slide-out-blurred-br data-[state=open]:animate-slide-in-blurred-br',
+	[
+		'bottom-[170%] right-0 data-[state=open]:animate-slide-in-blurred-bottom',
+		'data-[state=closed]:animate-slide-out-blurred-bottom',
+	],
+	[
+		'bottom-0 right-[170%] data-[state=open]:animate-slide-in-blurred-right',
+		'data-[state=closed]:animate-slide-out-blurred-right',
+	],
+	[
+		'bottom-[120%] right-[120%] data-[state=open]:animate-slide-in-blurred-br',
+		'data-[state=closed]:animate-slide-out-blurred-br',
+	],
 ]
 
 type PropsType = {
@@ -21,9 +31,20 @@ type PropsType = {
 function MultiActionButton(props: PropsType) {
 	const { actions } = props
 	const [isOpen, setIsOpen] = useState(false)
-	const isMounted = useMounted()
+	const [deferredIsOpen, setDeferredIsOpen] = useState(false)
+	const timeoutId = useRef<NodeJS.Timeout | null>(null)
 
-	if (!isMounted) return null
+	useEffect(() => {
+		if (isOpen) setDeferredIsOpen(isOpen)
+		else {
+			timeoutId.current = setTimeout(() => {
+				setDeferredIsOpen(isOpen)
+			}, 1500)
+			return () => {
+				if (timeoutId.current) clearTimeout(timeoutId.current)
+			}
+		}
+	}, [isOpen])
 
 	return (
 		<div className='relative h-fit w-fit'>
@@ -31,24 +52,27 @@ function MultiActionButton(props: PropsType) {
 				<Button
 					size='icon'
 					variant='outline'
-					className={styles[i]}
+					className={cn(styles[i][0], 'absolute h-16 w-16 rounded-full', {
+						[styles[i][1]]: deferredIsOpen,
+						invisible: !deferredIsOpen,
+					})}
 					data-state={isOpen ? 'open' : 'closed'}
-					key={i}
+					key={nanoid()}
 					onClick={() => {
 						action.action()
 						setIsOpen(false)
 					}}
 				>
-					<action.icon className='h-5 w-5' />
+					<action.icon className='h-8 w-8' />
 				</Button>
 			))}
 			<Button
 				size='icon'
 				variant={isOpen ? 'outline' : 'default'}
-				className='h-10 w-10 touch-none rounded-full'
+				className='h-16 w-16 touch-none rounded-full animate-in fade-in'
 				onClick={() => setIsOpen(!isOpen)}
 			>
-				<ChevronUp />
+				<ChevronUp className='h-8 w-8' />
 			</Button>
 		</div>
 	)
