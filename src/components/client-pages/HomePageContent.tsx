@@ -1,6 +1,6 @@
 'use client'
 
-import { useLocales } from '@/state/atoms'
+import { useLocale, useLocales } from '@/state/atoms'
 import dayjs from 'dayjs'
 import { ColumnDef } from '@tanstack/react-table'
 import {
@@ -65,7 +65,9 @@ function HomePageContent(props: PropsType) {
 	const [isOpenDeleteAlert, setIsOpenDeleteAlert] = useState(false)
 	const [editRecord, setEditRecord] = useState<Record | undefined>(undefined)
 	const [isOpenRecordSheet, setIsOpenRecordSheet] = useState(false)
+	const [type, setType] = useState('all')
 	const locales = useLocales()
+	const locale = useLocale()
 	const router = useRouter()
 
 	const records = useMemo(() => {
@@ -291,20 +293,30 @@ function HomePageContent(props: PropsType) {
 		setEditRecord(undefined)
 	}
 
-	const actions = [
-		{
-			icon: Plus,
-			action: () => setIsOpenRecordSheet(true),
-		},
-		{
-			icon: FileUp,
-			action: () => {},
-		},
-		{
-			icon: RotateCcw,
-			action: () => router.refresh(),
-		},
-	]
+	const actions = useMemo(
+		() => [
+			{
+				icon: Plus,
+				action: () => setIsOpenRecordSheet(true),
+			},
+			{
+				el: (
+					<a
+						href={`/api/download/word?from=${date?.from}&to=${date?.to}&type=${type}&locale=${locale}`}
+						download
+						className='flex h-full w-full items-center justify-center rounded-full'
+					>
+						<FileUp className='h-8 w-8' />
+					</a>
+				),
+			},
+			{
+				icon: RotateCcw,
+				action: () => router.refresh(),
+			},
+		],
+		[date, type, router, locale],
+	)
 
 	return (
 		<>
@@ -315,6 +327,7 @@ function HomePageContent(props: PropsType) {
 					data={records}
 					fetchNext={fetchNext}
 					showObserver={combinedRecords.length < recordsCount}
+					onChangeTypeFilter={setType}
 				/>
 			</div>
 			{isOpenRecordSheet ? (

@@ -1,6 +1,5 @@
 'use client'
 
-import { nanoid } from 'nanoid'
 import { ChevronUp, LucideIcon } from 'lucide-react'
 import { memo, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
@@ -22,9 +21,13 @@ const styles = [
 ]
 
 type PropsType = {
+	/**
+	 * object must be {icon, action} or {el}
+	 */
 	actions: {
-		icon: LucideIcon
-		action: () => void
+		icon?: LucideIcon
+		action?: () => void
+		el?: JSX.Element
 	}[]
 }
 
@@ -57,13 +60,18 @@ function MultiActionButton(props: PropsType) {
 						invisible: !deferredIsOpen,
 					})}
 					data-state={isOpen ? 'open' : 'closed'}
-					key={nanoid()}
+					key={i}
 					onClick={() => {
-						action.action()
-						setIsOpen(false)
+						if (action.action) {
+							action.action()
+							setIsOpen(false)
+						}
 					}}
 				>
-					<action.icon className='h-8 w-8' />
+					{action.el !== undefined ? action.el : null}
+					{action.icon === undefined ? null : (
+						<action.icon className='h-8 w-8' />
+					)}
 				</Button>
 			))}
 			<Button

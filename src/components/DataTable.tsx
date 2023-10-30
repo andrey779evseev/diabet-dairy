@@ -23,16 +23,18 @@ import {
 import { Skeleton } from '@/components/ui/Skeleton'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/Table'
 import { useMounted } from '@/hooks/useMounted'
+import { RecordType } from '@/types/Record'
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
 	data: TData[]
 	fetchNext: () => Promise<void>
 	showObserver: boolean
+	onChangeTypeFilter: (type: RecordType | 'all') => void
 }
 
 export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
-	const { columns, data, fetchNext, showObserver } = props
+	const { columns, data, fetchNext, showObserver, onChangeTypeFilter } = props
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
 		{ id: 'data', value: 'all' },
 	])
@@ -50,6 +52,12 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 	const isMounted = useMounted()
 	const bottomAnchor = useRef(null)
 	const locales = useLocales()
+
+	useEffect(() => {
+		onChangeTypeFilter(
+			columnFilters.find((x) => x.id === 'data')!.value as RecordType | 'all',
+		)
+	}, [columnFilters, onChangeTypeFilter])
 
 	const bottomAnchorCallback = useCallback(
 		async (entries: IntersectionObserverEntry[]) => {

@@ -62,8 +62,8 @@
 				"activity": "Activity"
 			},
 			"relativeToFood": {
-				"after": "after",
-				"before": "before"
+				"after": "After food",
+				"before": "Before food"
 			},
 			"insulin": {
 				"actrapid": "Actrapid",

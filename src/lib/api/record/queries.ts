@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { desc, eq, sql } from 'drizzle-orm'
 import { DateRange } from 'react-day-picker'
 import { db } from '@/lib/db'
@@ -28,14 +29,20 @@ export const getRecordsCountByUserId = async (userId: string) => {
 	return res.count
 }
 
-export const getRecordForStatistic = async (date: DateRange) => {
+export const getRecordsByUserIdAndDateRange = async (
+	date: DateRange,
+	userId: string,
+) => {
 	return await db.query.records.findMany({
-		where: (records, { gte, lte, and }) =>
-			date.to === undefined
-				? gte(records.time, date.from ?? new Date())
-				: and(
-						gte(records.time, date.from ?? new Date()),
-						lte(records.time, date.to),
-				  ),
+		where: (records, { gte, lte, and, eq }) =>
+			and(
+				date.to === undefined
+					? gte(records.time, date.from ?? new Date())
+					: and(
+							gte(records.time, date.from ?? new Date()),
+							lte(records.time, dayjs.utc(date.to).add(1, 'day').toDate()),
+					  ),
+				eq(records.userId, userId),
+			),
 	})
 }

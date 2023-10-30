@@ -62,8 +62,8 @@
 				"activity": "Активность"
 			},
 			"relativeToFood": {
-				"after": "после еды",
-				"before": "до еды"
+				"after": "После еды",
+				"before": "До еды"
 			},
 			"insulin": {
 				"actrapid": "Актрапид",
