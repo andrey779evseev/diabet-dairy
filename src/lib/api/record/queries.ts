@@ -1,8 +1,11 @@
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import { desc, eq, sql } from 'drizzle-orm'
 import { DateRange } from 'react-day-picker'
 import { db } from '@/lib/db'
 import { records } from '@/lib/db/schema/record'
+
+dayjs.extend(utc)
 
 export const getRecords = async () => {
 	return await db.select().from(records)

@@ -72,7 +72,6 @@ function DateFilter(props: PropsType) {
 							to: value === '1' || value === '0' ? undefined : now,
 						})
 					}}
-					defaultValue='0'
 				>
 					<SelectTrigger>
 						<SelectValue

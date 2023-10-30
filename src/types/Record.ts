@@ -28,10 +28,9 @@ const InsulinSchema = z.object({
 			actrapid: z.number().nonnegative().optional(),
 			protofan: z.number().nonnegative().optional(),
 		})
-		.refine(
-			(dose) => !!dose.actrapid || !!dose.protofan,
-			'Either actrapid or protofan should be filled in.',
-		),
+		.refine((dose) => !!dose.actrapid || !!dose.protofan, {
+			params: { i18n: 'insulin_dose_error' },
+		}),
 	description: z.string().max(200).optional(),
 })
 

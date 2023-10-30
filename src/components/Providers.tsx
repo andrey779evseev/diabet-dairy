@@ -12,9 +12,10 @@ dayjs.extend(isBetween)
 
 function Providers(props: PropsWithChildren) {
 	const { children } = props
+
 	return (
-		<SessionProvider refetchWhenOffline={false}>
-			<JotaiProvider>
+		<JotaiProvider>
+			<SessionProvider refetchWhenOffline={false}>
 				<ThemeProvider
 					attribute='class'
 					defaultTheme='dark'
@@ -22,8 +23,8 @@ function Providers(props: PropsWithChildren) {
 				>
 					<LocaleProvider>{children}</LocaleProvider>
 				</ThemeProvider>
-			</JotaiProvider>
-		</SessionProvider>
+			</SessionProvider>
+		</JotaiProvider>
 	)
 }
 

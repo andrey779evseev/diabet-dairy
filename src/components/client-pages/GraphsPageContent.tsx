@@ -92,7 +92,11 @@ function GraphsPageContent(props: PropsType) {
 					</CardContent>
 				) : (
 					<CardContent className='h-[550px] w-full overflow-x-auto overflow-y-hidden p-2'>
-						<BarChart data={data} height={550} width={data.length * 30}>
+						<BarChart
+							data={data}
+							height={550}
+							width={Math.max(110, data.length * 30)}
+						>
 							<Tooltip
 								content={<CustomMultipleValueTooltip />}
 								cursor={{ fill: '#ffffff', fillOpacity: '0.5' }}
