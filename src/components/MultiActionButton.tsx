@@ -94,14 +94,18 @@ function MultiActionButton(props: PropsType) {
 				reset()
 			}}
 			onTouchEnd={(e) => {
-				console.log('touch end', e)
+				const changedTouch = e.changedTouches[0]
+				const el = document.elementFromPoint(
+					changedTouch.clientX,
+					changedTouch.clientY,
+				)
+				console.log('touch end', e, e.target, el)
 				const ref = refs.current.find(
-					(ref) =>
-						ref.current === e.target || ref.current?.contains(e.target as Node),
+					(ref) => ref.current === el || ref.current?.contains(el),
 				)
 				console.log(
 					'ref',
-          refs,
+					refs,
 					ref,
 					ref !== undefined && ref.current !== null && ref.current.id,
 				)
