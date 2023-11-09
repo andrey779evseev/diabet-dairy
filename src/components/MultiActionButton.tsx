@@ -65,6 +65,7 @@ function MultiActionButton(props: PropsType) {
 		e.preventDefault()
 		setIsPointerDown(true)
 		setStartedAt(new Date())
+    if (timeoutId.current) clearTimeout(timeoutId.current)
 		// @ts-ignore
 		timeoutId.current = setTimeout(() => {
 			setIsOpen(true)
@@ -96,7 +97,6 @@ function MultiActionButton(props: PropsType) {
 							invisible: !animatedIsOpen,
 						},
 					)}
-					isFocused={pointerOver === i + 1}
 					data-state={isOpen ? 'open' : 'closed'}
 					key={i}
 				>
