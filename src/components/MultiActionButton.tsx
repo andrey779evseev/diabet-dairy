@@ -88,10 +88,10 @@ function MultiActionButton(props: PropsType) {
 				console.log('pointer leave')
 				reset()
 			}}
-			// onTouchEnd={() => {
-			// 	console.log('touch end')
-			// 	reset()
-			// }}
+      onTouchEnd={(e) => {
+        console.log('touch end', e)
+        reset()
+      }}
 		>
 			{actions.map((action, i) => (
 				<Button
@@ -102,11 +102,6 @@ function MultiActionButton(props: PropsType) {
 					onPointerLeave={() => {
 						console.log('pointer leave', i + 1)
 						setPointerOver(0)
-					}}
-					onTouchEnd={() => {
-						console.log('touch end', i + 1)
-						setPointerOver(i + 1)
-            reset()
 					}}
 					size='icon'
 					variant='outline'
