@@ -61,11 +61,15 @@ function MultiActionButton(props: PropsType) {
 		setPointerOver(null)
 	}
 
-	const start = (e: React.PointerEvent<HTMLButtonElement>) => {
+	const start = (
+		e:
+			| React.PointerEvent<HTMLButtonElement>
+			| React.TouchEvent<HTMLButtonElement>,
+	) => {
 		e.preventDefault()
 		setIsPointerDown(true)
 		setStartedAt(new Date())
-    if (timeoutId.current) clearTimeout(timeoutId.current)
+		if (timeoutId.current) clearTimeout(timeoutId.current)
 		// @ts-ignore
 		timeoutId.current = setTimeout(() => {
 			setIsOpen(true)
@@ -76,15 +80,27 @@ function MultiActionButton(props: PropsType) {
 	return (
 		<div
 			className='relative flex h-[172px] w-[172px] select-none items-end justify-end'
-			onPointerUp={reset}
-			onPointerLeave={reset}
+			onPointerUp={() => {
+        console.log('pointer up')
+        reset()
+      }}
+			onPointerLeave={() => {
+        console.log('pointer leave')
+        reset()
+      }}
+      onTouchEnd={() => {
+        console.log('touch end')
+        reset()
+      }}
 		>
 			{actions.map((action, i) => (
 				<Button
 					onPointerEnter={() => {
+            console.log('pointer enter', i + 1)
 						setPointerOver(i + 1)
 					}}
 					onPointerLeave={() => {
+            console.log('pointer leave', i + 1)
 						setPointerOver(0)
 					}}
 					size='icon'
@@ -97,6 +113,7 @@ function MultiActionButton(props: PropsType) {
 							invisible: !animatedIsOpen,
 						},
 					)}
+					isFocused={pointerOver === i + 1}
 					data-state={isOpen ? 'open' : 'closed'}
 					key={i}
 				>
@@ -107,7 +124,14 @@ function MultiActionButton(props: PropsType) {
 				size='icon'
 				variant={isOpen ? 'outline' : 'default'}
 				className='h-16 w-16 touch-none select-none rounded-full animate-in fade-in'
-				onPointerDown={start}
+				onPointerDown={(e) => {
+          console.log('pointer down')
+          start(e)
+        }}
+				onTouchStart={(e) => {
+          console.log('touch start')
+          start(e)
+        }}
 			>
 				<ChevronUp className='h-8 w-8' />
 			</Button>
