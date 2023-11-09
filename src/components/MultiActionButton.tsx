@@ -84,7 +84,7 @@ function MultiActionButton(props: PropsType) {
 
 	return (
 		<div
-			className='relative flex h-[172px] w-[172px] select-none items-end justify-end'
+			className='relative flex h-[172px] w-[172px] touch-none select-none items-end justify-end'
 			onPointerUp={() => {
 				console.log('pointer up')
 				reset()
@@ -99,10 +99,14 @@ function MultiActionButton(props: PropsType) {
 					(ref) =>
 						ref.current === e.target || ref.current?.contains(e.target as Node),
 				)
-        console.log('ref', ref, ref !== undefined && ref.current !== null && ref.current.id)
+				console.log(
+					'ref',
+					ref,
+					ref !== undefined && ref.current !== null && ref.current.id,
+				)
 
-        if(ref !== undefined && ref.current !== null && ref.current.id)
-          setPointerOver(parseInt(ref.current.id))
+				if (ref !== undefined && ref.current !== null && ref.current.id)
+					setPointerOver(parseInt(ref.current.id))
 
 				reset()
 			}}
@@ -121,7 +125,7 @@ function MultiActionButton(props: PropsType) {
 					variant='outline'
 					className={cn(
 						styles[i][0],
-						'absolute h-16 w-16 select-none rounded-full',
+						'absolute h-16 w-16 touch-none select-none rounded-full',
 						{
 							[styles[i][1]]: animatedIsOpen,
 							invisible: !animatedIsOpen,
@@ -139,7 +143,7 @@ function MultiActionButton(props: PropsType) {
 			<Button
 				size='icon'
 				variant={isOpen ? 'outline' : 'default'}
-				className='h-16 w-16 select-none rounded-full animate-in fade-in'
+				className='h-16 w-16 touch-none select-none rounded-full animate-in fade-in'
 				onPointerDown={(e) => {
 					console.log('pointer down')
 					start(e)
