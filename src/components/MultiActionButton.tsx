@@ -101,6 +101,7 @@ function MultiActionButton(props: PropsType) {
 				)
 				console.log(
 					'ref',
+          refs,
 					ref,
 					ref !== undefined && ref.current !== null && ref.current.id,
 				)
