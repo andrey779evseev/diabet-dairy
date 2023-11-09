@@ -103,6 +103,10 @@ function MultiActionButton(props: PropsType) {
             console.log('pointer leave', i + 1)
 						setPointerOver(0)
 					}}
+          onTouchMove={() => {
+            console.log('touch move', i + 1)
+						setPointerOver(i + 1)
+          }}
 					size='icon'
 					variant='outline'
 					className={cn(
