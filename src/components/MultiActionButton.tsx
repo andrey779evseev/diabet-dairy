@@ -96,6 +96,7 @@ function MultiActionButton(props: PropsType) {
 							invisible: !animatedIsOpen,
 						},
 					)}
+					isFocused={pointerOver === i + 1}
 					data-state={isOpen ? 'open' : 'closed'}
 					key={i}
 				>
