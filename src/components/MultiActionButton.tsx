@@ -74,7 +74,7 @@ function MultiActionButton(props: PropsType) {
 
 	return (
 		<div
-			className='relative flex h-[172px] w-[172px] items-end justify-end'
+			className='relative flex h-[172px] w-[172px] select-none items-end justify-end'
 			onPointerUp={reset}
 			onPointerLeave={reset}
 		>
@@ -88,10 +88,14 @@ function MultiActionButton(props: PropsType) {
 					}}
 					size='icon'
 					variant='outline'
-					className={cn(styles[i][0], 'absolute h-16 w-16 rounded-full', {
-						[styles[i][1]]: animatedIsOpen,
-						invisible: !animatedIsOpen,
-					})}
+					className={cn(
+						styles[i][0],
+						'absolute h-16 w-16 select-none rounded-full',
+						{
+							[styles[i][1]]: animatedIsOpen,
+							invisible: !animatedIsOpen,
+						},
+					)}
 					data-state={isOpen ? 'open' : 'closed'}
 					key={i}
 				>
@@ -101,7 +105,7 @@ function MultiActionButton(props: PropsType) {
 			<Button
 				size='icon'
 				variant={isOpen ? 'outline' : 'default'}
-				className='h-16 w-16 touch-none rounded-full animate-in fade-in'
+				className='h-16 w-16 touch-none select-none rounded-full animate-in fade-in'
 				onPointerDown={start}
 			>
 				<ChevronUp className='h-8 w-8' />
