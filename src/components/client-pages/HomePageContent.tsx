@@ -357,9 +357,7 @@ function HomePageContent(props: PropsType) {
 					setIsOpen={setIsOpenRecordSheet}
 				/>
 			) : null}
-			<div className='fixed bottom-5 right-5 h-fit w-fit'>
-				<MultiActionButton actions={actions} />
-			</div>
+			<MultiActionButton actions={actions} />
 			<AlertDialog open={isOpenDeleteAlert} onOpenChange={setIsOpenDeleteAlert}>
 				<AlertDialogContent className='w-[90%]'>
 					<AlertDialogHeader>

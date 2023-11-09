@@ -42,11 +42,14 @@ function MultiActionButton(props: PropsType) {
 		createRef(),
 	])
 
-	const reset = () => {
+	const cancelTimeout = () => {
 		if (timeoutId.current) clearTimeout(timeoutId.current)
 		// @ts-ignore
 		timeoutId.current = null
+	}
 
+	const resetPointer = () => {
+		cancelTimeout()
 		if (!isPointerDown && pointerOver !== 0 && pointerOver !== null) {
 			actions[pointerOver! - 1].action()
 			setIsOpen(false)
@@ -74,7 +77,7 @@ function MultiActionButton(props: PropsType) {
 		e.preventDefault()
 		setIsPointerDown(true)
 		setStartedAt(new Date())
-		if (timeoutId.current) clearTimeout(timeoutId.current)
+		cancelTimeout()
 		// @ts-ignore
 		timeoutId.current = setTimeout(() => {
 			setIsOpen(true)
@@ -82,48 +85,38 @@ function MultiActionButton(props: PropsType) {
 		setPointerOver(0)
 	}
 
+	const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+		cancelTimeout()
+		const changedTouch = e.changedTouches[0]
+		const el = document.elementFromPoint(
+			changedTouch.clientX,
+			changedTouch.clientY,
+		)
+		const ref = refs.current.find(
+			(ref) => ref.current === el || ref.current?.contains(el),
+		)
+		if (ref !== undefined && ref.current !== null && ref.current.id) {
+			actions[parseInt(ref.current!.id) - 1].action()
+		}
+
+		setPointerOver(null)
+		setIsPointerDown(false)
+		setIsOpen(false)
+	}
+
 	return (
 		<div
-			className='relative flex h-[172px] w-[172px] touch-none select-none items-end justify-end'
-			onPointerUp={() => {
-				console.log('pointer up')
-				reset()
-			}}
-			onPointerLeave={() => {
-				console.log('pointer leave')
-				reset()
-			}}
-			onTouchEnd={(e) => {
-				const changedTouch = e.changedTouches[0]
-				const el = document.elementFromPoint(
-					changedTouch.clientX,
-					changedTouch.clientY,
-				)
-				console.log('touch end', e, e.target, el)
-				const ref = refs.current.find(
-					(ref) => ref.current === el || ref.current?.contains(el),
-				)
-				console.log(
-					'ref',
-					refs,
-					ref,
-					ref !== undefined && ref.current !== null && ref.current.id,
-				)
-
-				if (ref !== undefined && ref.current !== null && ref.current.id)
-					setPointerOver(parseInt(ref.current.id))
-
-				reset()
-			}}
+			className='fixed bottom-5 right-5 flex h-[172px] w-[172px] touch-none select-none items-end justify-end'
+			onPointerUp={resetPointer}
+			onPointerLeave={resetPointer}
+			onTouchEnd={onTouchEnd}
 		>
 			{actions.map((action, i) => (
 				<Button
 					onPointerEnter={() => {
-						console.log('pointer enter', i + 1)
 						setPointerOver(i + 1)
 					}}
 					onPointerLeave={() => {
-						console.log('pointer leave', i + 1)
 						setPointerOver(0)
 					}}
 					size='icon'
@@ -136,7 +129,6 @@ function MultiActionButton(props: PropsType) {
 							invisible: !animatedIsOpen,
 						},
 					)}
-					isFocused={pointerOver === i + 1}
 					data-state={isOpen ? 'open' : 'closed'}
 					key={i}
 					ref={refs.current[i]}
@@ -149,14 +141,8 @@ function MultiActionButton(props: PropsType) {
 				size='icon'
 				variant={isOpen ? 'outline' : 'default'}
 				className='h-16 w-16 touch-none select-none rounded-full animate-in fade-in'
-				onPointerDown={(e) => {
-					console.log('pointer down')
-					start(e)
-				}}
-				onTouchStart={(e) => {
-					console.log('touch start')
-					start(e)
-				}}
+				onPointerDown={start}
+				onTouchStart={start}
 			>
 				<ChevronUp className='h-8 w-8' />
 			</Button>
