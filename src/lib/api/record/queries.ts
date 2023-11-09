@@ -47,5 +47,6 @@ export const getRecordsByUserIdAndDateRange = async (
 					  ),
 				eq(records.userId, userId),
 			),
+		orderBy: [desc(records.time)],
 	})
 }

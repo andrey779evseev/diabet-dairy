@@ -20,12 +20,10 @@ export const groupBy = <T>(data: T[], fn: (value: T) => string) => {
 		return map
 	}, new Map<string, T[]>())
 
-	return Object.keys(Object.fromEntries(groups))
-		.sort()
-		.map((date) => {
-			return {
-				value: date,
-				items: groups.get(date)!,
-			}
-		})
+	return Object.keys(Object.fromEntries(groups)).map((date) => {
+		return {
+			value: date,
+			items: groups.get(date)!,
+		}
+	})
 }

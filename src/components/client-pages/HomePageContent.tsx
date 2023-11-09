@@ -41,7 +41,12 @@ import {
 import { deleteRecord } from '@/lib/api/record/mutations'
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { toast } from '@/hooks/useToast'
-import type { Record, RecordDataType, RecordId } from '@/types/Record'
+import type {
+	Record,
+	RecordDataType,
+	RecordId,
+	RecordType,
+} from '@/types/Record'
 
 type PropsType = {
 	records: Record[]
@@ -65,7 +70,7 @@ function HomePageContent(props: PropsType) {
 	const [isOpenDeleteAlert, setIsOpenDeleteAlert] = useState(false)
 	const [editRecord, setEditRecord] = useState<Record | undefined>(undefined)
 	const [isOpenRecordSheet, setIsOpenRecordSheet] = useState(false)
-	const [type, setType] = useState('all')
+	const [type, setType] = useState<RecordType | 'all'>('all')
 	const locales = useLocales()
 	const locale = useLocale()
 	const router = useRouter()
@@ -300,22 +305,34 @@ function HomePageContent(props: PropsType) {
 				action: () => setIsOpenRecordSheet(true),
 			},
 			{
-				el: (
-					<a
-						href={`/api/download/word?from=${date?.from}&to=${date?.to}&type=${type}&locale=${locale}`}
-						download
-						className='flex h-full w-full items-center justify-center rounded-full'
-					>
-						<FileUp className='h-8 w-8' />
-					</a>
-				),
+				icon: FileUp,
+				action: () => {
+					if (date === undefined) {
+						toast({
+							description: 'Before export to file, please select a date range',
+							variant: 'destructive',
+						})
+						return
+					}
+					const a = document.createElement('a')
+					a.style.display = 'none'
+					a.href = `/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${locale}`
+					a.download = `${dayjs(date.from).format('DD.MM.YYYY')}${
+						date.to !== undefined
+							? `~${dayjs(date.to).format('DD.MM.YYYY')}`
+							: ''
+					} (${locales?.filters.type.options[type]}).docx`
+					document.body.appendChild(a)
+					a.click()
+					document.body.removeChild(a)
+				},
 			},
 			{
 				icon: RotateCcw,
 				action: () => router.refresh(),
 			},
 		],
-		[date, type, router, locale],
+		[date, type, locale, locales, router],
 	)
 
 	return (

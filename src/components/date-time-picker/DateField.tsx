@@ -28,6 +28,7 @@ function DateField(props: AriaDatePickerProps<DateValue>) {
 				'inline-flex h-10 flex-1 items-center rounded-l-md border border-r-0 border-input bg-transparent py-2 pl-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
 				props.isDisabled ? 'cursor-not-allowed opacity-50' : '',
 			)}
+			aria-label='date-field'
 		>
 			{state.segments.map((segment, i) => (
 				<DateSegment key={i} segment={segment} state={state} />

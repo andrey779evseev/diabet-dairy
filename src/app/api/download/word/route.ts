@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import type { DateRange } from 'react-day-picker'
 import { NextResponse } from 'next/server'
 import { getRecordsByUserIdAndDateRange } from '@/lib/api/record/queries'
@@ -9,8 +8,6 @@ import { RecordType } from '@/types/Record'
 import { getLocales } from '@/localization/locales'
 
 const { Document, Packer, Paragraph, TextRun } = require('docx')
-
-dayjs.extend(utc)
 
 export async function GET(req: Request) {
 	const session = await getUserAuth()
@@ -50,109 +47,117 @@ export async function GET(req: Request) {
 	)
 
 	const groups = groupBy(records, (record) =>
-		dayjs.utc(record.time).format('DD.MM.YYYY'),
+		dayjs(record.time).format('DD.MM.YYYY'),
 	)
 
 	const doc = new Document({
 		sections: [
 			{
 				properties: {},
-				children: groups.map(
-					(group, j) =>
-						new Paragraph({
-							children: [
-								new TextRun({
-									text: group.value,
-									bold: true,
-									break: j !== 0 ? 1 : 0,
-									font: 'Arial',
-									size: 24,
-								}),
-								...group.items
-									.map((record, i) => {
-										return [
-											new TextRun({
-												text: `${dayjs(record.time).format('HH:mm')} - `,
-												break: i === 0 ? 2 : 1,
-												font: 'Arial',
-												size: 22,
-											}),
-											new TextRun({
-												text: locales.table.data.type[record.data.type],
-												font: 'Arial',
-												italics: true,
-												size: 24,
-											}),
-											new TextRun({
-												text: `${
-													(record.data.type === 'glucose' ||
-														record.data.type === 'insulin') &&
-													record.data.relativeToFood !== undefined &&
-													record.data.relativeToFood !== 'none'
-														? ` (${
-																locales.table.data.relativeToFood[
-																	record.data.relativeToFood
-																]
-														  })`
-														: ''
-												} - `,
-												font: 'Arial',
-												size: 22,
-											}),
-											new TextRun({
-												text:
-													record.data.type === 'glucose'
-														? `${record.data.glucose} ${locales.units.glucose}`
-														: '',
-												font: 'Arial',
-												size: 22,
-												highlight: 'yellow',
-											}),
-											new TextRun({
-												text:
-													record.data.type === 'insulin' &&
-													record.data.dose?.actrapid !== undefined
-														? `${locales.table.data.insulin.actrapid}: ${record.data.dose.actrapid}`
-														: '',
-												font: 'Arial',
-												size: 22,
-											}),
-											new TextRun({
-												text:
-													record.data.type === 'insulin' &&
-													record.data.dose?.actrapid !== undefined &&
-													record.data.dose?.protofan !== undefined
-														? ', '
-														: '',
-												font: 'Arial',
-												size: 22,
-											}),
-											new TextRun({
-												text:
-													record.data.type === 'insulin' &&
-													record.data.dose?.protofan !== undefined
-														? `${locales.table.data.insulin.protofan}: ${record.data.dose.protofan}`
-														: '',
-												font: 'Arial',
-												size: 22,
-											}),
-											new TextRun({
-												text:
-													record.data.description !== undefined
-														? record.data.type !== 'food' &&
-														  record.data.type !== 'activity'
-															? `, ${record.data.description}`
-															: record.data.description
-														: '',
-												font: 'Arial',
-												size: 22,
-											}),
-										]
-									})
-									.flat(),
-							],
-						}),
-				),
+				children: groups
+					.sort((a, b) => {
+						const parsedA = a.value.split('.')
+						const parsedB = b.value.split('.')
+						return parsedA[1] === parsedB[1]
+							? parsedB[0].localeCompare(parsedA[0])
+							: parsedB[1].localeCompare(parsedA[1])
+					})
+					.map(
+						(group, j) =>
+							new Paragraph({
+								children: [
+									new TextRun({
+										text: group.value,
+										bold: true,
+										break: j !== 0 ? 1 : 0,
+										font: 'Arial',
+										size: 24,
+									}),
+									...group.items
+										.map((record, i) => {
+											return [
+												new TextRun({
+													text: `${dayjs(record.time).format('HH:mm')} - `,
+													break: i === 0 ? 2 : 1,
+													font: 'Arial',
+													size: 22,
+												}),
+												new TextRun({
+													text: locales.table.data.type[record.data.type],
+													font: 'Arial',
+													italics: true,
+													size: 24,
+												}),
+												new TextRun({
+													text: `${
+														(record.data.type === 'glucose' ||
+															record.data.type === 'insulin') &&
+														record.data.relativeToFood !== undefined &&
+														record.data.relativeToFood !== 'none'
+															? ` (${
+																	locales.table.data.relativeToFood[
+																		record.data.relativeToFood
+																	]
+															  })`
+															: ''
+													} - `,
+													font: 'Arial',
+													size: 22,
+												}),
+												new TextRun({
+													text:
+														record.data.type === 'glucose'
+															? `${record.data.glucose} ${locales.units.glucose}`
+															: '',
+													font: 'Arial',
+													size: 22,
+													highlight: 'yellow',
+												}),
+												new TextRun({
+													text:
+														record.data.type === 'insulin' &&
+														record.data.dose?.actrapid !== undefined
+															? `${locales.table.data.insulin.actrapid}: ${record.data.dose.actrapid}`
+															: '',
+													font: 'Arial',
+													size: 22,
+												}),
+												new TextRun({
+													text:
+														record.data.type === 'insulin' &&
+														record.data.dose?.actrapid !== undefined &&
+														record.data.dose?.protofan !== undefined
+															? ', '
+															: '',
+													font: 'Arial',
+													size: 22,
+												}),
+												new TextRun({
+													text:
+														record.data.type === 'insulin' &&
+														record.data.dose?.protofan !== undefined
+															? `${locales.table.data.insulin.protofan}: ${record.data.dose.protofan}`
+															: '',
+													font: 'Arial',
+													size: 22,
+												}),
+												new TextRun({
+													text:
+														record.data.description !== undefined
+															? record.data.type !== 'food' &&
+															  record.data.type !== 'activity'
+																? `, ${record.data.description}`
+																: record.data.description
+															: '',
+													font: 'Arial',
+													size: 22,
+												}),
+											]
+										})
+										.flat(),
+								],
+							}),
+					),
 			},
 		],
 	})
