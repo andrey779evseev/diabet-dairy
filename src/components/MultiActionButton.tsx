@@ -79,39 +79,39 @@ function MultiActionButton(props: PropsType) {
 
 	return (
 		<div
-			className='relative flex h-[172px] w-[172px] select-none items-end justify-end'
+			className='relative flex h-[172px] w-[172px] touch-none select-none items-end justify-end'
 			onPointerUp={() => {
-        console.log('pointer up')
-        reset()
-      }}
+				console.log('pointer up')
+				reset()
+			}}
 			onPointerLeave={() => {
-        console.log('pointer leave')
-        reset()
-      }}
-      onTouchEnd={() => {
-        console.log('touch end')
-        reset()
-      }}
+				console.log('pointer leave')
+				reset()
+			}}
+			onTouchEnd={() => {
+				console.log('touch end')
+				reset()
+			}}
 		>
 			{actions.map((action, i) => (
 				<Button
 					onPointerEnter={() => {
-            console.log('pointer enter', i + 1)
+						console.log('pointer enter', i + 1)
 						setPointerOver(i + 1)
 					}}
 					onPointerLeave={() => {
-            console.log('pointer leave', i + 1)
+						console.log('pointer leave', i + 1)
 						setPointerOver(0)
 					}}
-          onTouchMove={() => {
-            console.log('touch move', i + 1)
+					onTouchMove={() => {
+						console.log('touch move', i + 1)
 						setPointerOver(i + 1)
-          }}
+					}}
 					size='icon'
 					variant='outline'
 					className={cn(
 						styles[i][0],
-						'absolute h-16 w-16 select-none rounded-full',
+						'absolute h-16 w-16 touch-none select-none rounded-full',
 						{
 							[styles[i][1]]: animatedIsOpen,
 							invisible: !animatedIsOpen,
@@ -127,15 +127,15 @@ function MultiActionButton(props: PropsType) {
 			<Button
 				size='icon'
 				variant={isOpen ? 'outline' : 'default'}
-				className='h-16 w-16 touch-none select-none rounded-full animate-in fade-in'
+				className='h-16 w-16 touch-none touch-none select-none rounded-full animate-in fade-in'
 				onPointerDown={(e) => {
-          console.log('pointer down')
-          start(e)
-        }}
+					console.log('pointer down')
+					start(e)
+				}}
 				onTouchStart={(e) => {
-          console.log('touch start')
-          start(e)
-        }}
+					console.log('touch start')
+					start(e)
+				}}
 			>
 				<ChevronUp className='h-8 w-8' />
 			</Button>
