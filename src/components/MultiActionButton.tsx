@@ -1,7 +1,7 @@
 'use client'
 
 import { ChevronUp, LucideIcon } from 'lucide-react'
-import { memo, useRef, useState } from 'react'
+import { createRef, memo, RefObject, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useAnimationState } from '@/hooks/useAnimationState'
@@ -36,6 +36,11 @@ function MultiActionButton(props: PropsType) {
 	const [startedAt, setStartedAt] = useState<Date | null>(null)
 	const timeoutId = useRef<NodeJS.Timeout>(null)
 	const [isPointerDown, setIsPointerDown] = useState(false)
+	const refs = useRef<RefObject<HTMLButtonElement>[]>([
+		createRef(),
+		createRef(),
+		createRef(),
+	])
 
 	const reset = () => {
 		if (timeoutId.current) clearTimeout(timeoutId.current)
@@ -79,7 +84,7 @@ function MultiActionButton(props: PropsType) {
 
 	return (
 		<div
-			className='relative flex h-[172px] w-[172px] touch-none select-none items-end justify-end'
+			className='relative flex h-[172px] w-[172px] select-none items-end justify-end'
 			onPointerUp={() => {
 				console.log('pointer up')
 				reset()
@@ -88,10 +93,19 @@ function MultiActionButton(props: PropsType) {
 				console.log('pointer leave')
 				reset()
 			}}
-      onTouchEnd={(e) => {
-        console.log('touch end', e)
-        reset()
-      }}
+			onTouchEnd={(e) => {
+				console.log('touch end', e)
+				const ref = refs.current.find(
+					(ref) =>
+						ref.current === e.target || ref.current?.contains(e.target as Node),
+				)
+        console.log('ref', ref, ref !== undefined && ref.current !== null && ref.current.id)
+
+        if(ref !== undefined && ref.current !== null && ref.current.id)
+          setPointerOver(parseInt(ref.current.id))
+        
+				reset()
+			}}
 		>
 			{actions.map((action, i) => (
 				<Button
@@ -107,7 +121,7 @@ function MultiActionButton(props: PropsType) {
 					variant='outline'
 					className={cn(
 						styles[i][0],
-						'absolute h-16 w-16 touch-none select-none rounded-full',
+						'absolute h-16 w-16 select-none rounded-full',
 						{
 							[styles[i][1]]: animatedIsOpen,
 							invisible: !animatedIsOpen,
@@ -116,6 +130,8 @@ function MultiActionButton(props: PropsType) {
 					isFocused={pointerOver === i + 1}
 					data-state={isOpen ? 'open' : 'closed'}
 					key={i}
+					ref={refs.current[i]}
+					id={i + 1}
 				>
 					<action.icon className='h-8 w-8' />
 				</Button>
@@ -123,7 +139,7 @@ function MultiActionButton(props: PropsType) {
 			<Button
 				size='icon'
 				variant={isOpen ? 'outline' : 'default'}
-				className='h-16 w-16 touch-none select-none rounded-full animate-in fade-in'
+				className='h-16 w-16 select-none rounded-full animate-in fade-in'
 				onPointerDown={(e) => {
 					console.log('pointer down')
 					start(e)
