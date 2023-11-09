@@ -103,7 +103,7 @@ function MultiActionButton(props: PropsType) {
 
         if(ref !== undefined && ref.current !== null && ref.current.id)
           setPointerOver(parseInt(ref.current.id))
-        
+
 				reset()
 			}}
 		>
@@ -131,7 +131,7 @@ function MultiActionButton(props: PropsType) {
 					data-state={isOpen ? 'open' : 'closed'}
 					key={i}
 					ref={refs.current[i]}
-					id={i + 1}
+					id={i + 1 + ''}
 				>
 					<action.icon className='h-8 w-8' />
 				</Button>
