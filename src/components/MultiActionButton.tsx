@@ -88,10 +88,10 @@ function MultiActionButton(props: PropsType) {
 				console.log('pointer leave')
 				reset()
 			}}
-			onTouchEnd={() => {
-				console.log('touch end')
-				reset()
-			}}
+			// onTouchEnd={() => {
+			// 	console.log('touch end')
+			// 	reset()
+			// }}
 		>
 			{actions.map((action, i) => (
 				<Button
@@ -103,9 +103,10 @@ function MultiActionButton(props: PropsType) {
 						console.log('pointer leave', i + 1)
 						setPointerOver(0)
 					}}
-					onTouchMove={() => {
-						console.log('touch move', i + 1)
+					onTouchEnd={() => {
+						console.log('touch end', i + 1)
 						setPointerOver(i + 1)
+            reset()
 					}}
 					size='icon'
 					variant='outline'
@@ -127,7 +128,7 @@ function MultiActionButton(props: PropsType) {
 			<Button
 				size='icon'
 				variant={isOpen ? 'outline' : 'default'}
-				className='h-16 w-16 touch-none touch-none select-none rounded-full animate-in fade-in'
+				className='h-16 w-16 touch-none select-none rounded-full animate-in fade-in'
 				onPointerDown={(e) => {
 					console.log('pointer down')
 					start(e)
