@@ -320,6 +320,7 @@ function HomePageContent(props: PropsType) {
 							? `~${dayjs(date.to).format('DD.MM.YYYY')}`
 							: ''
 					} (${locales?.filters.type.options[type]}).docx`
+          console.log('canshare', 'canShare' in navigator && navigator.canShare())
 					if ('canShare' in navigator && navigator.canShare()) {
 						const res = await fetch(
 							`/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${locale}`,
@@ -329,7 +330,7 @@ function HomePageContent(props: PropsType) {
 						)
 						const blob = await res.blob()
 						const file = new File([blob], fileName)
-						navigator.share({
+						await navigator.share({
 							title: fileName,
 							files: [file],
 						})
