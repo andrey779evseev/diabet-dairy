@@ -333,11 +333,11 @@ export default function RecordSheet(props: PropsType) {
 													placeholder={locales?.sheet.form.glucose.placeholder}
 													{...field}
 													onChange={(e) => {
-														const value = e.target.value
+														const value = e.target.value.replace(',', '.')
 														field.onChange(
-															value.replace(',', '.').endsWith('.')
+															value.endsWith('.')
 																? value
-																: parseFloat(e.target.value) || 0,
+																: parseFloat(value) || 0,
 														)
 													}}
 													inputMode='decimal'
