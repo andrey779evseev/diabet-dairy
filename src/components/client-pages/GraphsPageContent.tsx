@@ -37,18 +37,18 @@ function GraphsPageContent(props: PropsType) {
 
 	const data = useMemo(() => {
 		return records
-			.filter((record) => record.data.type === type)
+			.filter((record) => record.type === type)
 			.map((record) => {
-				if (record.data.type === 'glucose')
+				if (record.type === 'glucose')
 					return {
 						time: record.time,
-						glucose: record.data.glucose,
+						glucose: record.glucose,
 					}
-				else if (record.data.type === 'insulin')
+				else if (record.type === 'insulin')
 					return {
 						time: record.time,
-						actrapid: record.data.dose.actrapid ?? 0,
-						protofan: record.data.dose.protofan ?? 0,
+						actrapid: record.shortInsulin ?? 0,
+						protofan: record.longInsulin ?? 0,
 					}
 			})
 	}, [records, type])
