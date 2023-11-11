@@ -340,7 +340,7 @@ export default function RecordSheet(props: PropsType) {
 																: parseFloat(e.target.value) || 0,
 														)
 													}}
-													step={0.1}
+													inputMode='decimal'
 												/>
 											</FormControl>
 											<FormMessage />
