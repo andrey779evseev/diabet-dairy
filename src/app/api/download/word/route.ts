@@ -43,7 +43,7 @@ export async function GET(req: Request) {
 	const data = await getRecordsByUserIdAndDateRange(range, session.user.id)
 
 	const records = data.filter(
-		(record) => type === 'all' || record.data.type === type,
+		(record) => type === 'all' || record.type === type,
 	)
 
 	const groups = groupBy(records, (record) =>
@@ -83,20 +83,20 @@ export async function GET(req: Request) {
 													size: 22,
 												}),
 												new TextRun({
-													text: locales.table.data.type[record.data.type],
+													text: locales.table.data.type[record.type],
 													font: 'Arial',
 													italics: true,
 													size: 24,
 												}),
 												new TextRun({
 													text: `${
-														(record.data.type === 'glucose' ||
-															record.data.type === 'insulin') &&
-														record.data.relativeToFood !== undefined &&
-														record.data.relativeToFood !== 'none'
+														(record.type === 'glucose' ||
+															record.type === 'insulin') &&
+														!!record.relativeToFood &&
+														record.relativeToFood !== 'none'
 															? ` (${
 																	locales.table.data.relativeToFood[
-																		record.data.relativeToFood
+																		record.relativeToFood
 																	]
 															  })`
 															: ''
@@ -106,8 +106,8 @@ export async function GET(req: Request) {
 												}),
 												new TextRun({
 													text:
-														record.data.type === 'glucose'
-															? `${record.data.glucose} ${locales.units.glucose}`
+														record.type === 'glucose'
+															? `${record.glucose} ${locales.units.glucose}`
 															: '',
 													font: 'Arial',
 													size: 22,
@@ -115,18 +115,18 @@ export async function GET(req: Request) {
 												}),
 												new TextRun({
 													text:
-														record.data.type === 'insulin' &&
-														record.data.dose?.actrapid !== undefined
-															? `${locales.table.data.insulin.actrapid}: ${record.data.dose.actrapid}`
+														record.type === 'insulin' &&
+														!!record.shortInsulin
+															? `${locales.table.data.insulin.actrapid}: ${record.shortInsulin}`
 															: '',
 													font: 'Arial',
 													size: 22,
 												}),
 												new TextRun({
 													text:
-														record.data.type === 'insulin' &&
-														record.data.dose?.actrapid !== undefined &&
-														record.data.dose?.protofan !== undefined
+														record.type === 'insulin' &&
+														!!record.shortInsulin &&
+														!!record.longInsulin
 															? ', '
 															: '',
 													font: 'Arial',
@@ -134,20 +134,20 @@ export async function GET(req: Request) {
 												}),
 												new TextRun({
 													text:
-														record.data.type === 'insulin' &&
-														record.data.dose?.protofan !== undefined
-															? `${locales.table.data.insulin.protofan}: ${record.data.dose.protofan}`
+														record.type === 'insulin' &&
+														!!record.longInsulin
+															? `${locales.table.data.insulin.protofan}: ${record.longInsulin}`
 															: '',
 													font: 'Arial',
 													size: 22,
 												}),
 												new TextRun({
 													text:
-														record.data.description !== undefined
-															? record.data.type !== 'food' &&
-															  record.data.type !== 'activity'
-																? `, ${record.data.description}`
-																: record.data.description
+														!!record.description
+															? record.type !== 'food' &&
+															  record.type !== 'activity'
+																? `, ${record.description}`
+																: record.description
 															: '',
 													font: 'Arial',
 													size: 22,

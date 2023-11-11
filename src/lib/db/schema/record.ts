@@ -26,7 +26,7 @@ export const relativeToFoodEnum = pgEnum('relativeToFood', [
 export const records = pgTable('records', {
 	id: uuid('id').defaultRandom().primaryKey(),
 	time: timestamp('time').notNull().defaultNow(),
-	type: typeEnum('type'),
+	type: typeEnum('type').notNull(),
 	glucose: real('glucose'),
 	relativeToFood: relativeToFoodEnum('relative_to_food'),
 	description: text('description'),
