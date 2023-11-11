@@ -341,6 +341,7 @@ export default function RecordSheet(props: PropsType) {
 														)
 													}}
 													inputMode='decimal'
+                          step={0.1}
 												/>
 											</FormControl>
 											<FormMessage />
