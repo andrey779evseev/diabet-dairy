@@ -340,7 +340,6 @@ function HomePageContent(props: PropsType) {
 						  await navigator.share(data)
               return
             }
-            console.log('sharing unsuccesed', navigator.canShare(data))
 					}
           const a = document.createElement('a')
           a.style.display = 'none'
