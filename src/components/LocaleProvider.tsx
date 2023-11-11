@@ -27,15 +27,14 @@ function LocaleProvider(props: PropsType) {
 				en: {
 					zod: enTranslation,
 					custom: {
-						insulin_dose_error:
-							'Either actrapid or protofan should be filled in.',
+						insulin_error: 'Either short or long insulin should be filled in.',
 					},
 				},
 				ru: {
 					zod: ruTranslation,
 					custom: {
-						insulin_dose_error:
-							'Либо актрапид, либо протофан должны быть указаны.',
+						insulin_error:
+							'Либо короткий, либо длинный инсулин должны быть указаны.',
 					},
 				},
 			},

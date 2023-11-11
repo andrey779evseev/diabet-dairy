@@ -3,9 +3,9 @@
 import { eq, inArray } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { insertRecordSchema, records } from '@/lib/db/schema/record'
-import { NewRecord, RecordId } from '@/types/Record'
+import { Record, RecordId } from '@/types/Record'
 
-export async function createRecord(record: NewRecord) {
+export async function createRecord(record: Record) {
 	try {
 		const newRecord = insertRecordSchema.parse(record)
 		await db.insert(records).values(newRecord)
@@ -16,7 +16,7 @@ export async function createRecord(record: NewRecord) {
 	}
 }
 
-export async function createRecords(recs: NewRecord[]) {
+export async function createRecords(recs: Record[]) {
 	try {
 		const newRecords = []
 		for (const record in recs) {
@@ -51,7 +51,7 @@ export async function deleteRecords(ids: RecordId[]) {
 	}
 }
 
-export async function updateRecord(record: NewRecord) {
+export async function updateRecord(record: Record) {
 	try {
 		const { id, ...newRecord } = insertRecordSchema.parse(record)
 		await db.update(records).set(newRecord).where(eq(records.id, id!))

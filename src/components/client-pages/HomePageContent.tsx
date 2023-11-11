@@ -43,8 +43,8 @@ import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { toast } from '@/hooks/useToast'
 import type {
 	Record,
-	RecordDataType,
 	RecordId,
+	RecordRelativeToFoodType,
 	RecordType,
 } from '@/types/Record'
 
@@ -191,50 +191,82 @@ function HomePageContent(props: PropsType) {
 				},
 			},
 			{
-				id: 'data',
-				accessorKey: 'data',
+				id: 'type',
+				accessorKey: 'type',
 				cell: ({ row }) => {
-					const data = row.getValue('data') as RecordDataType
+					const type = row.getValue('type') as RecordType
+					const relativeToFood = row.getValue('relativeToFood') as
+						| RecordRelativeToFoodType
+						| undefined
+						| null
+					const glucose = row.getValue('glucose') as number | undefined | null
+					const shortInsulin = row.getValue('shortInsulin') as
+						| number
+						| undefined
+						| null
+					const longInsulin = row.getValue('longInsulin') as
+						| number
+						| undefined
+						| null
+					const description = row.getValue('description') as
+						| string
+						| undefined
+						| null
 					return (
 						<div className='flex w-full flex-col gap-1'>
 							<span className='text-base'>
-								{locales?.table.data.type[data.type]}
-								{(data.type === 'glucose' || data.type === 'insulin') &&
-								data.relativeToFood !== undefined &&
-								data.relativeToFood !== 'none'
-									? ` ${locales?.table.data.relativeToFood[
-											data.relativeToFood
-									  ]} ${locales?.table.data.type.food}`
+								{locales?.table.data.type[type]}
+								{(type === 'glucose' || type === 'insulin') &&
+								!!relativeToFood &&
+								relativeToFood !== 'none'
+									? ` ${locales?.table.data.relativeToFood[relativeToFood]} ${locales?.table.data.type.food}`
 									: null}
 							</span>
-
-							{data.type === 'glucose' && data.glucose !== undefined ? (
-								<span className='text-sm text-zinc-400'>{`${data.glucose} ${locales?.units.glucose}`}</span>
+							{type === 'glucose' && !!glucose ? (
+								<span className='text-sm text-zinc-400'>{`${glucose} ${locales?.units.glucose}`}</span>
 							) : null}
-							{data.type === 'insulin' ? (
+							{type === 'insulin' ? (
 								<span className='text-sm text-zinc-400'>
-									{data.dose.actrapid !== undefined
-										? `${locales?.table.data.insulin.actrapid}: ${data.dose.actrapid}`
+									{!!shortInsulin
+										? `${locales?.table.data.insulin.actrapid}: ${shortInsulin}`
 										: ''}
-									{data.dose.protofan !== undefined
-										? `${data.dose.actrapid !== undefined ? ', ' : ''}${locales
-												?.table.data.insulin.protofan}: ${data.dose.protofan}`
+									{!!longInsulin
+										? `${!!shortInsulin ? ', ' : ''}${locales?.table.data
+												.insulin.protofan}: ${longInsulin}`
 										: ''}
 								</span>
 							) : null}
-							{data.description !== undefined ? (
-								<span className='text-sm text-zinc-400'>
-									{data.description}
-								</span>
+							{!!description ? (
+								<span className='text-sm text-zinc-400'>{description}</span>
 							) : null}
 						</div>
 					)
 				},
 				filterFn: (row, columnId, filterValue) => {
-					const { type } = row.getValue(columnId) as RecordDataType
+					const type = row.getValue(columnId) as RecordType
 					return filterValue === 'all' || type === filterValue
 				},
 				size: 100,
+			},
+			{
+				id: 'relativeToFood',
+				accessorKey: 'relativeToFood',
+			},
+			{
+				id: 'glucose',
+				accessorKey: 'glucose',
+			},
+			{
+				id: 'shortInsulin',
+				accessorKey: 'shortInsulin',
+			},
+			{
+				id: 'longInsulin',
+				accessorKey: 'longInsulin',
+			},
+			{
+				id: 'description',
+				accessorKey: 'description',
 			},
 			{
 				id: 'actions',
@@ -329,25 +361,25 @@ function HomePageContent(props: PropsType) {
 						)
 						const blob = await res.blob()
 						const file = new File([blob], fileName, {
-              type: blob.type,
-            })
-            const data = {
+							type: blob.type,
+						})
+						const data = {
 							title: fileName,
 							files: [file],
 						}
-            
-            if (navigator.canShare(data)) {
-						  await navigator.share(data)
-              return
-            }
+
+						if (navigator.canShare(data)) {
+							await navigator.share(data)
+							return
+						}
 					}
-          const a = document.createElement('a')
-          a.style.display = 'none'
-          a.href = url
-          a.download = fileName
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
+					const a = document.createElement('a')
+					a.style.display = 'none'
+					a.href = url
+					a.download = fileName
+					document.body.appendChild(a)
+					a.click()
+					document.body.removeChild(a)
 				},
 			},
 			{

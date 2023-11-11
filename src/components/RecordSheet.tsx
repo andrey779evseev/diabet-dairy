@@ -4,11 +4,10 @@ import { useLocales } from '@/state/atoms'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getLocalTimeZone, parseAbsolute } from '@internationalized/date'
 import { v4 } from 'uuid'
-import z from 'zod'
 import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useMemo, useState } from 'react'
-import { FieldError, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { DateTimePicker } from '@/components/date-time-picker/DateTimePicker'
 import { iDB } from '@/components/IndexedDBWrapper'
 import { Button } from '@/components/ui/Button'
@@ -40,14 +39,7 @@ import { Textarea } from '@/components/ui/Textarea'
 import { createRecord, updateRecord } from '@/lib/api/record/mutations'
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { toast } from '@/hooks/useToast'
-import { Record, RecordDataSchema } from '@/types/Record'
-
-const FormSchema = z.intersection(
-	RecordDataSchema,
-	z.object({
-		time: z.date(),
-	}),
-)
+import { NewRecord, NewRecordSchema, Record } from '@/types/Record'
 
 type PropsType = {
 	addRecord: (record: Record) => void
@@ -73,14 +65,13 @@ export default function RecordSheet(props: PropsType) {
 	const locales = useLocales()
 	const editRecord = useMemo(() => {
 		if (!record) return undefined
-		const { id: _id, userId: _userId, data, ...rest } = record
+		const { id: _id, userId: _userId, ...rest } = record
 		return {
 			...rest,
-			...data,
 		}
 	}, [record])
-	const form = useForm<z.infer<typeof FormSchema>>({
-		resolver: zodResolver(FormSchema),
+	const form = useForm<NewRecord>({
+		resolver: zodResolver(NewRecordSchema),
 		defaultValues: {
 			time: new Date(),
 			type: 'glucose',
@@ -91,14 +82,13 @@ export default function RecordSheet(props: PropsType) {
 
 	const type = form.watch('type')
 
-	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+	const onSubmit = async (values: NewRecord) => {
+		console.log('onSubmit')
 		setIsLoading(true)
-		const { time, ...rest } = values
-		const newRecord = {
+		const newRecord: Record = {
 			id: record?.id ?? v4(),
-			time: time,
 			userId: record?.userId ?? session!.user.id,
-			data: rest,
+			...values,
 		}
 		if (editRecord !== undefined) {
 			if (isOnline) {
@@ -352,7 +342,7 @@ export default function RecordSheet(props: PropsType) {
 								<>
 									<FormField
 										control={form.control}
-										name='dose.actrapid'
+										name='shortInsulin'
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>
@@ -372,25 +362,13 @@ export default function RecordSheet(props: PropsType) {
 														inputMode='numeric'
 													/>
 												</FormControl>
-												<FormMessage>
-													{(
-														(form.formState.errors as any).dose as
-															| FieldError
-															| undefined
-													)?.root?.message !== undefined
-														? (
-																(form.formState.errors as any).dose as
-																	| FieldError
-																	| undefined
-														  )?.root?.message
-														: undefined}
-												</FormMessage>
+												<FormMessage />
 											</FormItem>
 										)}
 									/>
 									<FormField
 										control={form.control}
-										name='dose.protofan'
+										name='longInsulin'
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>
@@ -410,19 +388,7 @@ export default function RecordSheet(props: PropsType) {
 														inputMode='numeric'
 													/>
 												</FormControl>
-												<FormMessage>
-													{(
-														(form.formState.errors as any).dose as
-															| FieldError
-															| undefined
-													)?.root?.message !== undefined
-														? (
-																(form.formState.errors as any).dose as
-																	| FieldError
-																	| undefined
-														  )?.root?.message
-														: undefined}
-												</FormMessage>
+												<FormMessage />
 											</FormItem>
 										)}
 									/>

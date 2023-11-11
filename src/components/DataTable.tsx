@@ -8,6 +8,7 @@ import {
 	getCoreRowModel,
 	getFilteredRowModel,
 	useReactTable,
+	VisibilityState,
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -36,18 +37,27 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 	const { columns, data, fetchNext, showObserver, onChangeTypeFilter } = props
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
-		{ id: 'data', value: 'all' },
+		{ id: 'type', value: 'all' },
 	])
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+		relativeToFood: false,
+		glucose: false,
+		shortInsulin: false,
+		longInsulin: false,
+		description: false,
+	})
 	const table = useReactTable({
 		data,
 		columns,
 		state: {
 			columnFilters,
+			columnVisibility,
 		},
 		onColumnFiltersChange: setColumnFilters,
 		getCoreRowModel: getCoreRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		enableFilters: true,
+		onColumnVisibilityChange: setColumnVisibility,
 	})
 	const isMounted = useMounted()
 	const bottomAnchor = useRef(null)
@@ -55,7 +65,7 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 
 	useEffect(() => {
 		onChangeTypeFilter(
-			columnFilters.find((x) => x.id === 'data')!.value as RecordType | 'all',
+			columnFilters.find((x) => x.id === 'type')!.value as RecordType | 'all',
 		)
 	}, [columnFilters, onChangeTypeFilter])
 
@@ -96,10 +106,10 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 		<>
 			<Select
 				defaultValue={
-					(table.getColumn('data')!.getFilterValue() as string) ?? 'all'
+					(table.getColumn('type')!.getFilterValue() as string) ?? 'all'
 				}
 				onValueChange={(value) =>
-					table.getColumn('data')!.setFilterValue(value)
+					table.getColumn('type')!.setFilterValue(value)
 				}
 			>
 				<SelectTrigger className='w-full !ring-0 !ring-transparent'>
