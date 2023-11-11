@@ -320,8 +320,7 @@ function HomePageContent(props: PropsType) {
 							? `~${dayjs(date.to).format('DD.MM.YYYY')}`
 							: ''
 					} (${locales?.filters.type.options[type]}).docx`
-          console.log('canshare', 'canShare' in navigator && navigator.canShare())
-					if ('canShare' in navigator && navigator.canShare()) {
+					if ('canShare' in navigator) {
 						const res = await fetch(
 							`/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${locale}`,
 							{
@@ -329,20 +328,27 @@ function HomePageContent(props: PropsType) {
 							},
 						)
 						const blob = await res.blob()
-						const file = new File([blob], fileName)
-						await navigator.share({
+						const file = new File([blob], fileName, {
+              type: blob.type,
+            })
+            const data = {
 							title: fileName,
 							files: [file],
-						})
-					} else {
-						const a = document.createElement('a')
-						a.style.display = 'none'
-						a.href = url
-						a.download = fileName
-						document.body.appendChild(a)
-						a.click()
-						document.body.removeChild(a)
+						}
+            
+            if (navigator.canShare(data)) {
+						  await navigator.share(data)
+              return
+            }
+            console.log('sharing unsuccesed', navigator.canShare(data))
 					}
+          const a = document.createElement('a')
+          a.style.display = 'none'
+          a.href = url
+          a.download = fileName
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
 				},
 			},
 			{
