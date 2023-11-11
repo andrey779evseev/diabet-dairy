@@ -335,13 +335,12 @@ export default function RecordSheet(props: PropsType) {
 													onChange={(e) => {
 														const value = e.target.value
 														field.onChange(
-															value.endsWith('.')
+															value.replace(',', '.').endsWith('.')
 																? value
 																: parseFloat(e.target.value) || 0,
 														)
 													}}
 													inputMode='decimal'
-                          step={0.1}
 												/>
 											</FormControl>
 											<FormMessage />
