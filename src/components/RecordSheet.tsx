@@ -337,9 +337,11 @@ export default function RecordSheet(props: PropsType) {
 														field.onChange(
 															value.endsWith('.')
 																? value
-																: parseFloat(e.target.value),
+																: parseFloat(e.target.value) || 0,
 														)
 													}}
+													step={0.1}
+													inputMode='numeric'
 												/>
 											</FormControl>
 											<FormMessage />
@@ -367,6 +369,8 @@ export default function RecordSheet(props: PropsType) {
 														onChange={(e) =>
 															field.onChange(parseInt(e.target.value))
 														}
+														pattern='[0-9]*'
+														inputMode='numeric'
 													/>
 												</FormControl>
 												<FormMessage>
@@ -403,6 +407,8 @@ export default function RecordSheet(props: PropsType) {
 														onChange={(e) =>
 															field.onChange(parseInt(e.target.value))
 														}
+														pattern='[0-9]*'
+														inputMode='numeric'
 													/>
 												</FormControl>
 												<FormMessage>

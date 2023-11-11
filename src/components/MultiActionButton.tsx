@@ -1,9 +1,18 @@
 'use client'
 
 import { ChevronUp, LucideIcon } from 'lucide-react'
-import { createRef, memo, RefObject, useRef, useState } from 'react'
+import {
+	createRef,
+	memo,
+	RefObject,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from 'react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import { useAgentDetect } from '@/hooks/useAgentDetect'
 import { useAnimationState } from '@/hooks/useAnimationState'
 
 const styles = [
@@ -41,6 +50,16 @@ function MultiActionButton(props: PropsType) {
 		createRef(),
 		createRef(),
 	])
+	const containerRef = useRef<HTMLDivElement>(null)
+	const { isMobile } = useAgentDetect()
+	const [animatedPointerOver, setAnimatedPointedOver] = useState(pointerOver)
+
+	useEffect(() => {
+		if (pointerOver === 0) {
+			const timeout = setTimeout(() => setAnimatedPointedOver(pointerOver), 300)
+			return () => clearTimeout(timeout)
+		} else setAnimatedPointedOver(pointerOver)
+	}, [pointerOver, setAnimatedPointedOver])
 
 	const cancelTimeout = () => {
 		if (timeoutId.current) clearTimeout(timeoutId.current)
@@ -48,7 +67,7 @@ function MultiActionButton(props: PropsType) {
 		timeoutId.current = null
 	}
 
-	const resetPointer = () => {
+	const end = useCallback(() => {
 		cancelTimeout()
 		if (!isPointerDown && pointerOver !== 0 && pointerOver !== null) {
 			actions[pointerOver! - 1].action()
@@ -58,7 +77,7 @@ function MultiActionButton(props: PropsType) {
 
 		if (pointerOver === null || !isPointerDown) return
 
-		if (new Date().getTime() - startedAt!.getTime() < 500)
+		if (new Date().getTime() - startedAt!.getTime() < 300)
 			setIsOpen((prev) => !prev)
 		else {
 			if (pointerOver !== 0) actions[pointerOver! - 1].action()
@@ -67,7 +86,7 @@ function MultiActionButton(props: PropsType) {
 
 		setIsPointerDown(false)
 		setPointerOver(null)
-	}
+	}, [actions, isPointerDown, pointerOver, startedAt])
 
 	const start = (
 		e:
@@ -81,35 +100,53 @@ function MultiActionButton(props: PropsType) {
 		// @ts-ignore
 		timeoutId.current = setTimeout(() => {
 			setIsOpen(true)
-		}, 500)
+		}, 300)
 		setPointerOver(0)
 	}
 
-	const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-		cancelTimeout()
-		const changedTouch = e.changedTouches[0]
-		const el = document.elementFromPoint(
-			changedTouch.clientX,
-			changedTouch.clientY,
-		)
+	const onTouchMove = (e: React.TouchEvent<HTMLButtonElement>) => {
+		const touch = e.touches[0] || e.changedTouches[0]
+		const el = document.elementFromPoint(touch.pageX, touch.pageY)
 		const ref = refs.current.find(
 			(ref) => ref.current === el || ref.current?.contains(el),
 		)
-		if (ref !== undefined && ref.current !== null && ref.current.id) {
-			actions[parseInt(ref.current!.id) - 1].action()
-		}
-
-		setPointerOver(null)
-		setIsPointerDown(false)
-		setIsOpen(false)
+		if (ref !== undefined && ref.current !== null && !!ref.current.id)
+			setPointerOver(parseInt(ref.current.id))
+		else if (
+			containerRef.current !== null &&
+			containerRef.current !== el &&
+			!containerRef.current.contains(el)
+		)
+			setPointerOver(null)
+		else setPointerOver(0)
 	}
+
+	useEffect(() => {
+		const el = containerRef.current
+		if (isMobile) {
+			el?.addEventListener('touchend', end)
+
+			return () => {
+				el?.removeEventListener('touchend', end)
+			}
+		} else {
+			const set = () => {
+				setPointerOver(null)
+			}
+			el?.addEventListener('pointerup', end)
+			el?.addEventListener('pointerleave', set)
+
+			return () => {
+				el?.removeEventListener('pointerup', end)
+				el?.removeEventListener('pointerleave', set)
+			}
+		}
+	}, [isMobile, end])
 
 	return (
 		<div
 			className='fixed bottom-5 right-5 flex h-[172px] w-[172px] touch-none select-none items-end justify-end'
-			onPointerUp={resetPointer}
-			onPointerLeave={resetPointer}
-			onTouchEnd={onTouchEnd}
+			ref={containerRef}
 		>
 			{actions.map((action, i) => (
 				<Button
@@ -120,7 +157,7 @@ function MultiActionButton(props: PropsType) {
 						setPointerOver(0)
 					}}
 					size='icon'
-					variant='outline'
+					variant={pointerOver === i + 1 ? 'default' : 'outline'}
 					className={cn(
 						styles[i][0],
 						'absolute h-16 w-16 touch-none select-none rounded-full',
@@ -129,6 +166,10 @@ function MultiActionButton(props: PropsType) {
 							invisible: !animatedIsOpen,
 						},
 					)}
+					style={{
+						scale: pointerOver === i + 1 ? '1.2' : '1',
+						transition: 'scale 0.3s ease',
+					}}
 					data-state={isOpen ? 'open' : 'closed'}
 					key={i}
 					ref={refs.current[i]}
@@ -139,10 +180,15 @@ function MultiActionButton(props: PropsType) {
 			))}
 			<Button
 				size='icon'
-				variant={isOpen ? 'outline' : 'default'}
+				variant={animatedPointerOver === 0 || !isOpen ? 'default' : 'outline'}
 				className='h-16 w-16 touch-none select-none rounded-full animate-in fade-in'
 				onPointerDown={start}
 				onTouchStart={start}
+				onTouchMove={onTouchMove}
+				style={{
+					scale: animatedPointerOver === 0 ? '1.2' : '1',
+					transition: 'scale 0.3s ease',
+				}}
 			>
 				<ChevronUp className='h-8 w-8' />
 			</Button>

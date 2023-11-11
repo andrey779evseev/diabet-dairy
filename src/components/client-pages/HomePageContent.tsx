@@ -4,7 +4,7 @@ import { useLocale, useLocales } from '@/state/atoms'
 import dayjs from 'dayjs'
 import { ColumnDef } from '@tanstack/react-table'
 import {
-	FileUp,
+	Forward,
 	Loader2,
 	MoreHorizontal,
 	Pencil,
@@ -305,8 +305,8 @@ function HomePageContent(props: PropsType) {
 				action: () => setIsOpenRecordSheet(true),
 			},
 			{
-				icon: FileUp,
-				action: () => {
+				icon: Forward,
+				action: async () => {
 					if (date === undefined) {
 						toast({
 							description: 'Before export to file, please select a date range',
@@ -314,17 +314,34 @@ function HomePageContent(props: PropsType) {
 						})
 						return
 					}
-					const a = document.createElement('a')
-					a.style.display = 'none'
-					a.href = `/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${locale}`
-					a.download = `${dayjs(date.from).format('DD.MM.YYYY')}${
+					const url = `/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${locale}`
+					const fileName = `${dayjs(date.from).format('DD.MM.YYYY')}${
 						date.to !== undefined
 							? `~${dayjs(date.to).format('DD.MM.YYYY')}`
 							: ''
 					} (${locales?.filters.type.options[type]}).docx`
-					document.body.appendChild(a)
-					a.click()
-					document.body.removeChild(a)
+					if ('canShare' in navigator && navigator.canShare()) {
+						const res = await fetch(
+							`/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${locale}`,
+							{
+								method: 'GET',
+							},
+						)
+						const blob = await res.blob()
+						const file = new File([blob], fileName)
+						navigator.share({
+							title: fileName,
+							files: [file],
+						})
+					} else {
+						const a = document.createElement('a')
+						a.style.display = 'none'
+						a.href = url
+						a.download = fileName
+						document.body.appendChild(a)
+						a.click()
+						document.body.removeChild(a)
+					}
 				},
 			},
 			{
