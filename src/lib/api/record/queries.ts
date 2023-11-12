@@ -4,7 +4,7 @@ import { desc, eq, sql } from 'drizzle-orm'
 import { DateRange } from 'react-day-picker'
 import { db } from '@/lib/db'
 import { records } from '@/lib/db/schema/record'
-import type {Record} from '@/types/Record'
+import type { Record } from '@/types/Record'
 
 dayjs.extend(utc)
 
@@ -13,12 +13,12 @@ export const getRecordsByUserId = async (
 	offset: number,
 	limit: number,
 ) => {
-	return await db.query.records.findMany({
+	return (await db.query.records.findMany({
 		where: eq(records.userId, userId),
 		offset,
 		limit,
 		orderBy: [desc(records.time)],
-	}) as Record[]
+	})) as Record[]
 }
 
 export const getRecordsCountByUserId = async (userId: string) => {
@@ -33,7 +33,7 @@ export const getRecordsByUserIdAndDateRange = async (
 	date: DateRange,
 	userId: string,
 ) => {
-	return await db.query.records.findMany({
+	return (await db.query.records.findMany({
 		where: (records, { gte, lte, and, eq }) =>
 			and(
 				date.to === undefined
@@ -45,5 +45,5 @@ export const getRecordsByUserIdAndDateRange = async (
 				eq(records.userId, userId),
 			),
 		orderBy: [desc(records.time)],
-	}) as Record[]
+	})) as Record[]
 }

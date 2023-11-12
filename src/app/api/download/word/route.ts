@@ -115,8 +115,7 @@ export async function GET(req: Request) {
 												}),
 												new TextRun({
 													text:
-														record.type === 'insulin' &&
-														!!record.shortInsulin
+														record.type === 'insulin' && !!record.shortInsulin
 															? `${locales.table.data.insulin.actrapid}: ${record.shortInsulin}`
 															: '',
 													font: 'Arial',
@@ -134,21 +133,19 @@ export async function GET(req: Request) {
 												}),
 												new TextRun({
 													text:
-														record.type === 'insulin' &&
-														!!record.longInsulin
+														record.type === 'insulin' && !!record.longInsulin
 															? `${locales.table.data.insulin.protofan}: ${record.longInsulin}`
 															: '',
 													font: 'Arial',
 													size: 22,
 												}),
 												new TextRun({
-													text:
-														!!record.description
-															? record.type !== 'food' &&
-															  record.type !== 'activity'
-																? `, ${record.description}`
-																: record.description
-															: '',
+													text: !!record.description
+														? record.type !== 'food' &&
+														  record.type !== 'activity'
+															? `, ${record.description}`
+															: record.description
+														: '',
 													font: 'Arial',
 													size: 22,
 												}),

@@ -2,13 +2,12 @@
 
 import { useLocales } from '@/state/atoms'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { getLocalTimeZone, parseAbsolute } from '@internationalized/date'
 import { v4 } from 'uuid'
 import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { DateTimePicker } from '@/components/date-time-picker/DateTimePicker'
+import DateTimePicker from '@/components/date-time-picker/DateTimePicker'
 import { iDB } from '@/components/IndexedDBWrapper'
 import { Button } from '@/components/ui/Button'
 import {
@@ -245,22 +244,8 @@ export default function RecordSheet(props: PropsType) {
 										</FormLabel>
 										<FormControl>
 											<DateTimePicker
-												granularity='minute'
-												value={
-													!!field.value
-														? parseAbsolute(
-																field.value.toISOString(),
-																getLocalTimeZone(),
-														  )
-														: null
-												}
-												onChange={(date) => {
-													field.onChange(
-														!!date ? date.toDate(getLocalTimeZone()) : null,
-													)
-												}}
-												hideTimeZone
-												hourCycle={24}
+												value={field.value}
+												onChange={field.onChange}
 											/>
 										</FormControl>
 										<FormMessage />

@@ -1,7 +1,6 @@
 'use client'
 
 import { LocalesAtom, useLocale } from '@/state/atoms'
-import { I18nProvider } from '@react-aria/i18n'
 import { getLocales } from '@/localization/locales'
 import 'dayjs/locale/en'
 import 'dayjs/locale/ru'
@@ -52,7 +51,7 @@ function LocaleProvider(props: PropsType) {
 		})()
 	}, [locale, setLocales])
 
-	return <I18nProvider locale={locale}>{children}</I18nProvider>
+	return children
 }
 
 export default memo(LocaleProvider)
