@@ -8,6 +8,7 @@ import {
 	timestamp,
 } from 'drizzle-orm/pg-core'
 import { records } from '@/lib/db/schema/record'
+import { settings } from '@/lib/db/schema/settings'
 
 export const users = pgTable('user', {
 	id: text('id').notNull().primaryKey(),
@@ -18,8 +19,9 @@ export const users = pgTable('user', {
 	image: text('image'),
 })
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
 	records: many(records),
+	settings: one(settings),
 }))
 
 export const accounts = pgTable(

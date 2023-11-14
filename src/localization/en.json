@@ -66,8 +66,8 @@
 				"before": "Before food"
 			},
 			"insulin": {
-				"actrapid": "Actrapid",
-				"protofan": "Protofan"
+				"short": "Short Insulin",
+				"long": "Long Insulin"
 			}
 		},
 		"noResults": "No results.",
@@ -135,13 +135,15 @@
 				"label": "Glucose",
 				"placeholder": "Enter glucose index"
 			},
-			"actrapid": {
-				"label": "Actrapid",
-				"placeholder": "Enter actrapid dose"
+			"shortInsulin": {
+				"label": "Short Insulin",
+				"placeholder": "Enter short insulin dose",
+				"part_placeholder": "Enter dose of"
 			},
-			"protofan": {
-				"label": "Protofan",
-				"placeholder": "Enter protofan dose"
+			"longInsulin": {
+				"label": "Long Insulin",
+				"placeholder": "Enter long insulin dose",
+				"part_placeholder": "Enter dose of"
 			},
 			"description": {
 				"label": "Description",
@@ -173,6 +175,7 @@
 			"home": "Home",
 			"graphs": "Graphs",
 			"support": "Support",
+			"settings": "Settings",
 			"logout": "Log out"
 		}
 	},

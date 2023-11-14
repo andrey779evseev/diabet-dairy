@@ -66,8 +66,8 @@
 				"before": "До еды"
 			},
 			"insulin": {
-				"actrapid": "Актрапид",
-				"protofan": "Протофан"
+				"short": "Короткий Инсулин",
+				"long": "Длинный Инсулин"
 			}
 		},
 		"noResults": "Нет результатов.",
@@ -135,13 +135,15 @@
 				"label": "Глюкоза",
 				"placeholder": "Введите уровень глюкозы"
 			},
-			"actrapid": {
-				"label": "Актрапид",
-				"placeholder": "Введите дозу актрапида"
+			"shortInsulin": {
+				"label": "Короткий Инсулин",
+				"placeholder": "Введите дозу короткого инсулина",
+				"part_placeholder": "Введите дозу"
 			},
-			"protofan": {
-				"label": "Протофан",
-				"placeholder": "Введите дозу протофана"
+			"longInsulin": {
+				"label": "Длинный Инсулин",
+				"placeholder": "Введите дозу длинного инсулина",
+				"part_placeholder": "Введите дозу"
 			},
 			"description": {
 				"label": "Описание",
@@ -173,6 +175,7 @@
 			"home": "Главная",
 			"graphs": "Графики",
 			"support": "Поддержка",
+			"settings": "Настройик",
 			"logout": "Выйти"
 		}
 	},

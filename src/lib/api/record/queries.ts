@@ -1,3 +1,5 @@
+'use server'
+
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { desc, eq, sql } from 'drizzle-orm'

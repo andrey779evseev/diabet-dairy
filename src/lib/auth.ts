@@ -3,6 +3,8 @@ import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { getServerSession, NextAuthOptions, Session } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
+import { createSettings } from '@/lib/api/settings/mutations'
+import { getSettingsByUserId } from '@/lib/api/settings/queries'
 import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema/auth'
 import { env } from '@/lib/env.mjs'
@@ -26,7 +28,7 @@ export const authOptions: NextAuthOptions = {
 			}
 			return session
 		},
-		async jwt({ token, user }) {
+		async jwt({ token, user, trigger }) {
 			const dbUser = await db.query.users.findFirst({
 				where: eq(users.email, token.email!),
 			})
@@ -43,6 +45,11 @@ export const authOptions: NextAuthOptions = {
 						username: nanoid(10),
 					})
 					.where(eq(users.id, dbUser.id))
+			}
+
+			if (trigger === 'signUp' || trigger === 'signIn') {
+				const settings = await getSettingsByUserId(dbUser.id)
+				if (settings === undefined) await createSettings({ userId: dbUser.id })
 			}
 
 			return {

@@ -49,12 +49,12 @@ export const NewRecordSchema = z
 		) {
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
-				params: { i18n: 'insulin_error' },
+				params: { i18n: 'sheet_insulin_error' },
 				path: ['shortInsulin'],
 			})
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
-				params: { i18n: 'insulin_error' },
+				params: { i18n: 'sheet_insulin_error' },
 				path: ['longInsulin'],
 			})
 		}

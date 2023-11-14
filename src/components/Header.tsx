@@ -4,6 +4,7 @@ import { LocaleAtom, LocalesAtom } from '@/state/atoms'
 import { useAtom } from 'jotai'
 import {
 	AreaChart,
+	Cog,
 	Home,
 	LifeBuoy,
 	LogOut,
@@ -14,6 +15,7 @@ import {
 	WifiOff,
 } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
+import { useMemo } from 'react'
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar'
@@ -38,6 +40,30 @@ export default function Header() {
 	const { data: session } = useSession()
 	const [locales, setLocales] = useAtom(LocalesAtom)
 	const [locale, setLocale] = useAtom(LocaleAtom)
+
+	const routes = useMemo(() => {
+		return [
+			{
+				label: locales?.header.dropdown.home,
+				path: '/',
+				icon: Home,
+			},
+			{
+				label: locales?.header.dropdown.graphs,
+				path: '/graphs',
+				icon: AreaChart,
+			},
+			{
+				label: locales?.header.dropdown.settings,
+				path: '/settings',
+				icon: Cog,
+			},
+			{
+				label: locales?.header.dropdown.support,
+				icon: LifeBuoy,
+			},
+		]
+	}, [locales?.header.dropdown])
 
 	const logout = async () => {
 		await signOut()
@@ -64,8 +90,6 @@ export default function Header() {
 							<AvatarImage
 								src={session?.user.image ?? undefined}
 								alt='profile image'
-								width={16}
-								height={16}
 							/>
 							<AvatarFallback>M</AvatarFallback>
 						</Avatar>
@@ -90,18 +114,19 @@ export default function Header() {
 						</DropdownMenuCheckboxItem>
 					</DropdownMenuRadioGroup>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onSelect={() => router.push('/')}>
-						<Home className='mr-2 h-4 w-4' />
-						<span>{locales?.header.dropdown.home}</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem onSelect={() => router.push('/graphs')}>
-						<AreaChart className='mr-2 h-4 w-4' />
-						<span>{locales?.header.dropdown.graphs}</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem>
-						<LifeBuoy className='mr-2 h-4 w-4' />
-						<span>{locales?.header.dropdown.support}</span>
-					</DropdownMenuItem>
+					{routes.map((route, i) => (
+						<DropdownMenuItem
+							onSelect={
+								route.path !== undefined
+									? () => router.push(route.path)
+									: undefined
+							}
+							key={i}
+						>
+							<route.icon className='mr-2 h-4 w-4' />
+							<span>{route.label}</span>
+						</DropdownMenuItem>
+					))}
 					<DropdownMenuSeparator />
 					<DropdownMenuItem onSelect={() => logout()}>
 						<LogOut className='mr-2 h-4 w-4' />

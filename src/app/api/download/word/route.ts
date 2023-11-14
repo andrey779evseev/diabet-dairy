@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import type { DateRange } from 'react-day-picker'
 import { NextResponse } from 'next/server'
 import { getRecordsByUserIdAndDateRange } from '@/lib/api/record/queries'
+import { getSettingsByUserId } from '@/lib/api/settings/queries'
 import { getUserAuth } from '@/lib/auth'
 import { groupBy } from '@/lib/utils'
 import { RecordType } from '@/types/Record'
@@ -29,8 +30,6 @@ export async function GET(req: Request) {
 
 	const lang = locale === 'ru' ? 'ru' : 'en'
 
-	const locales = await getLocales(lang)
-
 	const range: DateRange = {
 		from:
 			from !== null && from !== 'undefined' ? new Date(from) : new Date(to!),
@@ -40,7 +39,11 @@ export async function GET(req: Request) {
 				: undefined,
 	}
 
-	const data = await getRecordsByUserIdAndDateRange(range, session.user.id)
+	const [locales, data, settings] = await Promise.all([
+		getLocales(lang),
+		getRecordsByUserIdAndDateRange(range, session.user.id),
+		getSettingsByUserId(session.user.id),
+	])
 
 	const records = data.filter(
 		(record) => type === 'all' || record.type === type,
@@ -116,7 +119,10 @@ export async function GET(req: Request) {
 												new TextRun({
 													text:
 														record.type === 'insulin' && !!record.shortInsulin
-															? `${locales.table.data.insulin.actrapid}: ${record.shortInsulin}`
+															? `${
+																	settings.shortInsulin ??
+																	locales.table.data.insulin.short
+															  }: ${record.shortInsulin}`
 															: '',
 													font: 'Arial',
 													size: 22,
@@ -134,7 +140,10 @@ export async function GET(req: Request) {
 												new TextRun({
 													text:
 														record.type === 'insulin' && !!record.longInsulin
-															? `${locales.table.data.insulin.protofan}: ${record.longInsulin}`
+															? `${
+																	settings.longInsulin ??
+																	locales.table.data.insulin.long
+															  }: ${record.longInsulin}`
 															: '',
 													font: 'Arial',
 													size: 22,

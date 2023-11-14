@@ -25,7 +25,7 @@ export const relativeToFoodEnum = pgEnum('relativeToFood', [
 
 export const records = pgTable('records', {
 	id: uuid('id').defaultRandom().primaryKey(),
-	time: timestamp('time').notNull().defaultNow(),
+	time: timestamp('time', { mode: 'date' }).notNull().defaultNow(),
 	type: typeEnum('type').notNull(),
 	glucose: real('glucose'),
 	relativeToFood: relativeToFoodEnum('relative_to_food'),
@@ -34,7 +34,7 @@ export const records = pgTable('records', {
 	longInsulin: smallint('longInsulin'),
 	userId: text('userId')
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: 'cascade' }),
 })
 
 export const recordsRelations = relations(records, ({ one }) => ({
@@ -44,7 +44,6 @@ export const recordsRelations = relations(records, ({ one }) => ({
 	}),
 }))
 
-// Schema for CRUD - used to validate API requests
 export const insertRecordSchema = createInsertSchema(records)
 export const selectRecordSchema = createSelectSchema(records)
 export const recordIdSchema = selectRecordSchema.pick({ id: true })

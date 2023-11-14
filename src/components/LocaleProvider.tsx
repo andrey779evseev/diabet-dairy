@@ -26,14 +26,17 @@ function LocaleProvider(props: PropsType) {
 				en: {
 					zod: enTranslation,
 					custom: {
-						insulin_error: 'Either short or long insulin should be filled in.',
+						sheet_insulin_error:
+							'Either short or long insulin should be filled in.',
+						required: 'Required',
 					},
 				},
 				ru: {
 					zod: ruTranslation,
 					custom: {
-						insulin_error:
+						sheet_insulin_error:
 							'Либо короткий, либо длинный инсулин должны быть указаны.',
+						required: 'Обязательное поле',
 					},
 				},
 			},

@@ -39,6 +39,7 @@ import { createRecord, updateRecord } from '@/lib/api/record/mutations'
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { toast } from '@/hooks/useToast'
 import { NewRecord, NewRecordSchema, Record } from '@/types/Record'
+import { Settings } from '@/types/Settings'
 
 type PropsType = {
 	addRecord: (record: Record) => void
@@ -47,6 +48,7 @@ type PropsType = {
 	cancelEdit: () => void
 	isOpen: boolean
 	setIsOpen: (value: boolean) => void
+	settings: Settings
 }
 
 export default function RecordSheet(props: PropsType) {
@@ -57,6 +59,7 @@ export default function RecordSheet(props: PropsType) {
 		cancelEdit,
 		isOpen,
 		setIsOpen,
+		settings,
 	} = props
 	const { data: session } = useSession()
 	const [isLoading, setIsLoading] = useState(false)
@@ -331,13 +334,16 @@ export default function RecordSheet(props: PropsType) {
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>
-													{locales?.sheet.form.actrapid.label}
+													{settings.shortInsulin ??
+														locales?.sheet.form.shortInsulin.label}
 												</FormLabel>
 												<FormControl>
 													<Input
 														type='number'
 														placeholder={
-															locales?.sheet.form.actrapid.placeholder
+															!settings.shortInsulin
+																? locales?.sheet.form.shortInsulin.placeholder
+																: `${locales?.sheet.form.shortInsulin.part_placeholder} ${settings.shortInsulin}`
 														}
 														{...field}
 														onChange={(e) =>
@@ -357,12 +363,15 @@ export default function RecordSheet(props: PropsType) {
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>
-													{locales?.sheet.form.protofan.label}
+													{settings.longInsulin ??
+														locales?.sheet.form.longInsulin.label}
 												</FormLabel>
 												<FormControl>
 													<Input
 														placeholder={
-															locales?.sheet.form.protofan.placeholder
+															!settings.longInsulin
+																? locales?.sheet.form.longInsulin.placeholder
+																: `${locales?.sheet.form.longInsulin.part_placeholder} ${settings.longInsulin}`
 														}
 														type='number'
 														{...field}

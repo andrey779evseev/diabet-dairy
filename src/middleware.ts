@@ -8,5 +8,5 @@ export default withAuth({
 
 export const config = {
 	// matcher: '/((?!api|_next|.*\\..*).*)',
-	matcher: ['/', '/graphs'],
+	matcher: ['/', '/graphs', '/settings/:path*'],
 }

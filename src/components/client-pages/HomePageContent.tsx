@@ -47,15 +47,17 @@ import type {
 	RecordRelativeToFoodType,
 	RecordType,
 } from '@/types/Record'
+import { Settings } from '@/types/Settings'
 
 type PropsType = {
+	settings: Settings
 	records: Record[]
 	recordsCount: number
 	fetchRecords: (offset: number, limit?: number) => Promise<Record[]>
 }
 
 function HomePageContent(props: PropsType) {
-	const { records: recordsBase, fetchRecords, recordsCount } = props
+	const { records: recordsBase, fetchRecords, recordsCount, settings } = props
 	const [date, setDate] = useState<DateRange | undefined>(() => {
 		const now = new Date()
 		now.setHours(0, 0, 0, 0)
@@ -228,11 +230,15 @@ function HomePageContent(props: PropsType) {
 							{type === 'insulin' ? (
 								<span className='text-sm text-zinc-400'>
 									{!!shortInsulin
-										? `${locales?.table.data.insulin.actrapid}: ${shortInsulin}`
+										? `${
+												settings.shortInsulin ??
+												locales?.table.data.insulin.short
+										  }: ${shortInsulin}`
 										: ''}
 									{!!longInsulin
-										? `${!!shortInsulin ? ', ' : ''}${locales?.table.data
-												.insulin.protofan}: ${longInsulin}`
+										? `${!!shortInsulin ? ', ' : ''}${
+												settings.longInsulin ?? locales?.table.data.insulin.long
+										  }: ${longInsulin}`
 										: ''}
 								</span>
 							) : null}
@@ -312,6 +318,7 @@ function HomePageContent(props: PropsType) {
 			isOpenDeleteAlert,
 			deletingRecordId,
 			locales,
+			settings,
 		],
 	)
 
@@ -410,6 +417,7 @@ function HomePageContent(props: PropsType) {
 					cancelEdit={() => setEditRecord(undefined)}
 					isOpen={isOpenRecordSheet}
 					setIsOpen={setIsOpenRecordSheet}
+					settings={settings}
 				/>
 			) : null}
 			<MultiActionButton actions={actions} />
