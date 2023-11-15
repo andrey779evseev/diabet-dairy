@@ -31,6 +31,7 @@ export default function DateTimePicker(props: PropsType) {
 						'w-full justify-start text-left font-normal',
 						!date && 'text-muted-foreground',
 					)}
+					type='button'
 				>
 					<CalendarIcon className='mr-2 h-4 w-4' />
 					{date ? (
@@ -40,7 +41,7 @@ export default function DateTimePicker(props: PropsType) {
 					)}
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className='w-auto p-0'>
+			<PopoverContent className='w-auto p-0' portal={false} align='start'>
 				<Calendar
 					mode='single'
 					selected={date}

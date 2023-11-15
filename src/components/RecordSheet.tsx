@@ -241,10 +241,8 @@ export default function RecordSheet(props: PropsType) {
 								control={form.control}
 								name='time'
 								render={({ field }) => (
-									<FormItem>
-										<FormLabel htmlFor='time'>
-											{locales?.sheet.form.time.label}
-										</FormLabel>
+									<FormItem className='flex flex-col gap-y-2 space-y-0'>
+										<FormLabel>{locales?.sheet.form.time.label}</FormLabel>
 										<FormControl>
 											<DateTimePicker
 												value={field.value}
