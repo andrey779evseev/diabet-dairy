@@ -1,29 +1,21 @@
 import HomePageContent from '@/components/client-pages/HomePageContent'
-import {
-	getRecordsByUserId,
-	getRecordsCountByUserId,
-} from '@/lib/api/record/queries'
-import { getSettingsByUserId } from '@/lib/api/settings/queries'
+import { getRecords, getRecordsCount } from '@/lib/api/record/queries'
+import { getSettings } from '@/lib/api/settings/queries'
 import { getUserAuth } from '@/lib/auth'
+import { getClearNow } from '@/lib/utils'
 
 export default async function Home() {
 	const { user } = await getUserAuth()
 
-	async function fetchRecords(offset: number = 0, limit: number = 100) {
-		'use server'
-		return await getRecordsByUserId(user.id, offset, limit)
-	}
-
 	const [records, recordsCount, settings] = await Promise.all([
-		fetchRecords(),
-		getRecordsCountByUserId(user.id),
-		getSettingsByUserId(user.id),
+		getRecords({ from: getClearNow() }, user.id),
+		getRecordsCount({ from: getClearNow() }, user.id),
+		getSettings(user.id),
 	])
 
 	return (
 		<HomePageContent
 			records={records}
-			fetchRecords={fetchRecords}
 			recordsCount={recordsCount}
 			settings={settings}
 		/>

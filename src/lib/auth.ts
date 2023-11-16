@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid'
 import { getServerSession, NextAuthOptions, Session } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { createSettings } from '@/lib/api/settings/mutations'
-import { getSettingsByUserId } from '@/lib/api/settings/queries'
+import { getSettings } from '@/lib/api/settings/queries'
 import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema/auth'
 import { env } from '@/lib/env.mjs'
@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
 			}
 
 			if (trigger === 'signUp' || trigger === 'signIn') {
-				const settings = await getSettingsByUserId(dbUser.id)
+				const settings = await getSettings(dbUser.id)
 				if (settings === undefined) await createSettings({ userId: dbUser.id })
 			}
 
@@ -59,9 +59,6 @@ export const authOptions: NextAuthOptions = {
 				picture: dbUser.image,
 				username: dbUser.username,
 			}
-		},
-		redirect() {
-			return '/'
 		},
 	},
 	providers: [

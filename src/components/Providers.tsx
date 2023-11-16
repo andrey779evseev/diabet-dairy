@@ -2,15 +2,17 @@
 
 import * as dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
+import utc from 'dayjs/plugin/utc'
 import { Provider as JotaiProvider } from 'jotai'
 import { SessionProvider } from 'next-auth/react'
-import { memo, PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 import { ThemeProvider } from 'next-themes'
 import LocaleProvider from '@/components/LocaleProvider'
 
 dayjs.extend(isBetween)
+dayjs.extend(utc)
 
-function Providers(props: PropsWithChildren) {
+export default function Providers(props: PropsWithChildren) {
 	const { children } = props
 
 	return (
@@ -27,5 +29,3 @@ function Providers(props: PropsWithChildren) {
 		</JotaiProvider>
 	)
 }
-
-export default memo(Providers)

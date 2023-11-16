@@ -1,7 +1,8 @@
 import { DateRange } from 'react-day-picker'
 import dynamic from 'next/dynamic'
-import { getRecordsByUserIdAndDateRange } from '@/lib/api/record/queries'
+import { getRecordsByDate } from '@/lib/api/record/queries'
 import { getUserAuth } from '@/lib/auth'
+import { getClearNow } from '@/lib/utils'
 
 const GraphsPageContent = dynamic(
 	() => import('@/components/client-pages/GraphsPageContent'),
@@ -13,14 +14,12 @@ export default async function GraphsPage() {
 
 	async function fetchRecords(date: DateRange) {
 		'use server'
-		return await getRecordsByUserIdAndDateRange(date, user.id)
+		return await getRecordsByDate(date, user.id)
 	}
 
-	const now = new Date()
-	now.setHours(0, 0, 0, 0)
-	const records = await getRecordsByUserIdAndDateRange(
+	const records = await getRecordsByDate(
 		{
-			from: now,
+			from: getClearNow(),
 			to: undefined,
 		},
 		user.id,

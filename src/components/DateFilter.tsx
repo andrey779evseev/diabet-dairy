@@ -19,7 +19,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/Select'
-import { cn } from '@/lib/utils'
+import { cn, getClearNow } from '@/lib/utils'
 
 type PropsType = {
 	date: DateRange | undefined
@@ -62,8 +62,7 @@ function DateFilter(props: PropsType) {
 			>
 				<Select
 					onValueChange={(value) => {
-						const now = new Date()
-						now.setHours(0, 0, 0, 0)
+						const now = getClearNow()
 						setDate({
 							from:
 								value === '0'

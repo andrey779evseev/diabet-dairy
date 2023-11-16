@@ -12,7 +12,8 @@ import {
 	RotateCcw,
 	Trash,
 } from 'lucide-react'
-import { memo, useCallback, useMemo, useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { DateRange } from 'react-day-picker'
 import { useRouter } from 'next/navigation'
 import { DataTable } from '@/components/DataTable'
@@ -39,6 +40,8 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
 import { deleteRecord } from '@/lib/api/record/mutations'
+import { getRecords, getRecordsCount } from '@/lib/api/record/queries'
+import { getClearNow } from '@/lib/utils'
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { toast } from '@/hooks/useToast'
 import type {
@@ -53,49 +56,49 @@ type PropsType = {
 	settings: Settings
 	records: Record[]
 	recordsCount: number
-	fetchRecords: (offset: number, limit?: number) => Promise<Record[]>
 }
 
 function HomePageContent(props: PropsType) {
-	const { records: recordsBase, fetchRecords, recordsCount, settings } = props
+	const {
+		records: recordsBase,
+		recordsCount: recordsCountBase,
+		settings,
+	} = props
 	const [date, setDate] = useState<DateRange | undefined>(() => {
-		const now = new Date()
-		now.setHours(0, 0, 0, 0)
 		return {
-			from: now,
+			from: getClearNow(),
 			to: undefined,
 		}
 	})
 	const { isOnline } = useNetworkStatus()
-	const [combinedRecords, setCombinedRecords] = useState(recordsBase)
+	const [records, setRecords] = useState(recordsBase)
 	const [deletingRecordId, setDeletingRecordId] = useState<string | null>(null)
 	const [isOpenDeleteAlert, setIsOpenDeleteAlert] = useState(false)
 	const [editRecord, setEditRecord] = useState<Record | undefined>(undefined)
 	const [isOpenRecordSheet, setIsOpenRecordSheet] = useState(false)
 	const [type, setType] = useState<RecordType | 'all'>('all')
+	const [recordsCount, setRecordsCount] = useState(recordsCountBase)
 	const locales = useLocales()
 	const locale = useLocale()
 	const router = useRouter()
+	const { data: session } = useSession()
 
-	const records = useMemo(() => {
-		return combinedRecords.filter(
-			(x) =>
-				date !== undefined &&
-				((date.from !== undefined &&
-					date.to === undefined &&
-					dayjs(x.time).isSame(date.from, 'day')) ||
-					(date.from === undefined &&
-						date.to !== undefined &&
-						dayjs(x.time).isSame(date.to, 'day')) ||
-					(date.from !== undefined &&
-						date.to !== undefined &&
-						dayjs(x.time).isBetween(date.from, date.to, 'day', '[]'))),
-		)
-	}, [combinedRecords, date])
+	useEffect(() => {
+		;(async () => {
+			if (!date || !session) return
+			const [recs, count] = await Promise.all([
+				getRecords(date, session.user.id),
+				getRecordsCount(date, session.user.id),
+			])
+			setRecords(recs)
+			setRecordsCount(count)
+		})()
+	}, [date, session])
 
 	const fetchNext = async () => {
-		const res = await fetchRecords(combinedRecords.length)
-		setCombinedRecords((prev) => [...prev, ...res])
+		if (!date || !session) return
+		const res = await getRecords(date, session.user.id, records.length)
+		setRecords((prev) => [...prev, ...res])
 	}
 
 	const prepareForRemoveRecord = useCallback(
@@ -132,9 +135,7 @@ function HomePageContent(props: PropsType) {
 		if (isOnline) {
 			await deleteRecord(deletingRecordId!)
 				.then(() => {
-					setCombinedRecords((prev) =>
-						prev.filter((x) => x.id !== deletingRecordId),
-					)
+					setRecords((prev) => prev.filter((x) => x.id !== deletingRecordId))
 				})
 				.catch((error: string) => {
 					toast({
@@ -152,9 +153,7 @@ function HomePageContent(props: PropsType) {
 					id: deletingRecordId!,
 				})
 				.then(() => {
-					setCombinedRecords((prev) =>
-						prev.filter((x) => x.id !== deletingRecordId),
-					)
+					setRecords((prev) => prev.filter((x) => x.id !== deletingRecordId))
 					toast({
 						title: locales?.toast.delete.online.info.title,
 						description: locales?.toast.delete.online.info.description,
@@ -172,7 +171,7 @@ function HomePageContent(props: PropsType) {
 					setDeletingRecordId(null)
 				})
 		}
-	}, [setCombinedRecords, deletingRecordId, isOnline, locales])
+	}, [setRecords, deletingRecordId, isOnline, locales])
 
 	const columns: ColumnDef<Record>[] = useMemo(
 		() => [
@@ -323,13 +322,13 @@ function HomePageContent(props: PropsType) {
 	)
 
 	const addRecord = (record: Record) => {
-		setCombinedRecords((prev) =>
+		setRecords((prev) =>
 			[record, ...prev].toSorted((a, b) => b.time.getTime() - a.time.getTime()),
 		)
 	}
 
 	const updateRecord = (record: Record) => {
-		setCombinedRecords((prev) =>
+		setRecords((prev) =>
 			[record, ...prev.filter((x) => x.id !== record.id)].toSorted(
 				(a, b) => b.time.getTime() - a.time.getTime(),
 			),
@@ -405,7 +404,7 @@ function HomePageContent(props: PropsType) {
 					columns={columns}
 					data={records}
 					fetchNext={fetchNext}
-					showObserver={combinedRecords.length < recordsCount}
+					showObserver={records.length < recordsCount}
 					onChangeTypeFilter={setType}
 				/>
 			</div>

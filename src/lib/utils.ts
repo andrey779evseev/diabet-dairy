@@ -27,3 +27,9 @@ export const groupBy = <T>(data: T[], fn: (value: T) => string) => {
 		}
 	})
 }
+
+export const getClearNow = () => {
+	const now = new Date()
+	now.setHours(0, 0, 0, 0)
+	return now
+}

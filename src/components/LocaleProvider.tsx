@@ -9,12 +9,12 @@ import { z } from 'zod'
 import { makeZodI18nMap } from 'zod-i18n-map'
 import enTranslation from 'zod-i18n-map/locales/en/zod.json'
 import ruTranslation from 'zod-i18n-map/locales/ru/zod.json'
-import { memo, PropsWithChildren, useEffect } from 'react'
+import { PropsWithChildren, useEffect } from 'react'
 import i18next from 'i18next'
 
 type PropsType = PropsWithChildren
 
-function LocaleProvider(props: PropsType) {
+export default function LocaleProvider(props: PropsType) {
 	const { children } = props
 	const setLocales = useSetAtom(LocalesAtom)
 	const locale = useLocale()
@@ -56,5 +56,3 @@ function LocaleProvider(props: PropsType) {
 
 	return children
 }
-
-export default memo(LocaleProvider)

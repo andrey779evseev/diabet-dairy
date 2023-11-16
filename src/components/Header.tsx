@@ -4,6 +4,7 @@ import { LocaleAtom, LocalesAtom } from '@/state/atoms'
 import { useAtom } from 'jotai'
 import {
 	AreaChart,
+	BarChart3,
 	Cog,
 	Home,
 	LifeBuoy,
@@ -30,6 +31,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
+import { Skeleton } from '@/components/ui/Skeleton'
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { getLocales } from '@/localization/locales'
 
@@ -52,6 +54,11 @@ export default function Header() {
 				label: locales?.header.dropdown.graphs,
 				path: '/graphs',
 				icon: AreaChart,
+			},
+			{
+				label: locales?.header.dropdown.statistics,
+				path: '/statistics',
+				icon: BarChart3,
 			},
 			{
 				label: locales?.header.dropdown.settings,
@@ -86,14 +93,26 @@ export default function Header() {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className='w-56' align='start'>
 					<DropdownMenuLabel className='flex items-center gap-2'>
-						<Avatar>
-							<AvatarImage
-								src={session?.user.image ?? undefined}
-								alt='profile image'
-							/>
-							<AvatarFallback>M</AvatarFallback>
-						</Avatar>
-						{session?.user.name}
+						{session === undefined ? (
+							<>
+								<Skeleton className='h-10 w-10 rounded-full' />
+								<Skeleton className='h-4 w-24 rounded-sm' />
+							</>
+						) : (
+							<>
+								<Avatar>
+									<AvatarImage
+										src={session?.user.image ?? undefined}
+										alt='profile image'
+										referrerPolicy='no-referrer'
+									/>
+									<AvatarFallback>
+										{session?.user.name?.charAt(0).toUpperCase()}
+									</AvatarFallback>
+								</Avatar>
+								{session?.user.name}
+							</>
+						)}
 					</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					<DropdownMenuLabel>

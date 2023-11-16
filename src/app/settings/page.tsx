@@ -8,12 +8,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/Card'
-import { getSettingsByUserId } from '@/lib/api/settings/queries'
+import { getSettings } from '@/lib/api/settings/queries'
 import { getUserAuth } from '@/lib/auth'
 
 export default async function SettingsProfilePage() {
 	const session = await getUserAuth()
-	const settings = await getSettingsByUserId(session.user.id)
+	const settings = await getSettings(session.user.id)
 	return (
 		<Card>
 			<CardHeader>

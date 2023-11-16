@@ -2,7 +2,7 @@
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { desc, eq, sql } from 'drizzle-orm'
+import { and, between, desc, eq, gte, isNotNull, sql } from 'drizzle-orm'
 import { DateRange } from 'react-day-picker'
 import { db } from '@/lib/db'
 import { records } from '@/lib/db/schema/record'
@@ -10,42 +10,120 @@ import type { Record } from '@/types/Record'
 
 dayjs.extend(utc)
 
-export const getRecordsByUserId = async (
+export const getRecords = async (
+	date: DateRange,
 	userId: string,
-	offset: number,
-	limit: number,
+	offset: number = 0,
+	limit: number = 100,
 ) => {
 	return (await db.query.records.findMany({
-		where: eq(records.userId, userId),
+		where: (records, { gte, and, eq, between }) =>
+			and(
+				date.to === undefined
+					? gte(records.time, date.from ?? new Date())
+					: between(
+							records.time,
+							date.from ?? new Date(),
+							dayjs.utc(date.to).add(1, 'day').toDate(),
+					  ),
+				eq(records.userId, userId),
+			),
 		offset,
 		limit,
 		orderBy: [desc(records.time)],
 	})) as Record[]
 }
 
-export const getRecordsCountByUserId = async (userId: string) => {
+export const getRecordsCount = async (date: DateRange, userId: string) => {
 	const [res] = await db
 		.select({ count: sql<number>`count(*)` })
 		.from(records)
-		.where(eq(records.userId, userId))
+		.where(
+			and(
+				eq(records.userId, userId),
+				date.to === undefined
+					? gte(records.time, date.from ?? new Date())
+					: between(
+							records.time,
+							date.from ?? new Date(),
+							dayjs.utc(date.to).add(1, 'day').toDate(),
+					  ),
+			),
+		)
 	return res.count
 }
 
-export const getRecordsByUserIdAndDateRange = async (
-	date: DateRange,
-	userId: string,
-) => {
+export const getRecordsByDate = async (date: DateRange, userId: string) => {
 	return (await db.query.records.findMany({
-		where: (records, { gte, lte, and, eq }) =>
+		where: (records, { gte, and, eq, between }) =>
 			and(
 				date.to === undefined
 					? gte(records.time, date.from ?? new Date())
-					: and(
-							gte(records.time, date.from ?? new Date()),
-							lte(records.time, dayjs.utc(date.to).add(1, 'day').toDate()),
+					: between(
+							records.time,
+							date.from ?? new Date(),
+							dayjs.utc(date.to).add(1, 'day').toDate(),
 					  ),
 				eq(records.userId, userId),
 			),
 		orderBy: [desc(records.time)],
 	})) as Record[]
+}
+
+export const getAvgGlucoseForPeriod = async (
+	date: DateRange,
+	userId: string,
+) => {
+	const res = await db
+		.select({
+			avg: sql<number>`cast(avg(${records.glucose}) as real)`,
+		})
+		.from(records)
+		.where(
+			and(
+				eq(records.userId, userId),
+				isNotNull(records.glucose),
+				date.to === undefined
+					? gte(records.time, date.from ?? new Date())
+					: between(
+							records.time,
+							date.from ?? new Date(),
+							dayjs.utc(date.to).add(1, 'day').toDate(),
+					  ),
+			),
+		)
+		.limit(1)
+	return res[0].avg
+}
+
+export const getAvgDayInsulinForPeriod = async (
+	date: DateRange,
+	userId: string,
+) => {
+	const subquery = db
+		.select({
+			date: sql<Date>`date(${records.time}) as date`,
+			sum: sql<number>`sum(coalesce(${records.shortInsulin}, 0) + coalesce(${records.longInsulin}, 0)) as sum`,
+		})
+		.from(records)
+		.where(
+			and(
+				eq(records.userId, userId),
+				date.to === undefined
+					? gte(records.time, date.from ?? new Date())
+					: between(
+							records.time,
+							date.from ?? new Date(),
+							dayjs.utc(date.to).add(1, 'day').toDate(),
+					  ),
+			),
+		)
+		.groupBy(sql`date(${records.time})`)
+		.as('sq')
+	const res = await db
+		.select({
+			avg: sql<number>`cast(avg(sq.sum) as int)`,
+		})
+		.from(subquery)
+	return res[0].avg
 }

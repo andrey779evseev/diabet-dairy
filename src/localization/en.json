@@ -174,6 +174,7 @@
 			},
 			"home": "Home",
 			"graphs": "Graphs",
+			"statistics": "Statistics",
 			"support": "Support",
 			"settings": "Settings",
 			"logout": "Log out"
@@ -185,5 +186,24 @@
 	"graphs": {
 		"title": "Graphs",
 		"noResults": "There is no data for this filters"
+	},
+	"statistics": {
+		"glucose": {
+			"title": "Glucose",
+			"description": "Average glucose indicators for a time periods."
+		},
+		"dailyInsulin": {
+			"title": "Daily Insulin",
+			"description": "Average daily insulin amount for a time periods."
+		},
+		"periods": {
+			"today": "Today",
+			"yesterday": "Yesterday",
+			"last3Days": "Last 3 days",
+			"lastWeek": "Last week",
+			"last2Weeks": "Last two weeks",
+			"lastMonth": "Last month",
+			"last3Months": "Last three months"
+		}
 	}
 }

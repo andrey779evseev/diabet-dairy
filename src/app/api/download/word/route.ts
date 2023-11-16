@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
 import type { DateRange } from 'react-day-picker'
 import { NextResponse } from 'next/server'
-import { getRecordsByUserIdAndDateRange } from '@/lib/api/record/queries'
-import { getSettingsByUserId } from '@/lib/api/settings/queries'
+import { getRecordsByDate } from '@/lib/api/record/queries'
+import { getSettings } from '@/lib/api/settings/queries'
 import { getUserAuth } from '@/lib/auth'
 import { groupBy } from '@/lib/utils'
 import { RecordType } from '@/types/Record'
@@ -41,8 +41,8 @@ export async function GET(req: Request) {
 
 	const [locales, data, settings] = await Promise.all([
 		getLocales(lang),
-		getRecordsByUserIdAndDateRange(range, session.user.id),
-		getSettingsByUserId(session.user.id),
+		getRecordsByDate(range, session.user.id),
+		getSettings(session.user.id),
 	])
 
 	const records = data.filter(
