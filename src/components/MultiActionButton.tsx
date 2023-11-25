@@ -10,10 +10,13 @@ import {
 	useRef,
 	useState,
 } from 'react'
+import { createPortal } from 'react-dom'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useAgentDetect } from '@/hooks/useAgentDetect'
 import { useAnimationState } from '@/hooks/useAnimationState'
+import { useClickOutside } from '@/hooks/useClickOutside'
+import { useLockPointerEvents } from '@/hooks/useLockPointerEvents'
 
 const styles = [
 	[
@@ -50,9 +53,12 @@ function MultiActionButton(props: PropsType) {
 		createRef(),
 		createRef(),
 	])
-	const containerRef = useRef<HTMLDivElement>(null)
+	const containerRef = useClickOutside<HTMLDivElement>(() => {
+		if (isOpen) setIsOpen(false)
+	})
 	const { isMobile } = useAgentDetect()
 	const [animatedPointerOver, setAnimatedPointedOver] = useState(pointerOver)
+	useLockPointerEvents(isOpen)
 
 	useEffect(() => {
 		if (pointerOver === 0) {
@@ -141,11 +147,11 @@ function MultiActionButton(props: PropsType) {
 				el?.removeEventListener('pointerleave', set)
 			}
 		}
-	}, [isMobile, end])
+	}, [isMobile, end, containerRef])
 
-	return (
+	return createPortal(
 		<div
-			className='fixed bottom-5 right-5 flex h-[172px] w-[172px] touch-none select-none items-end justify-end'
+			className='pointer-events-auto fixed bottom-5 right-5 z-[1] flex h-[172px] w-[172px] touch-none select-none items-end justify-end'
 			ref={containerRef}
 		>
 			{actions.map((action, i) => (
@@ -192,7 +198,8 @@ function MultiActionButton(props: PropsType) {
 			>
 				<ChevronUp className='h-8 w-8' />
 			</Button>
-		</div>
+		</div>,
+		document.body,
 	)
 }
 

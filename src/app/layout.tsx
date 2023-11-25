@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import { getUserAuth } from '@/lib/auth'
 import { env } from '@/lib/env.mjs'
+import { cn } from '@/lib/utils'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -76,7 +77,7 @@ export default async function RootLayout({
 	const session = await getUserAuth()
 	return (
 		<html lang='en' suppressHydrationWarning={true}>
-			<body className={inter.className}>
+			<body className={cn(inter.className, 'h-full min-h-screen w-full')}>
 				<Providers>
 					<main className='p-2'>
 						{!!session ? <Header /> : null}
