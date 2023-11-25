@@ -68,9 +68,12 @@ export default function RecordSheet(props: PropsType) {
 	const editRecord = useMemo(() => {
 		if (!record) return undefined
 		const { id: _id, userId: _userId, ...rest } = record
-		return {
-			...rest,
-		}
+		const clone = structuredClone(rest)
+		Object.keys(clone).forEach((key) => {
+      // @ts-expect-error do not remove
+			if (!Boolean(clone[key])) clone[key] = undefined
+		})
+		return clone
 	}, [record])
 	const form = useForm<NewRecord>({
 		resolver: zodResolver(NewRecordSchema),
@@ -85,7 +88,6 @@ export default function RecordSheet(props: PropsType) {
 	const type = form.watch('type')
 
 	const onSubmit = async (values: NewRecord) => {
-		console.log('onSubmit')
 		setIsLoading(true)
 		const newRecord: Record = {
 			id: record?.id ?? v4(),
