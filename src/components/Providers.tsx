@@ -1,17 +1,17 @@
 'use client'
 
-import LocaleProvider from '@/components/LocaleProvider'
-import { ToastAction } from '@/components/ui/Toast'
-import { useNetworkStatus } from '@/hooks/useNetworkStatus'
-import { toast } from '@/hooks/useToast'
 import { useLocales } from '@/state/atoms'
 import * as dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import utc from 'dayjs/plugin/utc'
 import { Provider as JotaiProvider } from 'jotai'
 import { SessionProvider } from 'next-auth/react'
-import { ThemeProvider } from 'next-themes'
 import { PropsWithChildren, useEffect } from 'react'
+import { ThemeProvider } from 'next-themes'
+import LocaleProvider from '@/components/LocaleProvider'
+import { ToastAction } from '@/components/ui/Toast'
+import { useNetworkStatus } from '@/hooks/useNetworkStatus'
+import { toast } from '@/hooks/useToast'
 
 dayjs.extend(isBetween)
 dayjs.extend(utc)
@@ -35,9 +35,9 @@ export default function Providers(props: PropsWithChildren) {
 						{locales?.toast.connection.action}
 					</ToastAction>
 				),
-        duration: 60000
+				duration: 60000,
 			})
-      return () => obj.dismiss()
+			return () => obj.dismiss()
 		}
 	}, [isOnline, locales])
 

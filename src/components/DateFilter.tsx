@@ -30,6 +30,20 @@ function DateFilter(props: PropsType) {
 	const { date, setDate } = props
 	const locales = useLocales()
 	const locale = useLocale()
+
+	const handleSelect = (range: DateRange | undefined) => {
+		if (
+			range !== undefined &&
+			range.from !== undefined &&
+			range.to === undefined
+		)
+			setDate({
+				from: range.from,
+				to: range.from,
+			})
+		else setDate(range)
+	}
+
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
@@ -68,7 +82,12 @@ function DateFilter(props: PropsType) {
 								value === '0'
 									? now
 									: dayjs(now).add(-parseInt(value), 'day').toDate(),
-							to: value === '1' || value === '0' ? undefined : now,
+							to:
+								value === '0'
+									? undefined
+									: value === '1'
+									  ? dayjs(now).add(-parseInt(value), 'day').toDate()
+									  : now,
 						})
 					}}
 				>
@@ -84,13 +103,13 @@ function DateFilter(props: PropsType) {
 						<SelectItem value='1'>
 							{locales?.filters.date.select.options.yesterday}
 						</SelectItem>
-						<SelectItem value='3'>
+						<SelectItem value='2'>
 							{locales?.filters.date.select.options.last3Days}
 						</SelectItem>
-						<SelectItem value='7'>
+						<SelectItem value='6'>
 							{locales?.filters.date.select.options.lastWeek}
 						</SelectItem>
-						<SelectItem value='14'>
+						<SelectItem value='13'>
 							{locales?.filters.date.select.options.last2Weeks}
 						</SelectItem>
 						<SelectItem value='30'>
@@ -104,7 +123,7 @@ function DateFilter(props: PropsType) {
 						mode='range'
 						defaultMonth={date?.from}
 						selected={date}
-						onSelect={setDate}
+						onSelect={handleSelect}
 						numberOfMonths={1}
 					/>
 				</div>

@@ -28,11 +28,11 @@
 				"description": "Because site is currently in offline mode, record was added only locally, it will be saved on the servers when internet connection will be established."
 			}
 		},
-    "connection": {
-      "title": "You are offline",
-      "description": "Please check your connection and try again.",
-      "action": "Refresh"
-    }
+		"connection": {
+			"title": "You are offline",
+			"description": "Please check your connection and try again.",
+			"action": "Refresh"
+		}
 	},
 	"table": {
 		"data": {

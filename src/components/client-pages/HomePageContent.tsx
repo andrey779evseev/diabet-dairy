@@ -1,54 +1,54 @@
 'use client'
 
+import { useLocale, useLocales } from '@/state/atoms'
+import dayjs from 'dayjs'
+import { ColumnDef } from '@tanstack/react-table'
+import {
+	Forward,
+	Loader2,
+	MoreHorizontal,
+	Pencil,
+	Plus,
+	RotateCcw,
+	Trash,
+} from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { DateRange } from 'react-day-picker'
+import { useRouter } from 'next/navigation'
 import { DataTable } from '@/components/DataTable'
 import DateFilter from '@/components/DateFilter'
 import MultiActionButton from '@/components/MultiActionButton'
 import RecordSheet from '@/components/RecordSheet'
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
 } from '@/components/ui/AlertDialog'
 import { Button } from '@/components/ui/Button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
-import { toast } from '@/hooks/useToast'
 import { deleteRecord } from '@/lib/api/record/mutations'
 import { getRecords, getRecordsCount } from '@/lib/api/record/queries'
 import { getClearNow } from '@/lib/utils'
-import { useLocale, useLocales } from '@/state/atoms'
+import { toast } from '@/hooks/useToast'
 import type {
-  Record,
-  RecordId,
-  RecordRelativeToFoodType,
-  RecordType,
+	Record,
+	RecordId,
+	RecordRelativeToFoodType,
+	RecordType,
 } from '@/types/Record'
 import { Settings } from '@/types/Settings'
-import { ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
-import {
-  Forward,
-  Loader2,
-  MoreHorizontal,
-  Pencil,
-  Plus,
-  RotateCcw,
-  Trash,
-} from 'lucide-react'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { DateRange } from 'react-day-picker'
 
 type PropsType = {
 	settings: Settings

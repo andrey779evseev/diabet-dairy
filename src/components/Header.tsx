@@ -1,36 +1,36 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar'
-import { Button } from '@/components/ui/Button'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenu'
-import { Skeleton } from '@/components/ui/Skeleton'
-import { getLocales } from '@/localization/locales'
 import { LocaleAtom, LocalesAtom } from '@/state/atoms'
 import { useAtom } from 'jotai'
 import {
-  AreaChart,
-  BarChart3,
-  Cog,
-  Home,
-  LifeBuoy,
-  LogOut,
-  Menu,
-  Moon,
-  Sun
+	AreaChart,
+	BarChart3,
+	Cog,
+	Home,
+	LifeBuoy,
+	LogOut,
+	Menu,
+	Moon,
+	Sun,
 } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
+import { useMemo } from 'react'
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
-import { useMemo } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar'
+import { Button } from '@/components/ui/Button'
+import {
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuRadioGroup,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenu'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { getLocales } from '@/localization/locales'
 
 export default function Header() {
 	const { resolvedTheme: theme, setTheme } = useTheme()

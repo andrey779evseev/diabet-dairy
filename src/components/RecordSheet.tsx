@@ -1,43 +1,44 @@
 'use client'
 
-import DateTimePicker from '@/components/date-time-picker/DateTimePicker'
-import { Button } from '@/components/ui/Button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/Form'
-import { Input } from '@/components/ui/Input'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/Select'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/Sheet'
-import { Textarea } from '@/components/ui/Textarea'
-import { toast } from '@/hooks/useToast'
-import { createRecord, updateRecord } from '@/lib/api/record/mutations'
 import { useLocales } from '@/state/atoms'
-import { NewRecord, NewRecordSchema, Record } from '@/types/Record'
-import { Settings } from '@/types/Settings'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { v4 } from 'uuid'
 import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { v4 } from 'uuid'
+import DateTimePicker from '@/components/date-time-picker/DateTimePicker'
+import { Button } from '@/components/ui/Button'
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/Form'
+import { Input } from '@/components/ui/Input'
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/Select'
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+} from '@/components/ui/Sheet'
+import { Textarea } from '@/components/ui/Textarea'
+import { createRecord, updateRecord } from '@/lib/api/record/mutations'
+import { toast } from '@/hooks/useToast'
+import { NewRecord, NewRecordSchema, Record } from '@/types/Record'
+import { Settings } from '@/types/Settings'
+
 type PropsType = {
 	addRecord: (record: Record) => void
 	record?: Record
