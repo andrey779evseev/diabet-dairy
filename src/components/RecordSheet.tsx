@@ -1,46 +1,43 @@
 'use client'
 
+import DateTimePicker from '@/components/date-time-picker/DateTimePicker'
+import { Button } from '@/components/ui/Button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/Form'
+import { Input } from '@/components/ui/Input'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/Select'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/Sheet'
+import { Textarea } from '@/components/ui/Textarea'
+import { toast } from '@/hooks/useToast'
+import { createRecord, updateRecord } from '@/lib/api/record/mutations'
 import { useLocales } from '@/state/atoms'
+import { NewRecord, NewRecordSchema, Record } from '@/types/Record'
+import { Settings } from '@/types/Settings'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { v4 } from 'uuid'
 import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import DateTimePicker from '@/components/date-time-picker/DateTimePicker'
-import { iDB } from '@/components/IndexedDBWrapper'
-import { Button } from '@/components/ui/Button'
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from '@/components/ui/Form'
-import { Input } from '@/components/ui/Input'
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/Select'
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-} from '@/components/ui/Sheet'
-import { Textarea } from '@/components/ui/Textarea'
-import { createRecord, updateRecord } from '@/lib/api/record/mutations'
-import { useNetworkStatus } from '@/hooks/useNetworkStatus'
-import { toast } from '@/hooks/useToast'
-import { NewRecord, NewRecordSchema, Record } from '@/types/Record'
-import { Settings } from '@/types/Settings'
-
+import { v4 } from 'uuid'
 type PropsType = {
 	addRecord: (record: Record) => void
 	record?: Record
@@ -63,14 +60,13 @@ export default function RecordSheet(props: PropsType) {
 	} = props
 	const { data: session } = useSession()
 	const [isLoading, setIsLoading] = useState(false)
-	const { isOnline } = useNetworkStatus()
 	const locales = useLocales()
 	const editRecord = useMemo(() => {
 		if (!record) return undefined
 		const { id: _id, userId: _userId, ...rest } = record
 		const clone = structuredClone(rest)
 		Object.keys(clone).forEach((key) => {
-      // @ts-expect-error do not remove
+			// @ts-expect-error do not remove
 			if (!Boolean(clone[key])) clone[key] = undefined
 		})
 		return clone
@@ -95,85 +91,37 @@ export default function RecordSheet(props: PropsType) {
 			...values,
 		}
 		if (editRecord !== undefined) {
-			if (isOnline) {
-				await updateRecord(newRecord)
-					.then(() => {
-						updateRecordInTable(newRecord)
-						setIsOpen(false)
+			await updateRecord(newRecord)
+				.then(() => {
+					updateRecordInTable(newRecord)
+					setIsOpen(false)
+				})
+				.catch((error: string) => {
+					toast({
+						title: locales?.toast.update.error.title,
+						description: error,
+						variant: 'destructive',
 					})
-					.catch((error: string) => {
-						toast({
-							title: locales?.toast.update.online.error.title,
-							description: error,
-							variant: 'destructive',
-						})
-					})
-					.finally(() => {
-						setIsLoading(false)
-					})
-			} else {
-				await iDB!
-					.add('updateRecords', newRecord)
-					.then(() => {
-						updateRecordInTable(newRecord)
-						setIsOpen(false)
-						toast({
-							title: locales?.toast.update.online.info.title,
-							description: locales?.toast.update.online.info.description,
-							variant: 'default',
-						})
-					})
-					.catch((error: string) => {
-						toast({
-							title: locales?.toast.update.online.error.title,
-							description: error,
-							variant: 'destructive',
-						})
-					})
-					.finally(() => {
-						setIsLoading(false)
-					})
-			}
+				})
+				.finally(() => {
+					setIsLoading(false)
+				})
 		} else {
-			if (isOnline) {
-				await createRecord(newRecord)
-					.then(() => {
-						addRecord(newRecord)
-						setIsOpen(false)
+			await createRecord(newRecord)
+				.then(() => {
+					addRecord(newRecord)
+					setIsOpen(false)
+				})
+				.catch((error: string) => {
+					toast({
+						title: locales?.toast.create.error.title,
+						description: error,
+						variant: 'destructive',
 					})
-					.catch((error: string) => {
-						toast({
-							title: locales?.toast.create.online.error.title,
-							description: error,
-							variant: 'destructive',
-						})
-					})
-					.finally(() => {
-						setIsLoading(false)
-					})
-			} else {
-				await iDB!
-					.add('addRecords', newRecord)
-					.then(() => {
-						addRecord(newRecord)
-						setIsOpen(false)
-						toast({
-							title: locales?.toast.create.online.info.title,
-							description: locales?.toast.create.online.info.description,
-							variant: 'default',
-						})
-					})
-					.catch((error: string) => {
-						toast({
-							title: locales?.toast.create.online.error.title,
-							description: error,
-							variant: 'destructive',
-						})
-					})
-					.finally(() => {
-						setIsLoading(false)
-					})
-			}
+				})
+				.finally(() => {
+					setIsLoading(false)
+				})
 		}
 	}
 

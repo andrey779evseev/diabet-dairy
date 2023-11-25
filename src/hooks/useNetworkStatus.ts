@@ -26,5 +26,5 @@ export function useNetworkStatus() {
 		}
 	}, [])
 
-	return { isOnline: status }
+	return status
 }

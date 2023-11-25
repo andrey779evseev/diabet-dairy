@@ -1,4 +1,3 @@
-import IndexedDBWrapper from '@/components/IndexedDBWrapper'
 import Providers from '@/components/Providers'
 import { Toaster } from '@/components/ui/Toaster'
 import '@/styles/globals.css'
@@ -85,7 +84,6 @@ export default async function RootLayout({
 					</main>
 					<Toaster />
 				</Providers>
-				<IndexedDBWrapper />
 			</body>
 		</html>
 	)

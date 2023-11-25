@@ -1,57 +1,38 @@
 {
 	"toast": {
 		"delete": {
-			"online": {
-				"error": {
-					"title": "Delete error",
-					"description": "You can't delete two records at the same time."
-				},
-				"info": {
-					"title": "Info about record",
-					"description": "Because site is currently in offline mode, record was deleted only locally, it will be deleted from servers on internet connection."
-				}
+			"error": {
+				"title": "Delete error",
+				"description": "You can't delete two records at the same time."
 			},
-			"offline": {
-				"error": {
-					"title": "Error while deleting records",
-					"description": "When deleting an offline deleted records from server, error happens: "
-				}
+			"info": {
+				"title": "Info about record",
+				"description": "Because site is currently in offline mode, record was deleted only locally, it will be deleted from servers on internet connection."
 			}
 		},
 		"update": {
-			"online": {
-				"error": {
-					"title": "Error while updating record"
-				},
-				"info": {
-					"title": "Info about record",
-					"description": "Because site is currently in offline mode, record was updated only locally, it will be updated on the servers when internet connection will be established."
-				}
+			"error": {
+				"title": "Error while updating record"
 			},
-			"offline": {
-				"error": {
-					"title": "Error while updating records",
-					"description": "When updating an offline updated records on server, error happens: "
-				}
+			"info": {
+				"title": "Info about record",
+				"description": "Because site is currently in offline mode, record was updated only locally, it will be updated on the servers when internet connection will be established."
 			}
 		},
 		"create": {
-			"online": {
-				"error": {
-					"title": "Error while creating record"
-				},
-				"info": {
-					"title": "Info about record",
-					"description": "Because site is currently in offline mode, record was added only locally, it will be saved on the servers when internet connection will be established."
-				}
+			"error": {
+				"title": "Error while creating record"
 			},
-			"offline": {
-				"error": {
-					"title": "Error while saving records",
-					"description": "When saving a records from offline mode to server, error happens: "
-				}
+			"info": {
+				"title": "Info about record",
+				"description": "Because site is currently in offline mode, record was added only locally, it will be saved on the servers when internet connection will be established."
 			}
-		}
+		},
+    "connection": {
+      "title": "You are offline",
+      "description": "Please check your connection and try again.",
+      "action": "Refresh"
+    }
 	},
 	"table": {
 		"data": {

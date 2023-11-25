@@ -1,44 +1,40 @@
 'use client'
 
-import { LocaleAtom, LocalesAtom } from '@/state/atoms'
-import { useAtom } from 'jotai'
-import {
-	AreaChart,
-	BarChart3,
-	Cog,
-	Home,
-	LifeBuoy,
-	LogOut,
-	Menu,
-	Moon,
-	Sun,
-	Wifi,
-	WifiOff,
-} from 'lucide-react'
-import { signOut, useSession } from 'next-auth/react'
-import { useMemo } from 'react'
-import { useTheme } from 'next-themes'
-import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import {
-	DropdownMenu,
-	DropdownMenuCheckboxItem,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuRadioGroup,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { getLocales } from '@/localization/locales'
+import { LocaleAtom, LocalesAtom } from '@/state/atoms'
+import { useAtom } from 'jotai'
+import {
+  AreaChart,
+  BarChart3,
+  Cog,
+  Home,
+  LifeBuoy,
+  LogOut,
+  Menu,
+  Moon,
+  Sun
+} from 'lucide-react'
+import { signOut, useSession } from 'next-auth/react'
+import { useTheme } from 'next-themes'
+import { useRouter } from 'next/navigation'
+import { useMemo } from 'react'
 
 export default function Header() {
 	const { resolvedTheme: theme, setTheme } = useTheme()
 	const router = useRouter()
-	const { isOnline } = useNetworkStatus()
 	const { data: session } = useSession()
 	const [locales, setLocales] = useAtom(LocalesAtom)
 	const [locale, setLocale] = useAtom(LocaleAtom)
@@ -153,10 +149,6 @@ export default function Header() {
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
-
-			<div className='flex h-10 w-10 items-center justify-center rounded-md border border-input'>
-				{isOnline ? <Wifi /> : <WifiOff />}
-			</div>
 
 			<Button
 				variant='outline'
