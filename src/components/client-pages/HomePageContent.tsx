@@ -15,10 +15,10 @@ import {
 import { useSession } from 'next-auth/react'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { DateRange } from 'react-day-picker'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { DataTable } from '@/components/DataTable'
 import DateFilter from '@/components/DateFilter'
-import MultiActionButton from '@/components/MultiActionButton'
 import RecordSheet from '@/components/RecordSheet'
 import {
 	AlertDialog,
@@ -49,6 +49,13 @@ import type {
 	RecordType,
 } from '@/types/Record'
 import { Settings } from '@/types/Settings'
+
+const MultiActionButton = dynamic(
+	() => import('@/components/MultiActionButton'),
+	{
+		ssr: false,
+	},
+)
 
 type PropsType = {
 	settings: Settings
