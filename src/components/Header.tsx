@@ -1,41 +1,46 @@
 'use client'
 
-import { LocaleAtom, LocalesAtom } from '@/state/atoms'
-import { useAtom } from 'jotai'
-import {
-	AreaChart,
-	BarChart3,
-	Cog,
-	Home,
-	LifeBuoy,
-	LogOut,
-	Menu,
-	Moon,
-	Sun,
-} from 'lucide-react'
-import { signOut, useSession } from 'next-auth/react'
-import { useMemo } from 'react'
-import { useTheme } from 'next-themes'
-import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import {
-	DropdownMenu,
-	DropdownMenuCheckboxItem,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuRadioGroup,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { getLocales } from '@/localization/locales'
+import { LocaleAtom, LocalesAtom } from '@/state/atoms'
+import { useAtom } from 'jotai'
+import {
+  AreaChart,
+  BarChart3,
+  Cog,
+  Home,
+  LifeBuoy,
+  LogOut,
+  Menu,
+  Moon,
+  Sun,
+} from 'lucide-react'
+import { Session } from 'next-auth'
+import { signOut } from 'next-auth/react'
+import { useTheme } from 'next-themes'
+import { useRouter } from 'next/navigation'
+import { useMemo } from 'react'
 
-export default function Header() {
+type Props = {
+  session: Session
+}
+
+export default function Header(props: Props) {
+  const {session} = props
 	const { resolvedTheme: theme, setTheme } = useTheme()
 	const router = useRouter()
-	const { data: session } = useSession()
 	const [locales, setLocales] = useAtom(LocalesAtom)
 	const [locale, setLocale] = useAtom(LocaleAtom)
 

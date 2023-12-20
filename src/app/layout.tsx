@@ -79,7 +79,7 @@ export default async function RootLayout({
 			<body className={cn(inter.className, 'h-full min-h-screen w-full')}>
 				<Providers>
 					<main className='p-2'>
-						{!!session ? <Header /> : null}
+						{!!session ? <Header session={session} /> : null}
 						{children}
 					</main>
 					<Toaster />

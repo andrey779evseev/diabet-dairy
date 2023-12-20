@@ -1,17 +1,19 @@
 import million from 'million/compiler'
-import pwa from '@ducanh2912/next-pwa'
-
-const withPWA = pwa({
-	dest: 'public',
-})
 
 /** @type {import('next').NextConfig} */
-const config = {
-	reactStrictMode: true,
+const nextConfig = {
+	// reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
 }
-
-const nextConfig =
-	process.env.NODE_ENV === 'development' ? config : withPWA(config)
 
 const millionConfig = {
 	auto: { rsc: true },
