@@ -10,33 +10,34 @@ import {
 } from '@/components/ui/Card'
 import { getSettings } from '@/lib/api/settings/queries'
 import { getUserAuth } from '@/lib/auth'
+import { getTranslation } from '@/lib/i18n'
+import { Languages } from '@/lib/i18n/settings'
 
-export default async function SettingsProfilePage() {
+type Props = {
+  params: {
+    lang: Languages
+  }
+}
+
+export default async function SettingsProfilePage(props: Props) {
+  const {params: {lang}} = props
 	const session = await getUserAuth()
 	const settings = await getSettings(session.user.id)
+  const {t} = await getTranslation(lang)
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Profile</CardTitle>
-				<CardDescription>This is personal account preferences.</CardDescription>
+				<CardTitle>{t('settings.profile.title')}</CardTitle>
+				<CardDescription>{t('settings.profile.description')}</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<ProfileForm settings={settings} />
 			</CardContent>
 			<CardFooter className='flex justify-between'>
 				<Button type='submit' form='settings-profile-form'>
-					Save
+          {t('common.save')}
 				</Button>
 			</CardFooter>
 		</Card>
-		// <div className='space-y-6'>
-		// 	<div>
-		// 		<h3 className='text-lg font-medium'>Profile</h3>
-		// 		<p className='text-sm text-muted-foreground'>
-		// 			This is personal account preferences.
-		// 		</p>
-		// 	</div>
-		// 	<Separator />
-		// </div>
 	)
 }

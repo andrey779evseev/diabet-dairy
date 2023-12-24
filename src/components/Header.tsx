@@ -13,9 +13,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { getLocales } from '@/localization/locales'
-import { LocaleAtom, LocalesAtom } from '@/state/atoms'
-import { useAtom } from 'jotai'
+import { useTranslation } from '@/lib/i18n/client'
+import { languages } from '@/lib/i18n/settings'
 import {
   AreaChart,
   BarChart3,
@@ -30,58 +29,53 @@ import {
 import { Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
 import { useTheme } from 'next-themes'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 
 type Props = {
-  session: Session
+	session: Session
 }
 
 export default function Header(props: Props) {
-  const {session} = props
+	const { session } = props
 	const { resolvedTheme: theme, setTheme } = useTheme()
 	const router = useRouter()
-	const [locales, setLocales] = useAtom(LocalesAtom)
-	const [locale, setLocale] = useAtom(LocaleAtom)
+	const pathname = usePathname()
+	const lang = useMemo(() => pathname.split('/')[1], [pathname])
+  const {t} = useTranslation()
 
 	const routes = useMemo(() => {
 		return [
 			{
-				label: locales?.header.dropdown.home,
+				label: t('header.dropdown.home'),
 				path: '/',
 				icon: Home,
 			},
 			{
-				label: locales?.header.dropdown.graphs,
+				label: t('header.dropdown.graphs'),
 				path: '/graphs',
 				icon: AreaChart,
 			},
 			{
-				label: locales?.header.dropdown.statistics,
+				label: t('header.dropdown.statistics'),
 				path: '/statistics',
 				icon: BarChart3,
 			},
 			{
-				label: locales?.header.dropdown.settings,
+				label: t('header.dropdown.settings'),
 				path: '/settings',
 				icon: Cog,
 			},
 			{
-				label: locales?.header.dropdown.support,
+				label: t('header.dropdown.support'),
 				icon: LifeBuoy,
 			},
 		]
-	}, [locales?.header.dropdown])
+	}, [t])
 
 	const logout = async () => {
 		await signOut()
-		router.push('/')
-	}
-
-	const changeLanguage = async (lang: 'ru' | 'en') => {
-		setLocale(lang)
-		const res = await getLocales(lang)
-		setLocales(res)
+		router.push('/' + pathname.split('/')[1] + '/auth/sign-in')
 	}
 
 	return (
@@ -117,28 +111,27 @@ export default function Header(props: Props) {
 					</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					<DropdownMenuLabel>
-						{locales?.header.dropdown.languages.label}
+						{t('header.dropdown.languages.label')}
 					</DropdownMenuLabel>
 					<DropdownMenuRadioGroup>
-						<DropdownMenuCheckboxItem
-							checked={locale === 'en'}
-							onCheckedChange={() => changeLanguage('en')}
-						>
-							{locales?.header.dropdown.languages.english}
-						</DropdownMenuCheckboxItem>
-						<DropdownMenuCheckboxItem
-							checked={locale === 'ru'}
-							onCheckedChange={() => changeLanguage('ru')}
-						>
-							{locales?.header.dropdown.languages.russian}
-						</DropdownMenuCheckboxItem>
+						{languages.map((l, i) => (
+							<DropdownMenuCheckboxItem
+								checked={lang === l}
+								onCheckedChange={() =>
+									router.push(`/${l}/${pathname.split('/').slice(2).join('/')}`)
+								}
+								key={i}
+							>
+								{t(`header.dropdown.languages.${l}`)}
+							</DropdownMenuCheckboxItem>
+						))}
 					</DropdownMenuRadioGroup>
 					<DropdownMenuSeparator />
 					{routes.map((route, i) => (
 						<DropdownMenuItem
 							onSelect={
 								route.path !== undefined
-									? () => router.push(route.path)
+									? () => router.push(`/${lang}/${route.path}`)
 									: undefined
 							}
 							key={i}
@@ -150,7 +143,7 @@ export default function Header(props: Props) {
 					<DropdownMenuSeparator />
 					<DropdownMenuItem onSelect={() => logout()}>
 						<LogOut className='mr-2 h-4 w-4' />
-						<span>{locales?.header.dropdown.support}</span>
+						<span>{t('header.dropdown.logout')}</span>
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

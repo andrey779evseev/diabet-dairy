@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
@@ -15,6 +15,7 @@ type PropsType = {
 export default function SidebarNav(props: PropsType) {
 	const { className, items, ...rest } = props
 	const pathname = usePathname()
+  const {lang} = useParams()
 
 	return (
 		<nav
@@ -27,10 +28,10 @@ export default function SidebarNav(props: PropsType) {
 			{items.map((item) => (
 				<Link
 					key={item.href}
-					href={item.href}
+					href={`/${lang}/${item.href}`}
 					className={cn(
 						buttonVariants({ variant: 'ghost' }),
-						'/' + pathname.split('/').filter(Boolean)[0] === item.href
+						'/' + pathname.split('/').filter(Boolean)[1] === item.href
 							? 'bg-muted hover:bg-muted'
 							: 'hover:bg-transparent hover:underline',
 						'justify-start',

@@ -1,30 +1,30 @@
 'use client'
 
-import { useLocales } from '@/state/atoms'
-import {
-	ColumnDef,
-	ColumnFiltersState,
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	useReactTable,
-	VisibilityState,
-} from '@tanstack/react-table'
-import { useVirtualizer } from '@tanstack/react-virtual'
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { ScrollArea } from '@/components/ui/ScrollArea'
 import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/Select'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/Table'
 import { useMounted } from '@/hooks/useMounted'
+import { useTranslation } from '@/lib/i18n/client'
 import { RecordType } from '@/types/Record'
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+  VisibilityState,
+} from '@tanstack/react-table'
+import { useVirtualizer } from '@tanstack/react-virtual'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 	})
 	const isMounted = useMounted()
 	const bottomAnchor = useRef(null)
-	const locales = useLocales()
+	const {t} = useTranslation()
 
 	useEffect(() => {
 		onChangeTypeFilter(
@@ -113,24 +113,24 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 				}
 			>
 				<SelectTrigger className='w-full !ring-0 !ring-transparent'>
-					<SelectValue placeholder={locales?.filters.type.placeholder} />
+					<SelectValue placeholder={t('filters.type.placeholder')} />
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
 						<SelectItem value='all'>
-							{locales?.filters.type.options.all}
+							{t('filters.type.options.all')}
 						</SelectItem>
 						<SelectItem value='glucose'>
-							{locales?.filters.type.options.glucose}
+							{t('filters.type.options.glucose')}
 						</SelectItem>
 						<SelectItem value='insulin'>
-							{locales?.filters.type.options.insulin}
+							{t('filters.type.options.insulin')}
 						</SelectItem>
 						<SelectItem value='food'>
-							{locales?.filters.type.options.food}
+							{t('filters.type.options.food')}
 						</SelectItem>
 						<SelectItem value='activity'>
-							{locales?.filters.type.options.activity}
+							{t('filters.type.options.activity')}
 						</SelectItem>
 					</SelectGroup>
 				</SelectContent>
@@ -183,7 +183,7 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 							) : (
 								<TableRow>
 									<TableCell className='w-screen text-center'>
-										{locales?.table.noResults}
+										{t('table.noResults')}
 									</TableCell>
 								</TableRow>
 							)

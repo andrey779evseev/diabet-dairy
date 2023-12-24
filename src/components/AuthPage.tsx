@@ -1,20 +1,21 @@
-import Image from 'next/image'
-import Link from 'next/link'
 import { GoogleAuthButton } from '@/components/GoogleAuthButton'
 import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import Image from 'next/image'
+import Link from 'next/link'
 
 type PropsType = {
 	isSignIn: boolean
+  lang: string
 }
 
 export default function AuthPage(props: PropsType) {
-	const { isSignIn } = props
+	const { isSignIn, lang } = props
 
 	return (
 		<div className='container relative flex h-screen flex-col items-center justify-center gap-40'>
 			<Link
-				href={isSignIn ? '/auth/sign-up' : '/auth/sign-in'}
+				href={isSignIn ? `/${lang}/auth/sign-up` : `/${lang}/auth/sign-in`}
 				className={cn(
 					buttonVariants({ variant: 'ghost' }),
 					'absolute right-4 top-4 md:right-8 md:top-8',

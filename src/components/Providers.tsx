@@ -1,15 +1,17 @@
 'use client'
 
-import { useLocales } from '@/state/atoms'
+import 'dayjs/locale/en'
+import 'dayjs/locale/ru'
+import { z } from 'zod'
+import { makeZodI18nMap } from 'zod-i18n-map'
 import * as dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import utc from 'dayjs/plugin/utc'
-import { Provider as JotaiProvider } from 'jotai'
 import { SessionProvider } from 'next-auth/react'
 import { PropsWithChildren, useEffect } from 'react'
 import { ThemeProvider } from 'next-themes'
-import LocaleProvider from '@/components/LocaleProvider'
 import { ToastAction } from '@/components/ui/Toast'
+import { useTranslation } from '@/lib/i18n/client'
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { toast } from '@/hooks/useToast'
 
@@ -19,39 +21,41 @@ dayjs.extend(utc)
 export default function Providers(props: PropsWithChildren) {
 	const { children } = props
 	const isOnline = useNetworkStatus()
-	const locales = useLocales()
+	const { t } = useTranslation()
 
 	useEffect(() => {
 		if (!isOnline) {
 			const obj = toast({
-				title: locales?.toast.connection.title,
-				description: locales?.toast.connection.description,
+				title: t('toast.connection.title'),
+				description: t('toast.connection.description'),
 				variant: 'destructive',
 				action: (
 					<ToastAction
-						altText={locales?.toast.connection.action ?? 'Refresh'}
+						altText={t('toast.connection.action')}
 						onClick={() => window.location.reload()}
 					>
-						{locales?.toast.connection.action}
+						{t('toast.connection.action')}
 					</ToastAction>
 				),
 				duration: 60000,
 			})
 			return () => obj.dismiss()
 		}
-	}, [isOnline, locales])
+	}, [isOnline, t])
+
+  useEffect(() => {
+		z.setErrorMap(makeZodI18nMap({ ns: ['translation', 'zod', 'custom'] }))
+	}, [t])
 
 	return (
-		<JotaiProvider>
-			<SessionProvider refetchWhenOffline={false}>
-				<ThemeProvider
-					attribute='class'
-					defaultTheme='dark'
-					disableTransitionOnChange
-				>
-					<LocaleProvider>{children}</LocaleProvider>
-				</ThemeProvider>
-			</SessionProvider>
-		</JotaiProvider>
+		<SessionProvider refetchWhenOffline={false}>
+			<ThemeProvider
+				attribute='class'
+				defaultTheme='dark'
+				disableTransitionOnChange
+			>
+				{children}
+			</ThemeProvider>
+		</SessionProvider>
 	)
 }

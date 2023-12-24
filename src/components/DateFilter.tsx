@@ -1,25 +1,26 @@
 'use client'
 
-import { useLocale, useLocales } from '@/state/atoms'
-import dayjs from 'dayjs'
-import { CalendarIcon } from 'lucide-react'
-import { memo } from 'react'
-import { DateRange } from 'react-day-picker'
 import { Button } from '@/components/ui/Button'
 import { Calendar } from '@/components/ui/Calendar'
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from '@/components/ui/Popover'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/Select'
+import { useTranslation } from '@/lib/i18n/client'
 import { cn, getClearNow } from '@/lib/utils'
+import dayjs from 'dayjs'
+import { CalendarIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { memo, useMemo } from 'react'
+import { DateRange } from 'react-day-picker'
 
 type PropsType = {
 	date: DateRange | undefined
@@ -28,8 +29,35 @@ type PropsType = {
 
 function DateFilter(props: PropsType) {
 	const { date, setDate } = props
-	const locales = useLocales()
-	const locale = useLocale()
+	const {lang} = useParams<{lang: string}>()
+  const {t} = useTranslation()
+
+  const dateRangeOptions = useMemo(() => [
+    {
+      label: t('filters.date.select.options.today'),
+      value: 0
+    },
+    {
+      label: t('filters.date.select.options.yesterday'),
+      value: 1
+    },
+    {
+      label: t('filters.date.select.options.last3Days'),
+      value: 2
+    },
+    {
+      label: t('filters.date.select.options.lastWeek'),
+      value: 6
+    },
+    {
+      label: t('filters.date.select.options.last2Weeks'),
+      value: 13
+    },
+    {
+      label: t('filters.date.select.options.lastMonth'),
+      value: 30
+    },
+  ], [t])
 
 	const handleSelect = (range: DateRange | undefined) => {
 		if (
@@ -59,14 +87,14 @@ function DateFilter(props: PropsType) {
 					{date?.from ? (
 						date.to ? (
 							<>
-								{dayjs(date.from).locale(locale).format('MMMM DD, YYYY')} -{' '}
-								{dayjs(date.to).locale(locale).format('MMMM DD, YYYY')}
+								{dayjs(date.from).locale(lang).format('MMMM DD, YYYY')} -{' '}
+								{dayjs(date.to).locale(lang).format('MMMM DD, YYYY')}
 							</>
 						) : (
-							dayjs(date.from).locale(locale).format('MMMM DD, YYYY')
+							dayjs(date.from).locale(lang).format('MMMM DD, YYYY')
 						)
 					) : (
-						<span>{locales?.filters.date.placeholder}</span>
+						<span>{t('filters.date.placeholder')}</span>
 					)}
 				</Button>
 			</PopoverTrigger>
@@ -93,28 +121,17 @@ function DateFilter(props: PropsType) {
 				>
 					<SelectTrigger>
 						<SelectValue
-							placeholder={locales?.filters.date.select.placeholder}
+							placeholder={t('filters.date.select.placeholder')}
 						/>
 					</SelectTrigger>
 					<SelectContent position='popper'>
-						<SelectItem value='0'>
-							{locales?.filters.date.select.options.today}
-						</SelectItem>
-						<SelectItem value='1'>
-							{locales?.filters.date.select.options.yesterday}
-						</SelectItem>
-						<SelectItem value='2'>
-							{locales?.filters.date.select.options.last3Days}
-						</SelectItem>
-						<SelectItem value='6'>
-							{locales?.filters.date.select.options.lastWeek}
-						</SelectItem>
-						<SelectItem value='13'>
-							{locales?.filters.date.select.options.last2Weeks}
-						</SelectItem>
-						<SelectItem value='30'>
-							{locales?.filters.date.select.options.lastMonth}
-						</SelectItem>
+            {
+              dateRangeOptions.map((o, i) => (
+                <SelectItem value={o.value.toString()} key={i}>
+                  {o.label}
+                </SelectItem>
+              ))
+            }
 					</SelectContent>
 				</Select>
 				<div className='rounded-md border'>

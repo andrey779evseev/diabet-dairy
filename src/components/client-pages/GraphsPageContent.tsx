@@ -1,20 +1,20 @@
 'use client'
 
-import { useLocales } from '@/state/atoms'
-import dayjs from 'dayjs'
-import { Bar, BarChart, Tooltip, YAxis } from 'recharts'
-import { memo, useMemo, useState } from 'react'
-import { DateRange } from 'react-day-picker'
 import DateFilter from '@/components/DateFilter'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/Select'
+import { useTranslation } from '@/lib/i18n/client'
 import type { Record } from '@/types/Record'
+import dayjs from 'dayjs'
+import { memo, useMemo, useState } from 'react'
+import { DateRange } from 'react-day-picker'
+import { Bar, BarChart, Tooltip, YAxis } from 'recharts'
 
 type PropsType = {
 	records: Record[]
@@ -33,7 +33,7 @@ function GraphsPageContent(props: PropsType) {
 	})
 	const [type, setType] = useState<'glucose' | 'insulin'>('glucose')
 	const [records, setRecords] = useState(initialRecords)
-	const locales = useLocales()
+	const {t} = useTranslation()
 
 	const data = useMemo(() => {
 		return records
@@ -71,24 +71,24 @@ function GraphsPageContent(props: PropsType) {
 				defaultValue='glucose'
 			>
 				<SelectTrigger>
-					<SelectValue placeholder={locales?.filters.type.placeholder} />
+					<SelectValue placeholder={t('filters.type.placeholder')} />
 				</SelectTrigger>
 				<SelectContent position='popper'>
 					<SelectItem value='glucose'>
-						{locales?.filters.type.options.glucose}
+						{t('filters.type.options.glucose')}
 					</SelectItem>
 					<SelectItem value='insulin'>
-						{locales?.filters.type.options.insulin}
+						{t('filters.type.options.insulin')}
 					</SelectItem>
 				</SelectContent>
 			</Select>
 			<Card className='w-full'>
 				<CardHeader>
-					<CardTitle>Graphs</CardTitle>
+					<CardTitle>{t('graphs.title')}</CardTitle>
 				</CardHeader>
 				{data.length === 0 ? (
 					<CardContent className='flex h-full w-full items-center justify-center font-semibold'>
-						{locales?.graphs.noResults}
+						{t('graphs.noResults')}
 					</CardContent>
 				) : (
 					<CardContent className='h-[550px] w-full overflow-x-auto overflow-y-hidden p-2'>
@@ -108,7 +108,7 @@ function GraphsPageContent(props: PropsType) {
 								tickLine={false}
 								axisLine={false}
 								tickFormatter={(value) =>
-									`${value} ${type === 'glucose' ? locales?.units.glucose : ''}`
+									`${value} ${type === 'glucose' ? t('units.glucose') : ''}`
 								}
 								width={type === 'glucose' ? 80 : 30}
 							/>
@@ -144,7 +144,7 @@ const CustomMultipleValueTooltip = ({
 	payload?: any[]
 	label?: number
 }) => {
-	const locales = useLocales()
+	const {t} = useTranslation()
 	if (active && payload && payload.length > 0) {
 		const data = payload[0].payload
 		return (
@@ -156,7 +156,7 @@ const CustomMultipleValueTooltip = ({
 					<span>{dayjs(data.time).format('DD.MM.YYYY')}</span>
 					{data.glucose !== undefined ? (
 						<span>
-							{data.glucose} {locales?.units.glucose}
+							{data.glucose} {t('units.glucose')}
 						</span>
 					) : (
 						<>

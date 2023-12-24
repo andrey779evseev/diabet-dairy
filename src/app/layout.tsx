@@ -1,12 +1,13 @@
+import Header from '@/components/Header'
 import Providers from '@/components/Providers'
 import { Toaster } from '@/components/ui/Toaster'
-import '@/styles/globals.css'
-import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
-import Header from '@/components/Header'
 import { getUserAuth } from '@/lib/auth'
 import { env } from '@/lib/env.mjs'
 import { cn } from '@/lib/utils'
+import '@/styles/globals.css'
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
+import { PropsWithChildren } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -68,14 +69,12 @@ export const metadata: Metadata = {
 	},
 }
 
-export default async function RootLayout({
-	children,
-}: {
-	children: React.ReactNode
-}) {
+export default async function RootLayout(props: PropsWithChildren) {
+  const {children} = props
 	const session = await getUserAuth()
+
 	return (
-		<html lang='en' suppressHydrationWarning={true}>
+		<html suppressHydrationWarning={true}>
 			<body className={cn(inter.className, 'h-full min-h-screen w-full')}>
 				<Providers>
 					<main className='p-2'>

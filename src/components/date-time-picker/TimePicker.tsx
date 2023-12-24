@@ -4,6 +4,7 @@ import { Clock } from 'lucide-react'
 import * as React from 'react'
 import { Label } from '@/components/ui/Label'
 import TimePickerInput from './TimePickerInput'
+import { useTranslation } from '@/lib/i18n/client'
 
 type PropsType = {
 	date: Date | undefined
@@ -14,12 +15,13 @@ export default function TimePicker(props: PropsType) {
 	const { date, setDate } = props
 	const minuteRef = React.useRef<HTMLInputElement>(null)
 	const hourRef = React.useRef<HTMLInputElement>(null)
+  const {t} = useTranslation()
 
 	return (
 		<div className='flex items-end gap-2'>
 			<div className='grid gap-1 text-center'>
 				<Label htmlFor='hours' className='text-xs'>
-					Hours
+					{t('sheet.form.time.hours')}
 				</Label>
 				<TimePickerInput
 					picker='hours'
@@ -31,7 +33,7 @@ export default function TimePicker(props: PropsType) {
 			</div>
 			<div className='grid gap-1 text-center'>
 				<Label htmlFor='minutes' className='text-xs'>
-					Minutes
+        {t('sheet.form.time.minutes')}
 				</Label>
 				<TimePickerInput
 					picker='minutes'

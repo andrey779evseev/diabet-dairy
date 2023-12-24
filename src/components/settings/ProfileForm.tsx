@@ -17,6 +17,7 @@ import { Switch } from '@/components/ui/Switch'
 import { updateSettings } from '@/lib/api/settings/mutations'
 import { toast } from '@/hooks/useToast'
 import { Settings } from '@/types/Settings'
+import { useTranslation } from '@/lib/i18n/client'
 
 const ProfileFormSchema = z
 	.object({
@@ -65,6 +66,7 @@ export default function ProfileForm(props: PropsType) {
 			shortInsulin: settings.shortInsulin ?? '',
 		},
 	})
+  const {t} = useTranslation()
 
 	const customShortInsulin = form.watch('customShortInsulin')
 	const customLongInsulin = form.watch('customLongInsulin')
@@ -79,7 +81,7 @@ export default function ProfileForm(props: PropsType) {
 			})
 		} catch (error) {
 			toast({
-				title: "Something wen't wrong while saving profile settings",
+				title: t('toast.settings.profile.save.error.title'),
 				description: error as string,
 				variant: 'destructive',
 			})
@@ -101,11 +103,10 @@ export default function ProfileForm(props: PropsType) {
 							<FormItem className='flex flex-row items-center justify-between gap-4'>
 								<div className='space-y-0.5'>
 									<FormLabel className='text-base'>
-										Custom short insulin name
+                    {t('settings.profile.inputs.shortInsulin.label')}
 									</FormLabel>
 									<FormDescription>
-										Enable custom name(brand) for short insulin, that will be
-										displayed in table, graph, and exported files.
+                    {t('settings.profile.inputs.shortInsulin.description')}
 									</FormDescription>
 								</div>
 								<FormControl>
@@ -146,11 +147,10 @@ export default function ProfileForm(props: PropsType) {
 							<FormItem className='flex flex-row items-center justify-between gap-4'>
 								<div className='space-y-0.5'>
 									<FormLabel className='text-base'>
-										Custom long insulin name
+                    {t('settings.profile.inputs.longInsulin.label')}
 									</FormLabel>
 									<FormDescription>
-										Enable custom name(brand) for long insulin, that will be
-										displayed in table, graph, and exported files.
+										{t('settings.profile.inputs.longInsulin.description')}
 									</FormDescription>
 								</div>
 								<FormControl>

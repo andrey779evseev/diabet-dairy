@@ -1,7 +1,6 @@
 'use client'
 
-import { Stats, StatsByDates } from '@/app/statistics/page'
-import { useLocales } from '@/state/atoms'
+import { Stats, StatsByDates } from '@/app/[lang]/statistics/page'
 import { memo } from 'react'
 import {
 	Card,
@@ -11,6 +10,7 @@ import {
 	CardTitle,
 } from '@/components/ui/Card'
 import { ScrollArea, ScrollBar } from '@/components/ui/ScrollArea'
+import { useTranslation } from '@/lib/i18n/client'
 
 type PropsType = {
 	stats: Stats
@@ -18,18 +18,18 @@ type PropsType = {
 
 function StatisticsPageContent(props: PropsType) {
 	const { stats } = props
-	const locales = useLocales()
+	const {t} = useTranslation()
 	return (
 		<div className='flex h-full w-full flex-col gap-4'>
 			<CardRowStats
 				stats={stats.glucose}
-				title={locales?.statistics.glucose.title}
-				description={locales?.statistics.glucose.description}
+				title={t('statistics.glucose.title')}
+				description={t('statistics.glucose.description')}
 			/>
 			<CardRowStats
 				stats={stats.dailyInsulin}
-				title={locales?.statistics.dailyInsulin.title}
-				description={locales?.statistics.dailyInsulin.description}
+				title={t('statistics.dailyInsulin.title')}
+				description={t('statistics.dailyInsulin.description')}
 			/>
 		</div>
 	)
@@ -43,7 +43,7 @@ type CardRowStatsPropsType = {
 
 function CardRowStats(props: CardRowStatsPropsType) {
 	const { stats, title, description } = props
-	const locales = useLocales()
+	const {t} = useTranslation()
 	return (
 		<Card className='h-fit w-full max-w-full'>
 			<CardHeader>
@@ -59,7 +59,7 @@ function CardRowStats(props: CardRowStatsPropsType) {
 									{Number.isInteger(value) ? value : value.toFixed(2)}
 								</div>
 								<span className='whitespace-nowrap text-center text-sm text-accent-foreground'>
-									{locales?.statistics.periods[label as 'today']}
+									{t(`statistics.periods.${label as 'today'}`)}
 								</span>
 							</div>
 						))}

@@ -32,7 +32,16 @@
 			"title": "You are offline",
 			"description": "Please check your connection and try again.",
 			"action": "Refresh"
-		}
+		},
+    "settings": {
+      "profile": {
+        "save": {
+          "error": {
+            "title": "Something wen't wrong while saving profile settings"
+          }
+        }
+      }
+    }
 	},
 	"table": {
 		"data": {
@@ -101,7 +110,9 @@
 				"placeholder": "Select a type"
 			},
 			"time": {
-				"label": "Time"
+				"label": "Time",
+        "hours": "Hours",
+        "minutes": "Minutes"
 			},
 			"relativeToFood": {
 				"label": "Relative to food",
@@ -150,8 +161,8 @@
 		"dropdown": {
 			"languages": {
 				"label": "Language",
-				"english": "English",
-				"russian": "Russian"
+				"en": "English",
+				"ru": "Russian"
 			},
 			"home": "Home",
 			"graphs": "Graphs",
@@ -186,5 +197,26 @@
 			"lastMonth": "Last month",
 			"last3Months": "Last three months"
 		}
-	}
+	},
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your account settings.",
+    "profile": {
+      "title": "Profile",
+      "description": "This is personal account preferences.",
+      "inputs": {
+        "shortInsulin": {
+          "label": "Custom short insulin name",
+          "description": "Enable custom name(brand) for short insulin, that will be displayed in table, graph, and exported files."
+        },
+        "longInsulin": {
+          "label": "Custom long insulin name",
+          "description": "Enable custom name(brand) for long insulin, that will be displayed in table, graph, and exported files."
+        }
+      }
+    }
+  },
+  "common": {
+    "save": "Save"
+  }
 }

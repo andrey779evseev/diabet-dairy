@@ -1,17 +1,18 @@
 'use client'
 
-import { useLocales } from '@/state/atoms'
-import { format } from 'date-fns'
-import { Calendar as CalendarIcon } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Calendar } from '@/components/ui/Calendar'
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from '@/components/ui/Popover'
+import { useTranslation } from '@/lib/i18n/client'
 import { cn } from '@/lib/utils'
+import { Calendar as CalendarIcon } from 'lucide-react'
 import TimePicker from './TimePicker'
+import dayjs from 'dayjs'
+import { useParams } from 'next/navigation'
 
 type PropsType = {
 	value: Date | undefined
@@ -20,7 +21,8 @@ type PropsType = {
 
 export default function DateTimePicker(props: PropsType) {
 	const { onChange, value: date } = props
-	const locales = useLocales()
+	const {t} = useTranslation()
+  const {lang} = useParams<{lang: string}>()
 
 	return (
 		<Popover>
@@ -35,9 +37,9 @@ export default function DateTimePicker(props: PropsType) {
 				>
 					<CalendarIcon className='mr-2 h-4 w-4' />
 					{date ? (
-						format(date, 'PPP HH:mm')
+            dayjs(date).locale(lang).format('MMMM DD, YYYY HH:mm')
 					) : (
-						<span>{locales?.filters.date.placeholder}</span>
+						<span>{t('filters.date.placeholder')}</span>
 					)}
 				</Button>
 			</PopoverTrigger>

@@ -1,54 +1,54 @@
 'use client'
 
+import dayjs from 'dayjs'
+import { ColumnDef } from '@tanstack/react-table'
+import {
+	Forward,
+	Loader2,
+	MoreHorizontal,
+	Pencil,
+	Plus,
+	RotateCcw,
+	Trash,
+} from 'lucide-react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { DateRange } from 'react-day-picker'
+import { Session } from 'next-auth'
+import dynamic from 'next/dynamic'
+import { useParams, useRouter } from 'next/navigation'
 import { DataTable } from '@/components/DataTable'
 import DateFilter from '@/components/DateFilter'
 import RecordSheet from '@/components/RecordSheet'
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
 } from '@/components/ui/AlertDialog'
 import { Button } from '@/components/ui/Button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
-import { toast } from '@/hooks/useToast'
 import { deleteRecord } from '@/lib/api/record/mutations'
 import { getRecords, getRecordsCount } from '@/lib/api/record/queries'
+import { useTranslation } from '@/lib/i18n/client'
 import { getClearNow } from '@/lib/utils'
-import { useLocale, useLocales } from '@/state/atoms'
+import { toast } from '@/hooks/useToast'
 import type {
-  Record,
-  RecordId,
-  RecordRelativeToFoodType,
-  RecordType,
+	Record,
+	RecordId,
+	RecordRelativeToFoodType,
+	RecordType,
 } from '@/types/Record'
 import { Settings } from '@/types/Settings'
-import { ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
-import {
-  Forward,
-  Loader2,
-  MoreHorizontal,
-  Pencil,
-  Plus,
-  RotateCcw,
-  Trash,
-} from 'lucide-react'
-import { Session } from 'next-auth'
-import dynamic from 'next/dynamic'
-import { useRouter } from 'next/navigation'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { DateRange } from 'react-day-picker'
 
 const MultiActionButton = dynamic(
 	() => import('@/components/MultiActionButton'),
@@ -58,7 +58,7 @@ const MultiActionButton = dynamic(
 )
 
 type PropsType = {
-  session: Session
+	session: Session
 	settings: Settings
 	records: Record[]
 	recordsCount: number
@@ -69,7 +69,7 @@ function HomePageContent(props: PropsType) {
 		records: recordsBase,
 		recordsCount: recordsCountBase,
 		settings,
-    session
+		session,
 	} = props
 	const [date, setDate] = useState<DateRange | undefined>(() => {
 		return {
@@ -84,9 +84,9 @@ function HomePageContent(props: PropsType) {
 	const [isOpenRecordSheet, setIsOpenRecordSheet] = useState(false)
 	const [type, setType] = useState<RecordType | 'all'>('all')
 	const [recordsCount, setRecordsCount] = useState(recordsCountBase)
-	const locales = useLocales()
-	const locale = useLocale()
+	const { t } = useTranslation()
 	const router = useRouter()
+	const { lang } = useParams()
 
 	useEffect(() => {
 		;(async () => {
@@ -110,8 +110,8 @@ function HomePageContent(props: PropsType) {
 		(id: RecordId) => {
 			if (deletingRecordId !== null) {
 				toast({
-					title: locales?.toast.delete.error.title,
-					description: locales?.toast.delete.error.description,
+					title: t('toast.delete.error.title'),
+					description: t('toast.delete.error.description'),
 					variant: 'destructive',
 				})
 				return
@@ -119,7 +119,7 @@ function HomePageContent(props: PropsType) {
 			setIsOpenDeleteAlert(true)
 			setDeletingRecordId(id)
 		},
-		[deletingRecordId, locales],
+		[deletingRecordId, t],
 	)
 
 	const prepareForEditRecord = useCallback(
@@ -143,7 +143,7 @@ function HomePageContent(props: PropsType) {
 			})
 			.catch((error: string) => {
 				toast({
-					title: locales?.toast.delete.error.title,
+					title: t('toast.delete.error.title'),
 					description: error,
 					variant: 'destructive',
 				})
@@ -151,7 +151,7 @@ function HomePageContent(props: PropsType) {
 			.finally(() => {
 				setDeletingRecordId(null)
 			})
-	}, [setRecords, deletingRecordId, locales])
+	}, [setRecords, deletingRecordId, t])
 
 	const columns: ColumnDef<Record>[] = useMemo(
 		() => [
@@ -196,27 +196,30 @@ function HomePageContent(props: PropsType) {
 					return (
 						<div className='flex w-full flex-col gap-1'>
 							<span className='text-base'>
-								{locales?.table.data.type[type]}
+								{t(`table.data.type.${type}`)}
 								{(type === 'glucose' || type === 'insulin') &&
 								!!relativeToFood &&
 								relativeToFood !== 'none'
-									? ` ${locales?.table.data.relativeToFood[relativeToFood]} ${locales?.table.data.type.food}`
+									? ` ${`table.data.relativeToFood.${relativeToFood}`} ${t(
+											'table.data.type.food',
+									  )}`
 									: null}
 							</span>
 							{type === 'glucose' && !!glucose ? (
-								<span className='text-sm text-zinc-400'>{`${glucose} ${locales?.units.glucose}`}</span>
+								<span className='text-sm text-zinc-400'>
+									{`${glucose} ${t('units.glucose')}`}
+								</span>
 							) : null}
 							{type === 'insulin' ? (
 								<span className='text-sm text-zinc-400'>
 									{!!shortInsulin
 										? `${
-												settings.shortInsulin ??
-												locales?.table.data.insulin.short
+												settings.shortInsulin ?? t('table.data.insulin.short')
 										  }: ${shortInsulin}`
 										: ''}
 									{!!longInsulin
 										? `${!!shortInsulin ? ', ' : ''}${
-												settings.longInsulin ?? locales?.table.data.insulin.long
+												settings.longInsulin ?? t('table.data.insulin.long')
 										  }: ${longInsulin}`
 										: ''}
 								</span>
@@ -271,7 +274,7 @@ function HomePageContent(props: PropsType) {
 									className='flex items-center gap-2'
 								>
 									<Pencil className='h-4 w-4' />
-									<span>{locales?.table.actions.edit}</span>
+									<span>{t('table.actions.edit')}</span>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
@@ -283,7 +286,7 @@ function HomePageContent(props: PropsType) {
 									) : (
 										<Trash className='h-4 w-4' />
 									)}
-									<span>{locales?.table.actions.delete}</span>
+									<span>{t('table.actions.delete')}</span>
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -296,7 +299,7 @@ function HomePageContent(props: PropsType) {
 			prepareForEditRecord,
 			isOpenDeleteAlert,
 			deletingRecordId,
-			locales,
+			t,
 			settings,
 		],
 	)
@@ -332,15 +335,15 @@ function HomePageContent(props: PropsType) {
 						})
 						return
 					}
-					const url = `/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${locale}`
+					const url = `/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${lang}`
 					const fileName = `${dayjs(date.from).format('DD.MM.YYYY')}${
 						date.to !== undefined
 							? `~${dayjs(date.to).format('DD.MM.YYYY')}`
 							: ''
-					} (${locales?.filters.type.options[type]}).docx`
+					} (${t(`filters.type.options.${type}`)}).docx`
 					if ('canShare' in navigator) {
 						const res = await fetch(
-							`/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${locale}`,
+							`/api/download/word?from=${date.from}&to=${date.to}&type=${type}&locale=${lang}`,
 							{
 								method: 'GET',
 							},
@@ -373,7 +376,7 @@ function HomePageContent(props: PropsType) {
 				action: () => router.refresh(),
 			},
 		],
-		[date, type, locale, locales, router],
+		[date, type, t, lang, router],
 	)
 
 	return (
@@ -397,24 +400,24 @@ function HomePageContent(props: PropsType) {
 					isOpen={isOpenRecordSheet}
 					setIsOpen={setIsOpenRecordSheet}
 					settings={settings}
-          session={session}
+					session={session}
 				/>
 			) : null}
 			<MultiActionButton actions={actions} />
 			<AlertDialog open={isOpenDeleteAlert} onOpenChange={setIsOpenDeleteAlert}>
 				<AlertDialogContent className='w-[90%]'>
 					<AlertDialogHeader>
-						<AlertDialogTitle>{locales?.alerts.delete.title}</AlertDialogTitle>
+						<AlertDialogTitle>{t('alerts.delete.title')}</AlertDialogTitle>
 						<AlertDialogDescription>
-							{locales?.alerts.delete.description}
+							{t('alerts.delete.description')}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel onClick={() => cancelRemoveRecord()}>
-							{locales?.alerts.delete.actions.cancel}
+							{t('alerts.delete.actions.cancel')}
 						</AlertDialogCancel>
 						<AlertDialogAction onClick={() => removeRecord()}>
-							{locales?.alerts.delete.actions.continue}
+							{t('alerts.delete.actions.continue')}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

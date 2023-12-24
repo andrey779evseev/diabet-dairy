@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button'
 export function GoogleAuthButton() {
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const searchParams = useSearchParams()
-	const callbackUrl = searchParams.get('callbackUrl') ?? '/'
+	const callbackUrl = searchParams.get('callbackUrl') ?? '/en'
 
 	return (
 		<Button

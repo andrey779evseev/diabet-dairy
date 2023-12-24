@@ -6,7 +6,7 @@ import { getSettings } from '@/lib/api/settings/queries'
 import { getUserAuth } from '@/lib/auth'
 import { groupBy } from '@/lib/utils'
 import { RecordType } from '@/types/Record'
-import { getLocales } from '@/localization/locales'
+import { getTranslation } from '@/lib/i18n'
 
 const { Document, Packer, Paragraph, TextRun } = require('docx')
 
@@ -39,8 +39,8 @@ export async function GET(req: Request) {
 				: undefined,
 	}
 
-	const [locales, data, settings] = await Promise.all([
-		getLocales(lang),
+	const [{t}, data, settings] = await Promise.all([
+		getTranslation(lang),
 		getRecordsByDate(range, session.user.id),
 		getSettings(session.user.id),
 	])
@@ -86,7 +86,7 @@ export async function GET(req: Request) {
 													size: 22,
 												}),
 												new TextRun({
-													text: locales.table.data.type[record.type],
+													text: t(`table.data.type.${record.type}`),
 													font: 'Arial',
 													italics: true,
 													size: 24,
@@ -98,9 +98,7 @@ export async function GET(req: Request) {
 														!!record.relativeToFood &&
 														record.relativeToFood !== 'none'
 															? ` (${
-																	locales.table.data.relativeToFood[
-																		record.relativeToFood
-																	]
+																	t(`table.data.relativeToFood.${record.relativeToFood}`)
 															  })`
 															: ''
 													} - `,
@@ -110,7 +108,7 @@ export async function GET(req: Request) {
 												new TextRun({
 													text:
 														record.type === 'glucose'
-															? `${record.glucose} ${locales.units.glucose}`
+															? `${record.glucose} ${t('units.glucose')}`
 															: '',
 													font: 'Arial',
 													size: 22,
@@ -121,7 +119,7 @@ export async function GET(req: Request) {
 														record.type === 'insulin' && !!record.shortInsulin
 															? `${
 																	settings.shortInsulin ??
-																	locales.table.data.insulin.short
+																	t('table.data.insulin.short')
 															  }: ${record.shortInsulin}`
 															: '',
 													font: 'Arial',
@@ -142,7 +140,7 @@ export async function GET(req: Request) {
 														record.type === 'insulin' && !!record.longInsulin
 															? `${
 																	settings.longInsulin ??
-																	locales.table.data.insulin.long
+																	t('table.data.insulin.long')
 															  }: ${record.longInsulin}`
 															: '',
 													font: 'Arial',

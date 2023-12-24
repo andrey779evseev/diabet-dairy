@@ -29,7 +29,7 @@ import {
 import { Textarea } from '@/components/ui/Textarea'
 import { toast } from '@/hooks/useToast'
 import { createRecord, updateRecord } from '@/lib/api/record/mutations'
-import { useLocales } from '@/state/atoms'
+import { useTranslation } from '@/lib/i18n/client'
 import { NewRecord, NewRecordSchema, Record } from '@/types/Record'
 import { Settings } from '@/types/Settings'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -62,7 +62,7 @@ export default function RecordSheet(props: PropsType) {
     session
 	} = props
 	const [isLoading, setIsLoading] = useState(false)
-	const locales = useLocales()
+	const {t} = useTranslation()
 	const editRecord = useMemo(() => {
 		if (!record) return undefined
 		const { id: _id, userId: _userId, ...rest } = record
@@ -100,7 +100,7 @@ export default function RecordSheet(props: PropsType) {
 				})
 				.catch((error: string) => {
 					toast({
-						title: locales?.toast.update.error.title,
+						title: t('toast.update.error.title'),
 						description: error,
 						variant: 'destructive',
 					})
@@ -116,7 +116,7 @@ export default function RecordSheet(props: PropsType) {
 				})
 				.catch((error: string) => {
 					toast({
-						title: locales?.toast.create.error.title,
+						title: t('toast.create.error.title'),
 						description: error,
 						variant: 'destructive',
 					})
@@ -137,14 +137,14 @@ export default function RecordSheet(props: PropsType) {
 	return (
 		<>
 			<Sheet open={isOpen} onOpenChange={onOpenChange}>
-				<SheetContent side='bottom'>
+				<SheetContent side='bottom' className='max-h-screen overflow-y-auto'>
 					<SheetHeader>
 						<SheetTitle>
 							{editRecord !== undefined
-								? locales?.sheet.title.update
-								: locales?.sheet.title.create}
+								? t('sheet.title.update')
+								: t('sheet.title.create')}
 						</SheetTitle>
-						<SheetDescription>{locales?.sheet.description}</SheetDescription>
+						<SheetDescription>{t('sheet.description')}</SheetDescription>
 					</SheetHeader>
 					<Form {...form}>
 						<form
@@ -156,7 +156,7 @@ export default function RecordSheet(props: PropsType) {
 								name='type'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{locales?.sheet.form.type.label}</FormLabel>
+										<FormLabel>{t('sheet.form.type.label')}</FormLabel>
 										<Select
 											defaultValue={field.value}
 											onValueChange={field.onChange}
@@ -164,23 +164,23 @@ export default function RecordSheet(props: PropsType) {
 											<FormControl>
 												<SelectTrigger className='w-full'>
 													<SelectValue
-														placeholder={locales?.sheet.form.type.placeholder}
+														placeholder={t('sheet.form.type.placeholder')}
 													/>
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
 												<SelectGroup>
 													<SelectItem value='glucose'>
-														{locales?.sheet.form.type.options.glucose}
+														{t('sheet.form.type.options.glucose')}
 													</SelectItem>
 													<SelectItem value='insulin'>
-														{locales?.sheet.form.type.options.insulin}
+														{t('sheet.form.type.options.insulin')}
 													</SelectItem>
 													<SelectItem value='food'>
-														{locales?.sheet.form.type.options.food}
+														{t('sheet.form.type.options.food')}
 													</SelectItem>
 													<SelectItem value='activity'>
-														{locales?.sheet.form.type.options.activity}
+														{t('sheet.form.type.options.activity')}
 													</SelectItem>
 												</SelectGroup>
 											</SelectContent>
@@ -194,7 +194,7 @@ export default function RecordSheet(props: PropsType) {
 								name='time'
 								render={({ field }) => (
 									<FormItem className='flex flex-col gap-y-2 space-y-0'>
-										<FormLabel>{locales?.sheet.form.time.label}</FormLabel>
+										<FormLabel>{t('sheet.form.time.label')}</FormLabel>
 										<FormControl>
 											<DateTimePicker
 												value={field.value}
@@ -212,7 +212,7 @@ export default function RecordSheet(props: PropsType) {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>
-												{locales?.sheet.form.relativeToFood.label}
+												{t('sheet.form.relativeToFood.label')}
 											</FormLabel>
 											<Select
 												value={field.value}
@@ -222,7 +222,7 @@ export default function RecordSheet(props: PropsType) {
 													<SelectTrigger className='w-full'>
 														<SelectValue
 															placeholder={
-																locales?.sheet.form.relativeToFood.placeholder
+																t('sheet.form.relativeToFood.placeholder')
 															}
 														/>
 													</SelectTrigger>
@@ -231,15 +231,14 @@ export default function RecordSheet(props: PropsType) {
 													<SelectGroup>
 														<SelectItem value='before'>
 															{
-																locales?.sheet.form.relativeToFood.options
-																	.before
+																t('sheet.form.relativeToFood.options.before')
 															}
 														</SelectItem>
 														<SelectItem value='after'>
-															{locales?.sheet.form.relativeToFood.options.after}
+															{t('sheet.form.relativeToFood.options.after')}
 														</SelectItem>
 														<SelectItem value='none'>
-															{locales?.sheet.form.relativeToFood.options.none}
+															{t('sheet.form.relativeToFood.options.none')}
 														</SelectItem>
 													</SelectGroup>
 												</SelectContent>
@@ -255,10 +254,10 @@ export default function RecordSheet(props: PropsType) {
 									name='glucose'
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>{locales?.sheet.form.glucose.label}</FormLabel>
+											<FormLabel>{t('sheet.form.glucose.label')}</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={locales?.sheet.form.glucose.placeholder}
+													placeholder={t('sheet.form.glucose.placeholder')}
 													{...field}
 													onChange={(e) => {
 														const value = e.target.value.replace(',', '.')
@@ -285,15 +284,15 @@ export default function RecordSheet(props: PropsType) {
 											<FormItem>
 												<FormLabel>
 													{settings.shortInsulin ??
-														locales?.sheet.form.shortInsulin.label}
+														t('sheet.form.shortInsulin.label')}
 												</FormLabel>
 												<FormControl>
 													<Input
 														type='number'
 														placeholder={
 															!settings.shortInsulin
-																? locales?.sheet.form.shortInsulin.placeholder
-																: `${locales?.sheet.form.shortInsulin.part_placeholder} ${settings.shortInsulin}`
+																? t('sheet.form.shortInsulin.placeholder')
+																: `${t('sheet.form.shortInsulin.part_placeholder')} ${settings.shortInsulin}`
 														}
 														{...field}
 														onChange={(e) =>
@@ -314,14 +313,14 @@ export default function RecordSheet(props: PropsType) {
 											<FormItem>
 												<FormLabel>
 													{settings.longInsulin ??
-														locales?.sheet.form.longInsulin.label}
+														t('sheet.form.longInsulin.label')}
 												</FormLabel>
 												<FormControl>
 													<Input
 														placeholder={
 															!settings.longInsulin
-																? locales?.sheet.form.longInsulin.placeholder
-																: `${locales?.sheet.form.longInsulin.part_placeholder} ${settings.longInsulin}`
+																? t('sheet.form.longInsulin.placeholder')
+																: `${t('sheet.form.longInsulin.part_placeholder')} ${settings.longInsulin}`
 														}
 														type='number'
 														{...field}
@@ -344,12 +343,12 @@ export default function RecordSheet(props: PropsType) {
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>
-											{locales?.sheet.form.description.label}
+											{t('sheet.form.description.label')}
 										</FormLabel>
 										<FormControl>
 											<Textarea
 												placeholder={
-													locales?.sheet.form.description.placeholder
+													t('sheet.form.description.placeholder')
 												}
 												{...field}
 											/>
@@ -362,9 +361,9 @@ export default function RecordSheet(props: PropsType) {
 								{isLoading ? (
 									<Loader2 className='animate-spin' />
 								) : record !== undefined ? (
-									locales?.sheet.form.actions.update
+									t('sheet.form.actions.update')
 								) : (
-									locales?.sheet.form.actions.create
+									t('sheet.form.actions.create')
 								)}
 							</Button>
 						</form>
