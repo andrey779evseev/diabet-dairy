@@ -3,16 +3,16 @@
 import { Button } from '@/components/ui/Button'
 import { Calendar } from '@/components/ui/Calendar'
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
 } from '@/components/ui/Popover'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from '@/components/ui/Select'
 import { useTranslation } from '@/lib/i18n/client'
 import { cn, getClearNow } from '@/lib/utils'
@@ -29,35 +29,38 @@ type PropsType = {
 
 function DateFilter(props: PropsType) {
 	const { date, setDate } = props
-	const {lang} = useParams<{lang: string}>()
-  const {t} = useTranslation()
+	const { lang } = useParams<{ lang: string }>()
+	const { t } = useTranslation()
 
-  const dateRangeOptions = useMemo(() => [
-    {
-      label: t('filters.date.select.options.today'),
-      value: 0
-    },
-    {
-      label: t('filters.date.select.options.yesterday'),
-      value: 1
-    },
-    {
-      label: t('filters.date.select.options.last3Days'),
-      value: 2
-    },
-    {
-      label: t('filters.date.select.options.lastWeek'),
-      value: 6
-    },
-    {
-      label: t('filters.date.select.options.last2Weeks'),
-      value: 13
-    },
-    {
-      label: t('filters.date.select.options.lastMonth'),
-      value: 30
-    },
-  ], [t])
+	const dateRangeOptions = useMemo(
+		() => [
+			{
+				label: t('filters.date.select.options.today'),
+				value: 0,
+			},
+			{
+				label: t('filters.date.select.options.yesterday'),
+				value: 1,
+			},
+			{
+				label: t('filters.date.select.options.last3Days'),
+				value: 2,
+			},
+			{
+				label: t('filters.date.select.options.lastWeek'),
+				value: 6,
+			},
+			{
+				label: t('filters.date.select.options.last2Weeks'),
+				value: 13,
+			},
+			{
+				label: t('filters.date.select.options.lastMonth'),
+				value: 30,
+			},
+		],
+		[t],
+	)
 
 	const handleSelect = (range: DateRange | undefined) => {
 		if (
@@ -120,18 +123,14 @@ function DateFilter(props: PropsType) {
 					}}
 				>
 					<SelectTrigger>
-						<SelectValue
-							placeholder={t('filters.date.select.placeholder')}
-						/>
+						<SelectValue placeholder={t('filters.date.select.placeholder')} />
 					</SelectTrigger>
 					<SelectContent position='popper'>
-            {
-              dateRangeOptions.map((o, i) => (
-                <SelectItem value={o.value.toString()} key={i}>
-                  {o.label}
-                </SelectItem>
-              ))
-            }
+						{dateRangeOptions.map((o, i) => (
+							<SelectItem value={o.value.toString()} key={i}>
+								{o.label}
+							</SelectItem>
+						))}
 					</SelectContent>
 				</Select>
 				<div className='rounded-md border'>

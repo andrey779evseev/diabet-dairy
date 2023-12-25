@@ -1,3 +1,4 @@
+import { users } from '@/lib/db/schema/auth'
 import { relations } from 'drizzle-orm'
 import {
 	pgEnum,
@@ -9,7 +10,6 @@ import {
 	uuid,
 } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { users } from '@/lib/db/schema/auth'
 
 export const typeEnum = pgEnum('type', [
 	'insulin',

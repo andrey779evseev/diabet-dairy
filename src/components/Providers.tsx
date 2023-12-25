@@ -1,19 +1,19 @@
 'use client'
 
+import { ToastAction } from '@/components/ui/Toast'
+import { useNetworkStatus } from '@/hooks/useNetworkStatus'
+import { toast } from '@/hooks/useToast'
+import { useTranslation } from '@/lib/i18n/client'
+import * as dayjs from 'dayjs'
 import 'dayjs/locale/en'
 import 'dayjs/locale/ru'
-import { z } from 'zod'
-import { makeZodI18nMap } from 'zod-i18n-map'
-import * as dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import utc from 'dayjs/plugin/utc'
 import { SessionProvider } from 'next-auth/react'
-import { PropsWithChildren, useEffect } from 'react'
 import { ThemeProvider } from 'next-themes'
-import { ToastAction } from '@/components/ui/Toast'
-import { useTranslation } from '@/lib/i18n/client'
-import { useNetworkStatus } from '@/hooks/useNetworkStatus'
-import { toast } from '@/hooks/useToast'
+import { PropsWithChildren, useEffect } from 'react'
+import { z } from 'zod'
+import { makeZodI18nMap } from 'zod-i18n-map'
 
 dayjs.extend(isBetween)
 dayjs.extend(utc)
@@ -43,9 +43,9 @@ export default function Providers(props: PropsWithChildren) {
 		}
 	}, [isOnline, t])
 
-  useEffect(() => {
+	useEffect(() => {
 		z.setErrorMap(makeZodI18nMap({ ns: ['translation', 'zod', 'custom'] }))
-	}, [t])
+	}, [])
 
 	return (
 		<SessionProvider refetchWhenOffline={false}>

@@ -16,7 +16,7 @@ function Calendar({
 	showOutsideDays = true,
 	...props
 }: CalendarProps) {
-	const {lang} = useParams()
+	const { lang } = useParams()
 	return (
 		<DayPicker
 			locale={lang === 'ru' ? ru : enUS}

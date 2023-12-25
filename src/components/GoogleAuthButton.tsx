@@ -1,11 +1,11 @@
 'use client'
 
-import { Loader2 } from 'lucide-react'
-import { signIn } from 'next-auth/react'
-import { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { Icons } from '@/components/Icons'
 import { Button } from '@/components/ui/Button'
+import { Loader2 } from 'lucide-react'
+import { signIn } from 'next-auth/react'
+import { useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 
 export function GoogleAuthButton() {
 	const [isLoading, setIsLoading] = useState<boolean>(false)

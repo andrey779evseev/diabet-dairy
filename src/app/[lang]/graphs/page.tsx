@@ -1,8 +1,8 @@
-import { DateRange } from 'react-day-picker'
-import dynamic from 'next/dynamic'
 import { getRecordsByDate } from '@/lib/api/record/queries'
 import { getUserAuth } from '@/lib/auth'
 import { getClearNow } from '@/lib/utils'
+import dynamic from 'next/dynamic'
+import { DateRange } from 'react-day-picker'
 
 const GraphsPageContent = dynamic(
 	() => import('@/components/client-pages/GraphsPageContent'),

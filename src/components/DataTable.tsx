@@ -2,12 +2,12 @@
 
 import { ScrollArea } from '@/components/ui/ScrollArea'
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from '@/components/ui/Select'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/Table'
@@ -15,13 +15,13 @@ import { useMounted } from '@/hooks/useMounted'
 import { useTranslation } from '@/lib/i18n/client'
 import { RecordType } from '@/types/Record'
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  useReactTable,
-  VisibilityState,
+	ColumnDef,
+	ColumnFiltersState,
+	VisibilityState,
+	flexRender,
+	getCoreRowModel,
+	getFilteredRowModel,
+	useReactTable,
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -61,11 +61,11 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 	})
 	const isMounted = useMounted()
 	const bottomAnchor = useRef(null)
-	const {t} = useTranslation()
+	const { t } = useTranslation()
 
 	useEffect(() => {
 		onChangeTypeFilter(
-			columnFilters.find((x) => x.id === 'type')!.value as RecordType | 'all',
+			columnFilters.find((x) => x.id === 'type')?.value as RecordType | 'all',
 		)
 	}, [columnFilters, onChangeTypeFilter])
 
@@ -106,10 +106,10 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 		<>
 			<Select
 				defaultValue={
-					(table.getColumn('type')!.getFilterValue() as string) ?? 'all'
+					(table.getColumn('type')?.getFilterValue() as string) ?? 'all'
 				}
 				onValueChange={(value) =>
-					table.getColumn('type')!.setFilterValue(value)
+					table.getColumn('type')?.setFilterValue(value)
 				}
 			>
 				<SelectTrigger className='w-full !ring-0 !ring-transparent'>
@@ -117,9 +117,7 @@ export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
-						<SelectItem value='all'>
-							{t('filters.type.options.all')}
-						</SelectItem>
+						<SelectItem value='all'>{t('filters.type.options.all')}</SelectItem>
 						<SelectItem value='glucose'>
 							{t('filters.type.options.glucose')}
 						</SelectItem>

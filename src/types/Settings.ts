@@ -1,9 +1,9 @@
-import { z } from 'zod'
 import {
 	insertSettingsSchema,
 	selectSettingsSchema,
 	settingsIdSchema,
 } from '@/lib/db/schema/settings'
+import { z } from 'zod'
 
 // export const NewSettingsSchema = z.object({
 //   shortInsulin: z.string().optional(),

@@ -14,16 +14,18 @@ import { getTranslation } from '@/lib/i18n'
 import { Languages } from '@/lib/i18n/settings'
 
 type Props = {
-  params: {
-    lang: Languages
-  }
+	params: {
+		lang: Languages
+	}
 }
 
 export default async function SettingsProfilePage(props: Props) {
-  const {params: {lang}} = props
+	const {
+		params: { lang },
+	} = props
 	const session = await getUserAuth()
 	const settings = await getSettings(session.user.id)
-  const {t} = await getTranslation(lang)
+	const { t } = await getTranslation(lang)
 	return (
 		<Card>
 			<CardHeader>
@@ -35,7 +37,7 @@ export default async function SettingsProfilePage(props: Props) {
 			</CardContent>
 			<CardFooter className='flex justify-between'>
 				<Button type='submit' form='settings-profile-form'>
-          {t('common.save')}
+					{t('common.save')}
 				</Button>
 			</CardFooter>
 		</Card>

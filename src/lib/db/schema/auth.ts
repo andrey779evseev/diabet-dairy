@@ -1,3 +1,5 @@
+import { records } from '@/lib/db/schema/record'
+import { settings } from '@/lib/db/schema/settings'
 import type { AdapterAccount } from '@auth/core/adapters'
 import { relations } from 'drizzle-orm'
 import {
@@ -7,8 +9,6 @@ import {
 	text,
 	timestamp,
 } from 'drizzle-orm/pg-core'
-import { records } from '@/lib/db/schema/record'
-import { settings } from '@/lib/db/schema/settings'
 
 export const users = pgTable('user', {
 	id: text('id').notNull().primaryKey(),

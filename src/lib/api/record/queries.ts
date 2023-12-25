@@ -1,20 +1,20 @@
 'use server'
 
+import { db } from '@/lib/db'
+import { records } from '@/lib/db/schema/record'
+import type { Record } from '@/types/Record'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { and, between, desc, eq, gte, isNotNull, sql } from 'drizzle-orm'
 import { DateRange } from 'react-day-picker'
-import { db } from '@/lib/db'
-import { records } from '@/lib/db/schema/record'
-import type { Record } from '@/types/Record'
 
 dayjs.extend(utc)
 
 export const getRecords = async (
 	date: DateRange,
 	userId: string,
-	offset: number = 0,
-	limit: number = 100,
+	offset = 0,
+	limit = 100,
 ) => {
 	return (await db.query.records.findMany({
 		where: (records, { gte, and, eq, between }) =>

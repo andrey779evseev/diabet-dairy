@@ -3,28 +3,28 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuRadioGroup,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useTranslation } from '@/lib/i18n/client'
 import { languages } from '@/lib/i18n/settings'
 import {
-  AreaChart,
-  BarChart3,
-  Cog,
-  Home,
-  LifeBuoy,
-  LogOut,
-  Menu,
-  Moon,
-  Sun,
+	AreaChart,
+	BarChart3,
+	Cog,
+	Home,
+	LifeBuoy,
+	LogOut,
+	Menu,
+	Moon,
+	Sun,
 } from 'lucide-react'
 import { Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
@@ -42,7 +42,7 @@ export default function Header(props: Props) {
 	const router = useRouter()
 	const pathname = usePathname()
 	const lang = useMemo(() => pathname.split('/')[1], [pathname])
-  const {t} = useTranslation()
+	const { t } = useTranslation()
 
 	const routes = useMemo(() => {
 		return [
@@ -75,7 +75,7 @@ export default function Header(props: Props) {
 
 	const logout = async () => {
 		await signOut()
-		router.push('/' + pathname.split('/')[1] + '/auth/sign-in')
+		router.push(`/${pathname.split('/')[1]}/auth/sign-in`)
 	}
 
 	return (

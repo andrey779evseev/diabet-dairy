@@ -70,15 +70,15 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout(props: PropsWithChildren) {
-  const {children} = props
+	const { children } = props
 	const session = await getUserAuth()
 
 	return (
-		<html suppressHydrationWarning={true}>
+		<html lang='en' suppressHydrationWarning={true}>
 			<body className={cn(inter.className, 'h-full min-h-screen w-full')}>
 				<Providers>
 					<main className='p-2'>
-						{!!session ? <Header session={session} /> : null}
+						{session ? <Header session={session} /> : null}
 						{children}
 					</main>
 					<Toaster />

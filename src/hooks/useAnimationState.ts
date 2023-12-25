@@ -7,8 +7,9 @@ export const useAnimationState = (value: boolean, duration = 500) => {
 		if (!value) {
 			const timeout = setTimeout(() => setInternalValue(false), duration)
 			return () => clearTimeout(timeout)
-		} else setInternalValue(true)
-	}, [value, setInternalValue, duration])
+		}
+		setInternalValue(true)
+	}, [value, duration])
 
 	return internalValue
 }

@@ -1,21 +1,5 @@
 'use client'
 
-import dayjs from 'dayjs'
-import { ColumnDef } from '@tanstack/react-table'
-import {
-	Forward,
-	Loader2,
-	MoreHorizontal,
-	Pencil,
-	Plus,
-	RotateCcw,
-	Trash,
-} from 'lucide-react'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { DateRange } from 'react-day-picker'
-import { Session } from 'next-auth'
-import dynamic from 'next/dynamic'
-import { useParams, useRouter } from 'next/navigation'
 import { DataTable } from '@/components/DataTable'
 import DateFilter from '@/components/DateFilter'
 import RecordSheet from '@/components/RecordSheet'
@@ -37,11 +21,11 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
+import { toast } from '@/hooks/useToast'
 import { deleteRecord } from '@/lib/api/record/mutations'
 import { getRecords, getRecordsCount } from '@/lib/api/record/queries'
 import { useTranslation } from '@/lib/i18n/client'
 import { getClearNow } from '@/lib/utils'
-import { toast } from '@/hooks/useToast'
 import type {
 	Record,
 	RecordId,
@@ -49,6 +33,22 @@ import type {
 	RecordType,
 } from '@/types/Record'
 import { Settings } from '@/types/Settings'
+import { ColumnDef } from '@tanstack/react-table'
+import dayjs from 'dayjs'
+import {
+	Forward,
+	Loader2,
+	MoreHorizontal,
+	Pencil,
+	Plus,
+	RotateCcw,
+	Trash,
+} from 'lucide-react'
+import { Session } from 'next-auth'
+import dynamic from 'next/dynamic'
+import { useParams, useRouter } from 'next/navigation'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { DateRange } from 'react-day-picker'
 
 const MultiActionButton = dynamic(
 	() => import('@/components/MultiActionButton'),
@@ -124,11 +124,11 @@ function HomePageContent(props: PropsType) {
 
 	const prepareForEditRecord = useCallback(
 		(id: RecordId) => {
-			const record = records.find((x) => x.id === id)!
+			const record = records.find((x) => x.id === id)
 			setEditRecord(record)
 			setIsOpenRecordSheet(true)
 		},
-		[records, setEditRecord],
+		[records],
 	)
 
 	const cancelRemoveRecord = () => {
@@ -137,7 +137,8 @@ function HomePageContent(props: PropsType) {
 	}
 
 	const removeRecord = useCallback(async () => {
-		await deleteRecord(deletingRecordId!)
+		if (!deletingRecordId) return
+		await deleteRecord(deletingRecordId)
 			.then(() => {
 				setRecords((prev) => prev.filter((x) => x.id !== deletingRecordId))
 			})
@@ -151,7 +152,7 @@ function HomePageContent(props: PropsType) {
 			.finally(() => {
 				setDeletingRecordId(null)
 			})
-	}, [setRecords, deletingRecordId, t])
+	}, [deletingRecordId, t])
 
 	const columns: ColumnDef<Record>[] = useMemo(
 		() => [
@@ -212,19 +213,19 @@ function HomePageContent(props: PropsType) {
 							) : null}
 							{type === 'insulin' ? (
 								<span className='text-sm text-zinc-400'>
-									{!!shortInsulin
+									{shortInsulin
 										? `${
 												settings.shortInsulin ?? t('table.data.insulin.short')
 										  }: ${shortInsulin}`
 										: ''}
-									{!!longInsulin
-										? `${!!shortInsulin ? ', ' : ''}${
+									{longInsulin
+										? `${shortInsulin ? ', ' : ''}${
 												settings.longInsulin ?? t('table.data.insulin.long')
 										  }: ${longInsulin}`
 										: ''}
 								</span>
 							) : null}
-							{!!description ? (
+							{description ? (
 								<span className='text-sm text-zinc-400'>{description}</span>
 							) : null}
 						</div>

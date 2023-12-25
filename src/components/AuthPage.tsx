@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 type PropsType = {
 	isSignIn: boolean
-  lang: string
+	lang: string
 }
 
 export default function AuthPage(props: PropsType) {

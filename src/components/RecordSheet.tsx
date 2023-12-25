@@ -3,28 +3,28 @@
 import DateTimePicker from '@/components/date-time-picker/DateTimePicker'
 import { Button } from '@/components/ui/Button'
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from '@/components/ui/Form'
 import { Input } from '@/components/ui/Input'
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from '@/components/ui/Select'
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
 } from '@/components/ui/Sheet'
 import { Textarea } from '@/components/ui/Textarea'
 import { toast } from '@/hooks/useToast'
@@ -47,7 +47,7 @@ type PropsType = {
 	isOpen: boolean
 	setIsOpen: (value: boolean) => void
 	settings: Settings
-  session: Session
+	session: Session
 }
 
 export default function RecordSheet(props: PropsType) {
@@ -59,17 +59,17 @@ export default function RecordSheet(props: PropsType) {
 		isOpen,
 		setIsOpen,
 		settings,
-    session
+		session,
 	} = props
 	const [isLoading, setIsLoading] = useState(false)
-	const {t} = useTranslation()
+	const { t } = useTranslation()
 	const editRecord = useMemo(() => {
 		if (!record) return undefined
 		const { id: _id, userId: _userId, ...rest } = record
 		const clone = structuredClone(rest)
 		Object.keys(clone).forEach((key) => {
 			// @ts-expect-error do not remove
-			if (!Boolean(clone[key])) clone[key] = undefined
+			if (!clone[key]) clone[key] = undefined
 		})
 		return clone
 	}, [record])
@@ -89,7 +89,7 @@ export default function RecordSheet(props: PropsType) {
 		setIsLoading(true)
 		const newRecord: Record = {
 			id: record?.id ?? v4(),
-			userId: record?.userId ?? session!.user.id,
+			userId: record?.userId ?? session.user.id,
 			...values,
 		}
 		if (editRecord !== undefined) {
@@ -221,18 +221,16 @@ export default function RecordSheet(props: PropsType) {
 												<FormControl>
 													<SelectTrigger className='w-full'>
 														<SelectValue
-															placeholder={
-																t('sheet.form.relativeToFood.placeholder')
-															}
+															placeholder={t(
+																'sheet.form.relativeToFood.placeholder',
+															)}
 														/>
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
 													<SelectGroup>
 														<SelectItem value='before'>
-															{
-																t('sheet.form.relativeToFood.options.before')
-															}
+															{t('sheet.form.relativeToFood.options.before')}
 														</SelectItem>
 														<SelectItem value='after'>
 															{t('sheet.form.relativeToFood.options.after')}
@@ -292,7 +290,9 @@ export default function RecordSheet(props: PropsType) {
 														placeholder={
 															!settings.shortInsulin
 																? t('sheet.form.shortInsulin.placeholder')
-																: `${t('sheet.form.shortInsulin.part_placeholder')} ${settings.shortInsulin}`
+																: `${t(
+																		'sheet.form.shortInsulin.part_placeholder',
+																  )} ${settings.shortInsulin}`
 														}
 														{...field}
 														onChange={(e) =>
@@ -320,7 +320,9 @@ export default function RecordSheet(props: PropsType) {
 														placeholder={
 															!settings.longInsulin
 																? t('sheet.form.longInsulin.placeholder')
-																: `${t('sheet.form.longInsulin.part_placeholder')} ${settings.longInsulin}`
+																: `${t(
+																		'sheet.form.longInsulin.part_placeholder',
+																  )} ${settings.longInsulin}`
 														}
 														type='number'
 														{...field}
@@ -342,14 +344,10 @@ export default function RecordSheet(props: PropsType) {
 								name='description'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t('sheet.form.description.label')}
-										</FormLabel>
+										<FormLabel>{t('sheet.form.description.label')}</FormLabel>
 										<FormControl>
 											<Textarea
-												placeholder={
-													t('sheet.form.description.placeholder')
-												}
+												placeholder={t('sheet.form.description.placeholder')}
 												{...field}
 											/>
 										</FormControl>

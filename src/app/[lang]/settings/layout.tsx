@@ -11,21 +11,24 @@ import { Languages } from '@/lib/i18n/settings'
 
 type PropsType = {
 	children: React.ReactNode
-  params: {
-    lang: Languages
-  }
+	params: {
+		lang: Languages
+	}
 }
 
 export default async function SettingsLayout(props: PropsType) {
-	const { children, params: {lang} } = props
-  const {t} = await getTranslation(lang)
+	const {
+		children,
+		params: { lang },
+	} = props
+	const { t } = await getTranslation(lang)
 
-  const sidebarNavItems = [
-    {
-      title: t('settings.profile.title'),
-      href: '/settings',
-    },
-  ]
+	const sidebarNavItems = [
+		{
+			title: t('settings.profile.title'),
+			href: '/settings',
+		},
+	]
 
 	return (
 		<Card>
@@ -34,7 +37,7 @@ export default async function SettingsLayout(props: PropsType) {
 					{t('settings.title')}
 				</CardTitle>
 				<CardDescription className='text-muted-foreground'>
-          {t('settings.description')}
+					{t('settings.description')}
 				</CardDescription>
 			</CardHeader>
 			<CardContent className='flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0'>

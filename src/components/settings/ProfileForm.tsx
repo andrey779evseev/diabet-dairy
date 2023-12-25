@@ -1,8 +1,5 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { useForm } from 'react-hook-form'
 import {
 	Form,
 	FormControl,
@@ -14,10 +11,13 @@ import {
 } from '@/components/ui/Form'
 import { Input } from '@/components/ui/Input'
 import { Switch } from '@/components/ui/Switch'
-import { updateSettings } from '@/lib/api/settings/mutations'
 import { toast } from '@/hooks/useToast'
-import { Settings } from '@/types/Settings'
+import { updateSettings } from '@/lib/api/settings/mutations'
 import { useTranslation } from '@/lib/i18n/client'
+import { Settings } from '@/types/Settings'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
 
 const ProfileFormSchema = z
 	.object({
@@ -66,7 +66,7 @@ export default function ProfileForm(props: PropsType) {
 			shortInsulin: settings.shortInsulin ?? '',
 		},
 	})
-  const {t} = useTranslation()
+	const { t } = useTranslation()
 
 	const customShortInsulin = form.watch('customShortInsulin')
 	const customLongInsulin = form.watch('customLongInsulin')
@@ -103,10 +103,10 @@ export default function ProfileForm(props: PropsType) {
 							<FormItem className='flex flex-row items-center justify-between gap-4'>
 								<div className='space-y-0.5'>
 									<FormLabel className='text-base'>
-                    {t('settings.profile.inputs.shortInsulin.label')}
+										{t('settings.profile.inputs.shortInsulin.label')}
 									</FormLabel>
 									<FormDescription>
-                    {t('settings.profile.inputs.shortInsulin.description')}
+										{t('settings.profile.inputs.shortInsulin.description')}
 									</FormDescription>
 								</div>
 								<FormControl>
@@ -147,7 +147,7 @@ export default function ProfileForm(props: PropsType) {
 							<FormItem className='flex flex-row items-center justify-between gap-4'>
 								<div className='space-y-0.5'>
 									<FormLabel className='text-base'>
-                    {t('settings.profile.inputs.longInsulin.label')}
+										{t('settings.profile.inputs.longInsulin.label')}
 									</FormLabel>
 									<FormDescription>
 										{t('settings.profile.inputs.longInsulin.description')}

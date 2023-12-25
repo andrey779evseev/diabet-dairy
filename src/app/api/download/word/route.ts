@@ -1,12 +1,12 @@
-import dayjs from 'dayjs'
-import type { DateRange } from 'react-day-picker'
-import { NextResponse } from 'next/server'
 import { getRecordsByDate } from '@/lib/api/record/queries'
 import { getSettings } from '@/lib/api/settings/queries'
 import { getUserAuth } from '@/lib/auth'
+import { getTranslation } from '@/lib/i18n'
 import { groupBy } from '@/lib/utils'
 import { RecordType } from '@/types/Record'
-import { getTranslation } from '@/lib/i18n'
+import dayjs from 'dayjs'
+import { NextResponse } from 'next/server'
+import type { DateRange } from 'react-day-picker'
 
 const { Document, Packer, Paragraph, TextRun } = require('docx')
 
@@ -32,14 +32,18 @@ export async function GET(req: Request) {
 
 	const range: DateRange = {
 		from:
-			from !== null && from !== 'undefined' ? new Date(from) : new Date(to!),
+			from !== null && from !== 'undefined'
+				? new Date(from)
+				: to !== null
+				  ? new Date(to)
+				  : new Date(),
 		to:
 			from !== null && to !== null && to !== 'undefined'
 				? new Date(to)
 				: undefined,
 	}
 
-	const [{t}, data, settings] = await Promise.all([
+	const [{ t }, data, settings] = await Promise.all([
 		getTranslation(lang),
 		getRecordsByDate(range, session.user.id),
 		getSettings(session.user.id),
@@ -76,89 +80,86 @@ export async function GET(req: Request) {
 										font: 'Arial',
 										size: 24,
 									}),
-									...group.items
-										.map((record, i) => {
-											return [
-												new TextRun({
-													text: `${dayjs(record.time).format('HH:mm')} - `,
-													break: i === 0 ? 2 : 1,
-													font: 'Arial',
-													size: 22,
-												}),
-												new TextRun({
-													text: t(`table.data.type.${record.type}`),
-													font: 'Arial',
-													italics: true,
-													size: 24,
-												}),
-												new TextRun({
-													text: `${
-														(record.type === 'glucose' ||
-															record.type === 'insulin') &&
-														!!record.relativeToFood &&
-														record.relativeToFood !== 'none'
-															? ` (${
-																	t(`table.data.relativeToFood.${record.relativeToFood}`)
-															  })`
-															: ''
-													} - `,
-													font: 'Arial',
-													size: 22,
-												}),
-												new TextRun({
-													text:
-														record.type === 'glucose'
-															? `${record.glucose} ${t('units.glucose')}`
-															: '',
-													font: 'Arial',
-													size: 22,
-													highlight: 'yellow',
-												}),
-												new TextRun({
-													text:
-														record.type === 'insulin' && !!record.shortInsulin
-															? `${
-																	settings.shortInsulin ??
-																	t('table.data.insulin.short')
-															  }: ${record.shortInsulin}`
-															: '',
-													font: 'Arial',
-													size: 22,
-												}),
-												new TextRun({
-													text:
-														record.type === 'insulin' &&
-														!!record.shortInsulin &&
-														!!record.longInsulin
-															? ', '
-															: '',
-													font: 'Arial',
-													size: 22,
-												}),
-												new TextRun({
-													text:
-														record.type === 'insulin' && !!record.longInsulin
-															? `${
-																	settings.longInsulin ??
-																	t('table.data.insulin.long')
-															  }: ${record.longInsulin}`
-															: '',
-													font: 'Arial',
-													size: 22,
-												}),
-												new TextRun({
-													text: !!record.description
-														? record.type !== 'food' &&
-														  record.type !== 'activity'
-															? `, ${record.description}`
-															: record.description
+									...group.items.flatMap((record, i) => {
+										return [
+											new TextRun({
+												text: `${dayjs(record.time).format('HH:mm')} - `,
+												break: i === 0 ? 2 : 1,
+												font: 'Arial',
+												size: 22,
+											}),
+											new TextRun({
+												text: t(`table.data.type.${record.type}`),
+												font: 'Arial',
+												italics: true,
+												size: 24,
+											}),
+											new TextRun({
+												text: `${
+													(record.type === 'glucose' ||
+														record.type === 'insulin') &&
+													!!record.relativeToFood &&
+													record.relativeToFood !== 'none'
+														? ` (${t(
+																`table.data.relativeToFood.${record.relativeToFood}`,
+														  )})`
+														: ''
+												} - `,
+												font: 'Arial',
+												size: 22,
+											}),
+											new TextRun({
+												text:
+													record.type === 'glucose'
+														? `${record.glucose} ${t('units.glucose')}`
 														: '',
-													font: 'Arial',
-													size: 22,
-												}),
-											]
-										})
-										.flat(),
+												font: 'Arial',
+												size: 22,
+												highlight: 'yellow',
+											}),
+											new TextRun({
+												text:
+													record.type === 'insulin' && !!record.shortInsulin
+														? `${
+																settings.shortInsulin ??
+																t('table.data.insulin.short')
+														  }: ${record.shortInsulin}`
+														: '',
+												font: 'Arial',
+												size: 22,
+											}),
+											new TextRun({
+												text:
+													record.type === 'insulin' &&
+													!!record.shortInsulin &&
+													!!record.longInsulin
+														? ', '
+														: '',
+												font: 'Arial',
+												size: 22,
+											}),
+											new TextRun({
+												text:
+													record.type === 'insulin' && !!record.longInsulin
+														? `${
+																settings.longInsulin ??
+																t('table.data.insulin.long')
+														  }: ${record.longInsulin}`
+														: '',
+												font: 'Arial',
+												size: 22,
+											}),
+											new TextRun({
+												text: record.description
+													? record.type !== 'food' && record.type !== 'activity'
+														? `, ${record.description}`
+														: record.description
+													: '',
+												font: 'Arial',
+												size: 22,
+											}),
+										]
+									}),
 								],
 							}),
 					),

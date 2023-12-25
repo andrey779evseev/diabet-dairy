@@ -1,14 +1,20 @@
 'use client'
 
-import React from 'react'
 import { Input } from '@/components/ui/Input'
 import {
+	TimePickerType,
 	getArrowByType,
 	getDateByType,
 	setDateByType,
-	TimePickerType,
 } from '@/lib/time-picker-utils'
 import { cn } from '@/lib/utils'
+import {
+	InputHTMLAttributes,
+	forwardRef,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react'
 
 type PropsType = {
 	picker: TimePickerType
@@ -16,9 +22,9 @@ type PropsType = {
 	setDate: (date: Date | undefined) => void
 	onRightFocus?: () => void
 	onLeftFocus?: () => void
-} & React.InputHTMLAttributes<HTMLInputElement>
+} & InputHTMLAttributes<HTMLInputElement>
 
-const TimePickerInput = React.forwardRef<HTMLInputElement, PropsType>(
+const TimePickerInput = forwardRef<HTMLInputElement, PropsType>(
 	(
 		{
 			className,
@@ -37,13 +43,13 @@ const TimePickerInput = React.forwardRef<HTMLInputElement, PropsType>(
 		},
 		ref,
 	) => {
-		const [flag, setFlag] = React.useState<boolean>(false)
+		const [flag, setFlag] = useState<boolean>(false)
 
 		/**
 		 * allow the user to enter the second digit within 2 seconds
 		 * otherwise start again with entering first digit
 		 */
-		React.useEffect(() => {
+		useEffect(() => {
 			if (flag) {
 				const timer = setTimeout(() => {
 					setFlag(false)
@@ -53,7 +59,7 @@ const TimePickerInput = React.forwardRef<HTMLInputElement, PropsType>(
 			}
 		}, [flag])
 
-		const calculatedValue = React.useMemo(
+		const calculatedValue = useMemo(
 			() => getDateByType(date, picker),
 			[date, picker],
 		)
@@ -72,7 +78,7 @@ const TimePickerInput = React.forwardRef<HTMLInputElement, PropsType>(
 			}
 			if (e.key >= '0' && e.key <= '9') {
 				const newValue = !flag
-					? '0' + e.key
+					? `0${e.key}`
 					: calculatedValue.slice(1, 2) + e.key
 				if (flag) onRightFocus?.()
 				setFlag((prev) => !prev)

@@ -1,8 +1,8 @@
+import { users } from '@/lib/db/schema/auth'
+import { selectRecordSchema } from '@/lib/db/schema/record'
 import { relations } from 'drizzle-orm'
 import { pgTable, text, uuid } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { users } from '@/lib/db/schema/auth'
-import { selectRecordSchema } from '@/lib/db/schema/record'
 
 export const settings = pgTable('settings', {
 	id: uuid('id').defaultRandom().primaryKey(),

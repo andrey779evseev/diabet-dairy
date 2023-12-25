@@ -7,8 +7,8 @@
     "dev:turbo": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "pretty": "prettier . --write && eslint . --fix",
+    "lint": "bunx @biomejs/biome lint .",
+    "pretty": "bunx @biomejs/biome check --apply .",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "bun run src/lib/db/migrate.ts",
     "db:drop": "drizzle-kit drop",
@@ -17,7 +17,7 @@
     "db:check": "drizzle-kit check:pg",
     "db:push": "drizzle-kit push:pg",
     "prepare": "husky install",
-    "check": "bunx tsc --noEmit"
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "@auth/core": "^0.19.0",
@@ -43,7 +43,7 @@
     "clsx": "^2.0.0",
     "dayjs": "^1.11.10",
     "docx": "^8.3.0",
-    "drizzle-orm": "^0.29.1",
+    "drizzle-orm": "0.29.0",
     "drizzle-zod": "^0.5.1",
     "i18next": "^23.7.11",
     "i18next-resources-to-backend": "^1.2.0",
@@ -68,7 +68,7 @@
     "zod-i18n-map": "^2.23.0"
   },
   "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+    "@biomejs/biome": "1.4.1",
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
@@ -76,16 +76,10 @@
     "autoprefixer": "^10.4.16",
     "dotenv": "^16.3.1",
     "drizzle-kit": "^0.20.7",
-    "eslint": "^8.56.0",
-    "eslint-config-next": "14.0.4",
-    "eslint-plugin-tailwindcss": "^3.13.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
+    "husky": "^8.0.3",
     "pg": "^8.11.3",
     "postcss": "^8.4.32",
-    "prettier": "^3.1.1",
-    "prettier-plugin-tailwindcss": "^0.5.9",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5.3.3",
-    "husky": "^8.0.3"
+    "typescript": "^5.3.3"
   }
 }

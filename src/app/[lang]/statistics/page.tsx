@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import StatisticsPageContent from '@/components/client-pages/StatisticsPageContent'
 import {
 	getAvgDayInsulinForPeriod,
@@ -6,6 +5,7 @@ import {
 } from '@/lib/api/record/queries'
 import { getUserAuth } from '@/lib/auth'
 import { getClearNow } from '@/lib/utils'
+import dayjs from 'dayjs'
 
 const now = getClearNow()
 const dates = [

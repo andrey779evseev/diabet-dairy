@@ -1,5 +1,5 @@
-import z from 'zod'
 import { recordIdSchema } from '@/lib/db/schema/record'
+import z from 'zod'
 
 const RecordTypeEnum = z.enum(['food', 'insulin', 'glucose', 'activity'])
 const RecordRelativeToFoodEnum = z.enum(['before', 'after', 'none'])

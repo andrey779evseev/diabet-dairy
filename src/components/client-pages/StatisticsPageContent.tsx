@@ -1,7 +1,6 @@
 'use client'
 
 import { Stats, StatsByDates } from '@/app/[lang]/statistics/page'
-import { memo } from 'react'
 import {
 	Card,
 	CardContent,
@@ -11,6 +10,7 @@ import {
 } from '@/components/ui/Card'
 import { ScrollArea, ScrollBar } from '@/components/ui/ScrollArea'
 import { useTranslation } from '@/lib/i18n/client'
+import { memo } from 'react'
 
 type PropsType = {
 	stats: Stats
@@ -18,7 +18,7 @@ type PropsType = {
 
 function StatisticsPageContent(props: PropsType) {
 	const { stats } = props
-	const {t} = useTranslation()
+	const { t } = useTranslation()
 	return (
 		<div className='flex h-full w-full flex-col gap-4'>
 			<CardRowStats
@@ -43,7 +43,7 @@ type CardRowStatsPropsType = {
 
 function CardRowStats(props: CardRowStatsPropsType) {
 	const { stats, title, description } = props
-	const {t} = useTranslation()
+	const { t } = useTranslation()
 	return (
 		<Card className='h-fit w-full max-w-full'>
 			<CardHeader>

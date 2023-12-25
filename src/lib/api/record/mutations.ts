@@ -1,9 +1,13 @@
 'use server'
 
-import { eq, inArray } from 'drizzle-orm'
 import { db } from '@/lib/db'
-import { insertRecordSchema, records } from '@/lib/db/schema/record'
+import {
+	insertRecordSchema,
+	records,
+	selectRecordSchema,
+} from '@/lib/db/schema/record'
 import { Record, RecordId } from '@/types/Record'
+import { eq, inArray } from 'drizzle-orm'
 
 export async function createRecord(record: Record) {
 	try {
@@ -53,8 +57,8 @@ export async function deleteRecords(ids: RecordId[]) {
 
 export async function updateRecord(record: Record) {
 	try {
-		const { id, ...newRecord } = insertRecordSchema.parse(record)
-		await db.update(records).set(newRecord).where(eq(records.id, id!))
+		const { id, ...newRecord } = selectRecordSchema.parse(record)
+		await db.update(records).set(newRecord).where(eq(records.id, id))
 	} catch (err) {
 		const message = (err as Error).message ?? 'Error, please try again'
 		console.error(message)

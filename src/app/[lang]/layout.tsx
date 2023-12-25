@@ -4,19 +4,18 @@ import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 
 type Props = {
-  params: {
-    lang: Languages
-  }
+	params: {
+		lang: Languages
+	}
 } & PropsWithChildren
 
 export default async function LangLayout(props: Props) {
-  const {
-    children,
-    params: {lang}
-  } = props
+	const {
+		children,
+		params: { lang },
+	} = props
 
-  if (!languages.includes(lang))
-    redirect(`/${fallbackLng}`)
+	if (!languages.includes(lang)) redirect(`/${fallbackLng}`)
 
 	return <>{children}</>
 }

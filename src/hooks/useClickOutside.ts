@@ -14,6 +14,7 @@ export function useClickOutside<T extends HTMLElement>(
 		refCb.current = cb
 	})
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const handler = (e: Event) => {
 			const element = ref.current
@@ -27,13 +28,11 @@ export function useClickOutside<T extends HTMLElement>(
 			return () => {
 				document.removeEventListener('touchstart', handler)
 			}
-		} else {
-			document.addEventListener('mousedown', handler)
-			return () => {
-				document.removeEventListener('mousedown', handler)
-			}
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		document.addEventListener('mousedown', handler)
+		return () => {
+			document.removeEventListener('mousedown', handler)
+		}
 	}, [])
 
 	return ref

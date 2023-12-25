@@ -1,22 +1,22 @@
 'use client'
 
+import { Button } from '@/components/ui/Button'
+import { useAgentDetect } from '@/hooks/useAgentDetect'
+import { useAnimationState } from '@/hooks/useAnimationState'
+import { useClickOutside } from '@/hooks/useClickOutside'
+import { useLockPointerEvents } from '@/hooks/useLockPointerEvents'
+import { cn } from '@/lib/utils'
 import { ChevronUp, LucideIcon } from 'lucide-react'
 import {
+	RefObject,
 	createRef,
 	memo,
-	RefObject,
 	useCallback,
 	useEffect,
 	useRef,
 	useState,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { Button } from '@/components/ui/Button'
-import { cn } from '@/lib/utils'
-import { useAgentDetect } from '@/hooks/useAgentDetect'
-import { useAnimationState } from '@/hooks/useAnimationState'
-import { useClickOutside } from '@/hooks/useClickOutside'
-import { useLockPointerEvents } from '@/hooks/useLockPointerEvents'
 
 const styles = [
 	[
@@ -64,8 +64,9 @@ function MultiActionButton(props: PropsType) {
 		if (pointerOver === 0) {
 			const timeout = setTimeout(() => setAnimatedPointedOver(pointerOver), 300)
 			return () => clearTimeout(timeout)
-		} else setAnimatedPointedOver(pointerOver)
-	}, [pointerOver, setAnimatedPointedOver])
+		}
+		setAnimatedPointedOver(pointerOver)
+	}, [pointerOver])
 
 	const cancelTimeout = () => {
 		if (timeoutId.current) clearTimeout(timeoutId.current)
@@ -75,24 +76,25 @@ function MultiActionButton(props: PropsType) {
 
 	const end = useCallback(() => {
 		cancelTimeout()
+		if (!pointerOver || !startedAt) return
 		if (!isPointerDown && pointerOver !== 0 && pointerOver !== null) {
-			actions[pointerOver! - 1].action()
+			actions[pointerOver - 1].action()
 			setIsOpen(false)
 			setPointerOver(null)
 		}
 
 		if (pointerOver === null || !isPointerDown) return
 
-		if (new Date().getTime() - startedAt!.getTime() < 300)
+		if (new Date().getTime() - startedAt.getTime() < 300)
 			setIsOpen((prev) => !prev)
 		else {
-			if (pointerOver !== 0) actions[pointerOver! - 1].action()
+			if (pointerOver !== 0) actions[pointerOver - 1].action()
 			setIsOpen(false)
 		}
 
 		setIsPointerDown(false)
 		setPointerOver(null)
-	}, [actions, isPointerDown, pointerOver, startedAt])
+	}, [actions, isPointerDown, pointerOver, startedAt, cancelTimeout])
 
 	const start = (
 		e:
@@ -135,17 +137,16 @@ function MultiActionButton(props: PropsType) {
 			return () => {
 				el?.removeEventListener('touchend', end)
 			}
-		} else {
-			const set = () => {
-				setPointerOver(null)
-			}
-			el?.addEventListener('pointerup', end)
-			el?.addEventListener('pointerleave', set)
+		}
+		const set = () => {
+			setPointerOver(null)
+		}
+		el?.addEventListener('pointerup', end)
+		el?.addEventListener('pointerleave', set)
 
-			return () => {
-				el?.removeEventListener('pointerup', end)
-				el?.removeEventListener('pointerleave', set)
-			}
+		return () => {
+			el?.removeEventListener('pointerup', end)
+			el?.removeEventListener('pointerleave', set)
 		}
 	}, [isMobile, end, containerRef])
 
@@ -179,7 +180,7 @@ function MultiActionButton(props: PropsType) {
 					data-state={isOpen ? 'open' : 'closed'}
 					key={i}
 					ref={refs.current[i]}
-					id={i + 1 + ''}
+					id={`${i + 1}`}
 				>
 					<action.icon className='h-8 w-8' />
 				</Button>

@@ -3,11 +3,11 @@
 import DateFilter from '@/components/DateFilter'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from '@/components/ui/Select'
 import { useTranslation } from '@/lib/i18n/client'
 import type { Record } from '@/types/Record'
@@ -33,7 +33,7 @@ function GraphsPageContent(props: PropsType) {
 	})
 	const [type, setType] = useState<'glucose' | 'insulin'>('glucose')
 	const [records, setRecords] = useState(initialRecords)
-	const {t} = useTranslation()
+	const { t } = useTranslation()
 
 	const data = useMemo(() => {
 		return records
@@ -44,6 +44,7 @@ function GraphsPageContent(props: PropsType) {
 						time: record.time,
 						glucose: record.glucose,
 					}
+				// biome-ignore lint/style/noUselessElse: this needed for correct ts inference
 				else if (record.type === 'insulin')
 					return {
 						time: record.time,
@@ -141,10 +142,17 @@ const CustomMultipleValueTooltip = ({
 	payload,
 }: {
 	active?: boolean
-	payload?: any[]
+	payload?: {
+		payload: {
+			time: string
+			glucose: never | number
+			actrapid: never | number
+			protofan: never | number
+		}
+	}[]
 	label?: number
 }) => {
-	const {t} = useTranslation()
+	const { t } = useTranslation()
 	if (active && payload && payload.length > 0) {
 		const data = payload[0].payload
 		return (
