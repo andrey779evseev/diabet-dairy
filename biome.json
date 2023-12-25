@@ -18,7 +18,8 @@
 	},
 	"formatter": {
 		"indentWidth": 2,
-		"indentStyle": "tab"
+		"indentStyle": "tab",
+		"lineEnding": "crlf"
 	},
 	"javascript": {
 		"formatter": {
@@ -27,7 +28,8 @@
 			"quoteStyle": "single",
 			"semicolons": "asNeeded",
 			"jsxQuoteStyle": "single",
-			"lineWidth": 80
+			"lineWidth": 80,
+			"lineEnding": "crlf"
 		}
 	},
 	"files": {
