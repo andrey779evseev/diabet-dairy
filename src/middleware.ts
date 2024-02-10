@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export default async function middleware(req: NextRequest) {
 	const pathname = req.nextUrl.pathname
-	// @ts-expect-error error because of incompatibility types in different package versions
+	// @ts-ignore
 	const token = await getToken({ req })
 	const currentLang =
 		pathname.split('/').length > 1 ? pathname.split('/')[1] : null
