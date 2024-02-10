@@ -38,5 +38,5 @@ const authPages = [
 
 export const config = {
 	matcher:
-		'/((?!api|_next/static|_next/image|favicon.ico|manifest.json|assets|icons).*)',
+		'/((?!api|_next/static|_next/image|favicon.ico|manifest.json|assets|icons|sw.js).*)',
 }
