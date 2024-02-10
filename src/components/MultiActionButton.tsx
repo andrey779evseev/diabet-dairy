@@ -74,6 +74,7 @@ function MultiActionButton(props: PropsType) {
 		timeoutId.current = null
 	}
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: stupid suggestion
 	const end = useCallback(() => {
 		cancelTimeout()
 		if (!pointerOver || !startedAt) return
